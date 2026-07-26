@@ -1,0 +1,265 @@
+// T2 Útikönyv — tartalom (a nyomtatott kalauzból). window.T2GUIDE
+window.T2GUIDE = {
+modules: [
+{id:'A', letter:'A', title:'Zemplén', full:'Zemplén — várak vulkáni kúpokon és egy óriási híd', kicker:'Modul A · Magyar oldal', sub:'Vulkáni dombok, hegytetői romok, termálvíz · 1–2 nap', transit:'Eger → Boldogkő ≈ 1 óra · a végén 5 percre a szlovák határtól',
+ pois:[
+ {id:'a3', n:'Zemplén Kalandpark, Sátoraljaújhely', q:'Zemplén Kalandpark Sátoraljaújhely', b:'fo', age:'MINDEN KOR', meta:'kalandpark · egész nap',
+  d:'Egy hegy, rajta minden: Magyarország leghosszabb libegője (1 332 m), 2 275 m-es bob, kabinos felvonó, és a sztár — a Zemplén723, a 723 m-es üvegpadlós függőhíd két csúcs között. Teljes gyereknap egyetlen nyafogás nélkül.',
+  w:'Naponta, nyáron ~10:00–19:00 (hétvégén 9-től). Attrakciónként fizetsz; a jegyárusítás 30–60 perccel zárás előtt áll le — kora délutánra érj oda. Csak száraz időben: viharban a liftek és a híd zár.'},
+ {id:'a1', n:'Boldogkő vára', q:'Boldogkői vár', b:'megeri', age:'4+', meta:'várrom · 1½–2 óra',
+  d:'Bazaltgerincre nőtt vár: bástyák, kilátótorony, fegyverkiállítás és órákra elég biztonságos mászkálnivaló. A kirándulás klasszikus első megállója.',
+  w:'Egész évben naponta, nyáron ~9:00–18:00; fejenként pár ezer forint. Reggeli fényben vagy naplemente előtt a legszebb; teljesen fedetlen — sapka, víz.'},
+ {id:'a2', n:'Sárospatak — Rákóczi-vár + tengerszem', q:'Rákóczi-vár Sárospatak', b:'megeri', age:'vár 4+ · tengerszem: mind', meta:'vár + fürdés · fél nap', mon:true,
+  d:'Az egyik legjobb magyar gyerekvár (reneszánsz palota, ágyúk, kazamaták), és 15 percre fent a Megyer-hegyi tengerszem — smaragdzöld, vízzel telt malomkőbánya.',
+  w:'A vár hétfőn zárva. A tengerszem ingyenes, mindig nyitva, a parkolótól rövid séta. A kettő együtt egy laza fél nap.'},
+ {id:'a4', wk:'hu:Füzéri_vár', n:'Füzér és Regéc vára', q:'Füzér vára', b:'opc', age:'Füzér 6+ · Regéc 4+', meta:'2–3 óra darabja',
+  d:'Ha a csapat még várat kíván: Füzér képeslapra való, vad sziklán (meredek — ezért 6+), Regéc vadregényesebb és nagyon gyerekbarát. Mindkettő kis csúcstúra (20–40 perc fel). Napos napra.',
+  w:'Ha fáradt a láb, hagyd ki: Boldogkő már hozta a műfajt.'}],
+ sleep:[
+ {n:'Végardófürdő Kemping, Sárospatak — a horgony', wk:'hu:Sárospatak', q:'Végardó Fürdő Camping Sárospatak', tel:'+36 30 986 5752',
+  d:'120 árnyas hely, közvetlen kapu a Végardó termálfürdőbe (8:00–20:00 — csúszdák, gyerekmedencék). Közös konyha + fürdők, wifi. A várnap utáni esti fürdőzés a trükk, amitől ez a modul működik.'},
+ {n:'Vad opció', wk:'hu:Zempléni-hegység', d:'Közerdő védett területen kívül: egy éjszaka, házaktól 200 m, tűz nélkül, nyomtalanul. De ilyen olcsó fürdő mellett általában a Végardó nyer.'}],
+ eat:[
+ {n:'Hotel Bodrog étterme, Sárospatak', wk:'hu:Sárospatak', q:'Hotel Bodrog Sárospatak', d:'Megbízható magyar klasszikusok, gyerekadag.'},
+ {n:'Lángosos és fagyis a Végardó fürdőnél', wk:'hu:Sárospatak', q:'Végardó fürdő Sárospatak', d:'A fürdés utáni vacsora.'},
+ {n:'Büfé Boldogkő vára alatt', wk:'hu:Boldogkőváralja', q:'Boldogkői vár', d:'Nasi kilátással. A falusi konyhák korán zárnak — előző nap nézd meg.'}]},
+
+{id:'B', letter:'B', title:'Kassa · Košice', full:'Kassa — gőzös, gejzír, nagyvárosi finomságok', kicker:'Modul B · Szlovákia második városa', sub:'Košice és a játszóhegyei · könnyű 1–2 nap', transit:'Sátoraljaújhely → Kassa ≈ 45 perc · gejzír-kitérő +30 perc keletre',
+ alert:{t:'A vasárnapi indulás keresztbe tesz a gőzösnek', d:'Vasárnapi indulással a 3. nap Kassa keddre esik — a Katka viszont hétvégén és ünnepnapokon gőzöl. A) Elfogadod: kedden dízelmozdony, ugyanaz az élmény gőz nélkül. B) Kassát a végére teszed (szombati gőzös) — cserébe kimarad a dobsinai jégbarlang. Részletek: Forgatókönyvek.'},
+ pois:[
+ {id:'b4', n:'Gyermekvasút, Csermely-völgy (Čermeľ)', q:'Detská železnica Košice Čermeľ', b:'fo', age:'MINDEN KOR', meta:'gőzvasút · 2–3 óra piknikkel',
+  d:'Igazi kisvasút, javarészt egyenruhás gyerekek üzemeltetik; nyári hétvégéken a Katka húzza — Közép-Európa legöregebb működő gőzmozdonya (1884!). 20 perc erdőn át az Alpinkára: játszóterek, tűzrakók, étterem.',
+  w:'Gőzös hétvégén és ünnepnap (júl–aug; a szombati retró a biztos), hétköznap gyakran dízel — detskazeleznica.sk. Jegy a Čermeľ állomáson ~30 perccel indulás előtt (online nincs); rossz időben nem jár. 3 év alatt ingyen.'},
+ {id:'b5', n:'Ránkfüredi gejzír (Herľany)', q:'Herliansky gejzír Herľany', b:'fo', age:'4+', meta:'28 km keletre · 25 perc műsor',
+  d:'Európai ritkaság: hidegvizes gejzír, ~20 m magasra tör fel 25 percen át, 32–36 óránként. A falu közli a várható ablakot; ti piknikeztek, és várjátok, hogy a föld kilélegezzen. Ingyen van, és felejthetetlen.',
+  w:'Előző nap nézd meg a kitörési ablakot (herlany.sk vagy KE-turist), érkezz legalább 1 órával korábban. Bármilyen időben megy. Csak akkor éri meg, ha ablak esik a napodra.'},
+ {id:'b6', n:'Kassai állatkert + Dinopark, Kavečany', q:'ZOO Košice Kavečany', b:'megeri', age:'MINDEN KOR', meta:'3–4 óra',
+  d:'Területre Európa egyik legnagyobb állatkertje, erdőbe telepítve, Dinoparkkal és simogatóval. A gyermekvasúttal együtt kiad egy teljes gyereknapot.',
+  w:'Nyáron naponta ~9:00–19:00; állatkerthez képest olcsó (pár €/fő). Sok a séta: a babakocsit a nagyobbaknak is vigyétek.'},
+ {id:'b7', wk:'hu:Kassai_Szent_Erzsébet-főszékesegyház', n:'Esti óváros', q:'Dóm svätej Alžbety Košice', b:'megeri', age:'MINDEN KOR', meta:'ingyen · 1–2 óra',
+  d:'A Szent Erzsébet-dóm (Európa legkeletibb gótikus katedrálisa), a zenélő-táncoló szökőkút a színháznál, fagyi a Fő utcán (Hlavná). Az esti program, ami sem pénzbe, sem energiába nem kerül.',
+  w:'Bármely nap, 17:00 után a legjobb. Ha esik: a dómot és a kávézókat nem érdekli az idő.'}],
+ sleep:[
+ {n:'Camp Route E58 / Resort Barca, Kassa', wk:'hu:Kassa', q:'Camp Route E58 Košice', d:'A régi Salaš Barca (erre a névre keress; wifi nincs). Városi kemping a déli szélen — sík helyek, áram, gyors villamos a központba. Semmi romantika, minden praktikum.'},
+ {n:'Kavečany felől', wk:'sk:Kavečany', q:'Kavečany penzión', d:'Panziók fent az állatkertnél, ha a reggeli program mellett ébrednél; vagy tolj rá 30 percet Szádelő/Gömör felé.'}],
+ eat:[
+ {n:'Med Malina (Hlavná)', wk:'hu:Kassa', q:'Med Malina Košice', d:'Szlovák-lengyel házi konyha, pierogi, amit a gyerekek tényleg megesznek.'},
+ {n:'Koliba Alpinka', wk:'sk:Čermeľ', q:'Koliba Alpinka Košice', d:'Grillezett pisztráng és sztrapacska a kisvasút túlsó végén, játszótérrel.'},
+ {n:'Cukráreň Aida', wk:'hu:Kassa', q:'Cukráreň Aida Košice', d:'A város fagyi-intézménye a Fő utcán.'}]},
+
+{id:'C', letter:'C', title:'Gömör', full:'Gömör — az alvilág: jég, aragonit, kastély', kicker:'Modul C · A hazaút folyosója', sub:'Barlangvidék · válassz 2-t a 3 nagy megállóból', transit:'Poprád → jégbarlang ≈ 1 óra · → Betlér ≈ 45 perc · → Szádelő ≈ 30 perc · → Aggtelek ≈ 45 perc · → Eger ≈ 2 óra',
+ pois:[
+ {id:'c1', n:'Dobsinai-jégbarlang (UNESCO)', q:'Dobšinská ľadová jaskyňa', b:'fo', age:'4+', meta:'~2,5 óra a sétával', mon:true, cash:true,
+  d:'110 000 m³ jég a föld alatt — falak, oszlopok, fagyott vízesések, júliusban. Az odaút is része: 1 km erdei ösvény, 130 m szint a barlangszájig (babakocsi nem megy).',
+  w:'Jún–aug: kedd–vas, belépés egész órakor 9:00–16:00. HÉTFŐN ZÁRVA. €14 felnőtt / €7 gyerek / €10 fotójegy. CSAK KÉSZPÉNZ, €5 parkolás. A turnusok létszáma kötött — 9:00–10:00-s érkezés a jó taktika. Bent ~0 °C: igazi kabát, igazi cipő.'},
+ {id:'c2', n:'Betlér (Betliar) — Andrássy-kastély', q:'Kaštieľ Betliar', b:'fo', age:'park: mind · kastély: szülő', meta:'2–3 óra', mon:true,
+  d:'Az Andrássyak kastélya, amely sosem égett le és sosem ürült ki — eredeti bútorok, trófeák, könyvtár. A gyerekeknek a lényeg a hatalmas angolpark: vízesések, műromok. Egyik felnőtt a házban, a másik a parkban, félidőben csere.',
+  w:'Kedd–vas 9:30–16:30 (utolsó belépés 15:30). HÉTFŐN ZÁRVA. A park nyáron naponta 7:00–21:00. Ha esik, ez a folyosó mentőöve.'},
+ {id:'c3', wk:'hu:Krasznahorka_vára', n:'Krasznahorka + Andrássy-mauzóleum', q:'Hrad Krásna Hôrka', b:'opc', age:'SZÜLŐPROGRAM', meta:'30 perc',
+  d:'A vár alsó-középső részét 2026 végi újranyitásra célozták — indulás előtt nézz rá. A biztos megálló a falu alatti Andrássy-mauzóleum: 30 perc, szecessziós márványcsoda. A sziluettért megéri megállni.',
+  w:'Mauzóleum: rövid megálló a főút mellől.'},
+ {id:'c4', wk:'sk:Ochtinská_aragonitová_jaskyňa', n:'Martonházai-aragonitbarlang · Imrikfalvi-tó', q:'Ochtinská aragonitová jaskyňa', b:'opc', age:'4+ / tó: MINDEN KOR', meta:'barlang ~1 óra · tó: lusta délután', mon:true,
+  d:'A Föld kevés látogatható aragonitbarlangjának egyike — csillogó tű-„virágok" cseppkő helyett. Csereprogram, ha a jégbarlangnál hosszú a sor. A tó a levezetés: fürdés, csónak, 800 méteren.',
+  w:'Hétfőn zárva, időpontos belépés. A Geravy-libegő egyszemélyes — kisgyerekkel a tó a program.'}],
+ sleep:[
+ {n:'Rozsnyó és Betlér környéke', wk:'hu:Rozsnyó', q:'penzión Rožňava', d:'Panziók és kisebb kempingek a kastély és a jégbarlang közötti fél órában — a legrövidebb kitérő egy hazaúti éjszakára.'},
+ {n:'Vagy egy modullal tovább', wk:'sk:Slovenský_raj', d:'Podlesok és Imrikfalva (Dedinky) kempingjei fél óra ide — ezek a C+ modulhoz tartoznak, ott a részletük.'}],
+ eat:[
+ {n:'Hotel Priehrada, Imrikfalva', wk:'sk:Dedinky', q:'Hotel Priehrada Dedinky', d:'Tóparti terasz, pisztráng és sztrapacska.'},
+ {n:'Koliba-grillek a jégbarlang parkolójánál', wk:'sk:Dobšinská_ľadová_jaskyňa', q:'Dobšinská ľadová jaskyňa', d:'Ebéd a belépés előtt vagy után.'},
+ {n:'Baradla látogatóközpont étterme, Aggtelek', wk:'hu:Baradla-barlang', q:'Baradla-barlang Aggtelek', d:'Utolsó megálló hazaindulás előtt.'}]},
+
+{id:'CP', letter:'C+', title:'Szlovák Paradicsom', full:'Szlovák Paradicsom — a létrák országa', kicker:'Modul C+ · Szurdokok és létrák', sub:'A Tátra és Kassa között félúton · saját kemping, saját napok', transit:'Poprád → Podlesok ≈ 40 perc · jégbarlang → Imrikfalva ≈ 20 perc · Podlesok → Kassa ≈ 1 óra 15',
+ intro:'A szurdokok EGYIRÁNYÚAK — felfelé megy a forgalom, vissza a gerincen jössz. Parkjegy a bejáratnál (€1,50 / €0,50 gyerek, benne a hegyimentő-hozzájárulás); a magasabb szurdokok télre lezárnak. Két bázis van, mindkettő kemping — a nap gyalog kezdődik, nem autóval.',
+ pois:[
+ {id:'cp1', n:'Hornád-áttörés (Prielom Hornádu)', q:'Prielom Hornádu', b:'fo', age:'6+', meta:'végig 4–5 óra · 11 km · félútig 3 óra',
+  d:'A park névjegye: a Hornád kanyonja, ahol az ösvény hol a vízparton fut, hol hágcsókon és láncokon araszol a sziklafalon. Nem mászás — kalandpark, amit a víz épített. Az első vaskapocstól kezdve senki nem kérdezi, mennyi van hátra.',
+  w:'Parkjegy a bejáratnál. A legtöbb család a felét járja be és ugyanott fordul vissza (3 óra, bárhol félbehagyható). Nagy eső után és zivatarban ne induljatok; a hágcsók csúsznak.'},
+ {id:'cp2', n:'Suchá Belá-szurdok, Podlesok', q:'Suchá Belá roklina', b:'fo', age:'8+', meta:'4–4½ óra kör',
+  d:'A műfaj tömény változata: vízesések mellett hosszú létrák visznek fölfelé, végig a patakmederben. Egyirányú: fent a fennsíkon fordulsz, erdei úton vissza (+1,5–2 óra). Kisebb gyerekkel a Hornád-áttörés a családi verzió.',
+  w:'Korán induljatok: délelőtt üres, délutánra torlódik és jönnek a zivatarok. Bakancs kell, sportcipő nem elég.'},
+ {id:'cp3', n:'Hnileci-völgy: Imrikfalva → Stratená', q:'Stratenský kaňon', b:'megeri', age:'MINDEN KOR', meta:'sík völgy · 10 km oda-vissza · gyalog 3 óra, bringával 1½',
+  d:'A létramentes nap: a Hnilec sík völgye a tópartról indul, a Stratenai-kanyon sziklakapui között vezet a jégbarlang felé. Hágcsó nincs, a patak végig ott van — kisgyerekkel ez a park „igazi" arca.',
+  w:'Ingyenes, bármikor, esőben is (a fák fedik). Az alsó szakasz babakocsival is vállalható; a jégbarlang parkolója a túlsó vége.'},
+ {id:'cp4', n:'Imrikfalvi-tó (Palcmanská Maša), Dedinky', q:'Palcmanská Maša Dedinky', b:'megeri', age:'MINDEN KOR', meta:'fürdés, csónak · lusta délután',
+  d:'A park déli kapuja: hegyi víztározó 800 méteren, sekély, meleg partszakasszal, csónakkal. A szurdoknap levezetése — a hely, ahol a gyerekek végre nem kapaszkodnak semmibe.',
+  w:'A tópart ingyenes, a jégbarlangtól 20 perc. A Geravy-libegő egyszemélyes székes — kisgyerekkel a tó a program.'},
+ {id:'cp5', wk:'sk:Zejmarská_roklina', n:'Zejmarská-szurdok + Geravy', q:'Zejmarská roklina', b:'opc', age:'6+', meta:'2,5–3 óra kör',
+  d:'A kicsi-de-igazi szurdok: létrák, zúgók, rövid táv — jó bemelegítés vagy pótlék. Egyenesen a tavi fürdőzésre fűzhető.',
+  w:'A Geravy-fennsíkról libegővel is le lehet jönni (aki nem ülhet egyedül, gyalog).'},
+ {id:'cp6', wk:'sk:Tomášovský_výhľad', n:'Tomášovský-kilátó, Čingov', q:'Tomášovský výhľad', b:'opc', age:'4+', meta:'2 óra oda-vissza · létrák nélkül',
+  d:'Egy óra séta egy mészkő-erkélyre az egész kanyon fölött: óriási kilátás apró erőfeszítésért, hágcsók nélkül. A peremen kézfogás kötelező.',
+  w:'Ugyanaz a parkjegy — ez a „ma nem mászunk létrát" nap.'}],
+ sleep:[
+ {n:'Autocamping Podlesok — az északi bázis', wk:'sk:Hrabušice', q:'Autocamping Podlesok Hrabušice', d:'Nagy családi kemping a park kapujában: a Suchá Belá és a Hornád-áttörés a sorompónál kezdődik, a parkjegy benne az árban. Sík, füves, árnyas; konyha, tűzrakók, bolt a faluban.'},
+ {n:'Imrikfalva (Dedinky) és Mlynky — a déli bázis', wk:'sk:Dedinky', q:'camping Dedinky', d:'Egyszerű kempingek a víztározó körül, 800 méteren: csend, hűvös éjszakák, a gyerekek napestig a vízben. Jégbarlang 20 perc — a lustább, fürdősebb változat.'}],
+ eat:[
+ {n:'Reštaurácia Podlesok', wk:'sk:Hrabušice', q:'Reštaurácia Podlesok', d:'Leves és sztrapacska a kemping mellett, a szurdok után.'},
+ {n:'Hotel Priehrada, Imrikfalva', wk:'sk:Dedinky', q:'Hotel Priehrada Dedinky', d:'Tóparti terasz, pisztráng.'},
+ {n:'Koliba-grillek Podlesoknál', wk:'sk:Slovenský_raj', q:'koliba Hrabušice', d:'A szurdok utáni ebéd. Bevásárlás: Igló (Spišská Nová Ves).'}]},
+
+{id:'D', letter:'D', title:'Szepesség · Spiš', full:'Szepesség — a várhorizont', kicker:'Modul D · Keleti folyosó', sub:'A „Kassa és a Dunajec közti" étlapod', transit:'Kassa → Szepesi vár ≈ 1 óra · → Ólubló ≈ 45 perc · → Dunajec ≈ 30 perc',
+ pois:[
+ {id:'d1', n:'Szepesi vár (Spišský hrad, UNESCO)', q:'Spišský hrad', b:'fo', age:'4+', meta:'mega-rom · 2–3 óra',
+  d:'Európa egyik legnagyobb várkomplexuma — négy hektár bástya, torony és udvar, ahol a gyerekek órákig kóborolhatnak. Már húsz kilométerről látszik.',
+  w:'Szezonban naponta ~9:00–18:00. Lakóautó-parkoló lent, majd meredek 15 perc fel — babakocsinak reménytelen. Teljesen fedetlen: melegben reggel vagy késő délután; zivatarban kihagyni.'},
+ {id:'d3', n:'Lublói vár + skanzen (Ólubló)', q:'Ľubovniansky hrad', b:'fo', age:'MINDEN KOR', meta:'fél nap · solymászat, lovagi bemutató',
+  d:'A vár, amely a lengyel koronaékszereket rejtegette — nyáron solymász- és lovagi bemutatókkal —, a lábánál skanzen fatemplommal. A folyosó legjobb kombinált megállója, pontosan a Szepesi vár és a Dunajec között.',
+  w:'Nyáron naponta ~9:00–18:00; a bemutatók főleg hétvégén/délben — érdemes időzíteni. Enyhe esőben is megy.'},
+ {id:'d4', n:'Nestville Park, Hniezdne', q:'Nestville Park Hniezdne', b:'megeri', age:'MINDEN KOR', meta:'tanya + csokiműhely · 2–3 óra',
+  d:'Tanya, ahol etetni lehet az állatokat, mellette csokoládéműhely, játszótér és sörfőzde-étterem. A D modul esős napra való megoldása és az „elég volt a várakból" mentőöv.',
+  w:'Máj–szept naponta 10:00–18:00; családi jegy (2+2) €20. 10 perc Ólublón túl.'},
+ {id:'d2', wk:'hu:Lőcse', n:'Lőcse (Levoča, UNESCO)', q:'Levoča', b:'opc', age:'SZÜLŐPROGRAM', meta:'1–2 óra · főtér + fagyi',
+  d:'Középkori falak, főtér, és a Szent Jakab-templomban a világ legmagasabb gótikus fa szárnyasoltára. A gyerekeknek főtér-plusz-fagyi program — nektek kávé és műemlék.',
+  w:'15 perc a Szepesi vártól, ingyen sétálható.'},
+ {id:'d5', wk:'sk:Vyšné_Ružbachy', n:'Felsőzúgó fürdő (Vyšné Ružbachy) · Késmárk', q:'Vyšné Ružbachy kúpele', b:'opc', age:'MINDEN KOR', meta:'fürdő 2–3 óra · Késmárk 1–2 óra',
+  d:'Felsőzúgó: termál-strandmedencék travertínó-teraszok és fenyves közt, 20 percre Ólublótól — a jutalommegálló várfáradtságra. Késmárk: UNESCO fatemplom, kis vár, az utolsó rendes bevásárlás a hegyek előtt.',
+  w:'Kitérő nélkül az F modul felé.'}],
+ sleep:[
+ {n:'Autocamping Levočská Dolina', wk:'hu:Lőcse', q:'Autocamping Levočská dolina', d:'Csendes völgyi kemping Lőcse fölött — kerített, áram, konyha, tűzrakók. A természetes éjszaka Kassa és a várak között.'},
+ {n:'Goralský Dvor, Haligóc', wk:'sk:Haligovce', q:'Goralský Dvor Haligovce', d:'Lásd az E modult — csak 25 perc Ólublón túl, sokan egyből odáig mennek.'}],
+ eat:[
+ {n:'Spišský salaš', wk:'sk:Spišský_hrad', q:'Spišský salaš', d:'A Szepesi vár alatti úton — sztrapacska, játszótér: a biztos családi befutó.'},
+ {n:'Reštaurácia u 3 apoštolov, Lőcse', wk:'hu:Lőcse', q:'Reštaurácia u 3 apoštolov Levoča', d:'A főtéren, pizzától rántott húsig.'},
+ {n:'Salaš u Franka, Ólubló', wk:'sk:Stará_Ľubovňa', q:'Salaš u Franka Stará Ľubovňa', d:'Ugyanez a salaš-képlet a vár felé vezető úton.'}]},
+
+{id:'E', letter:'E', title:'Pieniny · Dunajec', full:'Pieniny és a Dunajec — tutajok, szurdok, gorál vidék', kicker:'Modul E · A lengyel határfolyó', sub:'Az út legmesésebb napja — a lengyel parttal együtt', transit:'Ólubló → Vöröskolostor ≈ 30 perc · Nedec ≈ 15 perc a határon át · Tátralomnic ≈ 1 óra a Magurán át',
+ pois:[
+ {id:'e4', n:'Dunajec-tutajozás, Vöröskolostor → Lesnica', q:'Pltisko Červený Kláštor', b:'fo', age:'MINDEN KOR · bringa: 6+', meta:'1½–2 óra sodrás + ~45 perc bringa', cash:true,
+  d:'Tíz utas öt egymáshoz kötött fatalpon, hímzett mellényes gorálok tolják a rudakkal — 9–10 km sodródás a mészkőkanyonban, a Három Korona alatt. Mentőmellény jár; kicsiknek is való. Vissza bérelt bringával a sík folyóparti úton (~€6 — ez a móka fele) vagy busszal.',
+  w:'Szezon ápr–okt, naponta 9:00–17:30. Júl–aug fix indulások: 9:30 / 12:30 / 15:30, min. 8 fő, CSAK KÉSZPÉNZ. €25 felnőtt, €16 gyerek (5–12). A visszabringa a jegyvásárláskor foglalható. Nagy eső után leáll.'},
+ {id:'e5', n:'Nedec vára + Czorsztyn + tavi hajók (PL)', q:'Zamek Niedzica', b:'megeri', age:'4+', meta:'fél nap · złoty vagy kártya',
+  d:'Tizenöt perc a nyitott határon át: mesekönyv-vár a Czorsztyni-víztározó fölött, hajó a túlpartra, ott a czorsztyni rom, amin mászkálni lehet. A lengyel part a modul teljes értékű fele.',
+  w:'Szezonban naponta. A tutajnappal csak korai indulással fér össze — inkább hagyd másnapra.'},
+ {id:'e6', wk:'pl:Białka_Tatrzańska', n:'Termy Bania, Białka Tatrzańska (PL)', q:'Termy Bania Białka Tatrzańska', b:'opc', age:'MINDEN KOR', meta:'élményfürdő · fél nap',
+  d:'Hullámmedence, lazy river, csúszdák, kültéri termál tátrai kilátással — a Végardó lengyel válasza.',
+  w:'Főszezonban foglalj előre, vagy menj késő délután.'},
+ {id:'e7', wk:'pl:Szczawnica', n:'Szczawnica · monostor · Három Korona', q:'Szczawnica', b:'opc', age:'4+ / gerinc: 8+', meta:'három kitérő a tutajnap köré',
+  d:'Szczawnica: Palenica-libegő és fürdő-korzó a bicikliút végén (1–2 óra). A monostor a beszállónál: Cyprián, a „repülő szerzetes" története — esős napra is. Három Korona / Sokolica: az edzett csapatnak, 4–5 óra, csak tiszta időben.',
+  w:'Mind a tutajnapra fűzhető rá.'}],
+ sleep:[
+ {n:'Tatranecből jársz át?', wk:'sk:Tatranská_Lomnica', d:'Nem kell költözni — a tutajok 1 órára vannak a Magurán át (indulj 8-kor, hazafelé Bachledka). Itt aludni akkor érdemes, ha elsőnek akarsz a reggeli vízre, vagy kell a lengyel part.'},
+ {n:'Goralský Dvor, Haligóc — a családi főnyeremény', wk:'sk:Haligovce', q:'Goralský Dvor Haligovce', d:'Díjnyertes tanya-kemping 3 km-re Vöröskolostortól (máj–szept): medence, trambulin, mini-zoo, gokart, játszótér, rendes étterem, esti gorál muzsika. Július végére foglalj.'},
+ {n:'Camping Polana Sosny (nr 38), Nedec (PL)', wk:'pl:Niedzica', q:'Camping Polana Sosny Niedzica', d:'A Dunajec-parton a gát alatt: homokos strand, játszótér, étterem, bringabérlés, áram; eurót és kártyát is visz. Camping U Anny az olcsóbb szomszéd a tóparton.'},
+ {n:'Camping Frydman (PL)', wk:'pl:Frydman', q:'Camping Frydman', d:'A tó szeles, vitorlás oldala, sekély parttal; a nedeci vár 10 perc, a tutajkikötő 25. A Frydman–Nedec-part a legszebb esti fény a tavon.'}],
+ eat:[
+ {n:'Chata Pieniny, Lesnica', wk:'sk:Pieniny', q:'Chata Pieniny Lesnica', d:'Gorál konyha a tutajkikötőnél — a klasszikus sodrás utáni ebéd.'},
+ {n:'Goralský Dvor saját étterme', wk:'sk:Haligovce', q:'Goralský Dvor Haligovce', d:'Vacsora a kemping elhagyása nélkül.'},
+ {n:'Pltník, Vöröskolostor', wk:'sk:Červený_Kláštor', q:'Reštaurácia Pltník Červený Kláštor', d:'Sztrapacska és pierogi a beszállónál.'}]},
+
+{id:'F', letter:'F', title:'Magas-Tátra', full:'Magas-Tátra — lent parkolsz, fent utazol', kicker:'Modul F · Bázistábor, 3–5 éjszaka', sub:'Tátralomnic bázis · a busz áll, a vasutak másznak', transit:'Vöröskolostor → Tátralomnic ≈ 1 óra · Poprád ≈ 15 perc · minden más TEŽ-zsel és felvonóval',
+ pois:[
+ {id:'f1', n:'Kő-pataki-tó (Skalnaté pleso) — a nagy menet', q:'Lanovka Tatranská Lomnica Skalnaté pleso', b:'fo', age:'MINDEN KOR', meta:'kabinos felvonó · fél nap',
+  d:'A faluból egyenesen fel a Kő-pataki-tó katlanába: sziklamező, tavi körséta, csillagvizsgáló, lefelé gyalogos opciók. Jegy a helyszínen, aznap. A €89-es csúcskabin a Lomnici-csúcsra létezik — mi nem megyünk.',
+  w:'Naponta, időjárás függvényében. Délelőtt tiszta a levegő; délutánra felhő ül a csúcsokra. Fent júliusban is lehet 8 °C: réteges ruha.'},
+ {id:'f2', n:'Tarajka-sikló (Hrebienok) + Tarpatak vízesései', q:'Hrebienok Starý Smokovec', b:'megeri', age:'MINDEN KOR', meta:'3–4 óra a kempingtől',
+  d:'Sikló Ótátrafüredről a Tarajkára, majd sík erdei út a Tarpatak vízeséseihez. A legszelídebb „igazi Tátra" nap — az első vízesésig babakocsival is.',
+  w:'Naponta, viharon kívül bármiben; eső után a vízesések még jobbak. Csokimegálló: Tricklandia / Smokovec.'},
+ {id:'f3', n:'Csorba-tó (Štrbské pleso) fogaskerekűvel', q:'Štrbské pleso', b:'megeri', age:'MINDEN KOR', meta:'tavi nap · fél nap',
+  d:'A TEŽ villamossal végig a hegység alatt a tükör-tóig 1 350 m-en — csónakok, tóparti kör, hegyi hotelos fagyi. A busz parkolva marad: ez a kapaszkodó egyszer már felforralta az olajat.',
+  w:'Naponta; korán menj, ha tükörvizet akarsz. Esőtűrő — a vonatozás maga az élmény.'},
+ {id:'f4', wk:'sk:Belianska_jaskyňa', n:'Bélai-barlang (Belianska jaskyňa)', q:'Belianska jaskyňa', b:'opc', age:'6+', meta:'10 perc a bázistól · ~1½ óra', mon:true,
+  d:'A Tátra saját cseppkőbarlangja Barlangligeten — a kijelölt rosszidő-délelőtt. Állami barlang: időpontos belépés, ~70 perc, bent 9 °C. A lépcsőszám miatt 6+.',
+  w:'HÉTFŐN ZÁRVA.'},
+ {id:'f5', wk:'sk:Poprad', n:'Termál: AquaCity Poprád · Ménhárd · Tricklandia', q:'AquaCity Poprad', b:'opc', age:'MINDEN KOR', meta:'esős napra · 2–4 óra',
+  d:'AquaCity (20 perc): teljes élményfürdő — az esti jegy olcsóbb és üresebb. Ménhárd/Vrbov (20 perc): 26–38 °C-os kültéri medencék, a helyiek olcsóbb kedvence. Tricklandia Ótátrafüreden: optikai illúziók, ha esik.',
+  w:'A sor két vége: Felsőzúgó (D) és Végardó (A).'}],
+ sleep:[
+ {n:'Intercamp Tatranec, Tátralomnic — A BÁZIS', wk:'sk:Tatranská_Lomnica', q:'Intercamp Tatranec Tatranská Lomnica', d:'Nagy, sík, füves kemping a falu bejáratánál (~€16/éj), egész évben nyitva, gyalog a TEŽ-hez és a felvonóhoz. 3–5 éjszaka: liftek gyalog, Dunajec 1 óra, Bélai-barlang 10 perc, AquaCity 20 perc.'},
+ {n:'Rijo Camping, Felsőerdőfalva — a tartalék', wk:'sk:Stará_Lesná', q:'Rijo Camping Stará Lesná', d:'5 perc autóval, 820 m-en (~jún–szept 15.), FOGLALÁS NINCS — csak begurulsz. ~€6,50/fő + €10 lakóautó + €6 áram. Büfé, konyha, reggel friss kenyér. Csúcshetekben kora délutánra érkezz.'}],
+ eat:[
+ {n:'Koliba Kamzík', wk:'sk:Tatranská_Lomnica', q:'Koliba Kamzík Tatranská Lomnica', d:'Boronafalú grillétterem 5 percre a Tatranectől.'},
+ {n:'Humno', wk:'sk:Tatranská_Lomnica', q:'Humno Tatranská Lomnica', d:'Burger, pizza, palacsinta a „ma már nem bírunk folklórt" estékre.'},
+ {n:'Menedékház-koszt a túrán', wk:'sk:Zamkovského_chata', q:'Zamkovského chata', d:'Palacsinta a Zamkovszky-házban, leves a Zöld-tónál (KÉSZPÉNZ!). Nagybevásárlás: Késmárk vagy Poprád.'}]}
+],
+
+hikes:[
+{id:'h1', wk:'sk:Štrbské_pleso', n:'1 · Csorba-tavi körséta', go:'TEŽ ~1 óra, a tónál szállsz le', time:'45 perc · 2,5 km · kör', elev:'sík', diff:'konnyu', kid:'MINDEN KOR · babakocsi OK', q:'Štrbské pleso'},
+{id:'h2', wk:'sk:Vodopády_Studeného_potoka', n:'2 · Tarpataki vízesések + Rainer-kunyhó', go:'TEŽ Ótátrafüredig + sikló a Tarajkára', time:'1,5–2 óra · 4 km · oda-vissza', elev:'±120 m', diff:'konnyu', kid:'MINDEN KOR · babakocsi az első vízesésig', q:'Vodopády Studeného potoka'},
+{id:'h3', wk:'sk:Skalnaté_pleso', n:'3 · Kő-pataki-tó katlanséta', go:'kabinos felvonó a faluból', time:'szabadon · ~1 km · a lift hoz vissza', elev:'a lift viszi', diff:'konnyu', kid:'MINDEN KOR (hordozós terep)', q:'Skalnaté pleso'},
+{id:'h4', wk:'sk:Bachledova_dolina', n:'4 · Bachledka lombkorona-sétány', go:'25 perc autóval a Magurán át', time:'1–1,5 óra · 1,2 km · kör', elev:'enyhe rámpa', diff:'konnyu', kid:'MINDEN KOR · babakocsi OK', q:'Bachledka Ski & Sun'},
+{id:'h5', wk:'sk:Popradské_pleso', n:'5 · Poprádi-tó (Popradské pleso)', go:'TEŽ a Csorba-tóig, aszfaltos szervizút', time:'2,5–3 óra · 8 km · oda-vissza', elev:'+250 m', diff:'konnyu', kid:'4+ gyalog · babakocsival is megy', q:'Popradské pleso'},
+{id:'h6', wk:'sk:Skalnaté_pleso', n:'6 · Kő-pataki-tó → Tátralomnic gyalog', go:'felvonóval fel, gyalog haza a Štarton át', time:'2–2,5 óra · 6 km · csak lefelé', elev:'−890 m', diff:'kozepes', kid:'6+ · térd kérdése, nem tüdőé', q:'Skalnaté pleso'},
+{id:'h7', wk:'sk:Zelené_pleso', n:'7 · Zöld-tó (Zelené pleso)', go:'Biela Voda parkoló, 5 perc autó', time:'5–6 óra · 16 km · oda-vissza', elev:'+560 m', diff:'kozepes', kid:'7+ kitartással · menedékházi ebéd', q:'Chata pri Zelenom plese', cash:true},
+{id:'h8', wk:'sk:Ždiar', n:'8 · Monkova-völgy köre, Ždiar', go:'20 perc autóval (Bélai-Tátra)', time:'4–5 óra · 9 km · kör', elev:'+700 m', diff:'kozepes', kid:'8+ · csak jún. 16.–okt. 31.', q:'Monkova dolina Ždiar'},
+{id:'h9', wk:'sk:Téryho_chata', n:'9 · Téry-menedékház, Kis-Tarpatak-völgy', go:'sikló a Tarajkára, onnan fel a völgyön', time:'5–6 óra · 11 km · oda-vissza', elev:'+750 m', diff:'nehez', kid:'biztos lábú 9+ · köves szerpentinek', q:'Téryho chata'}],
+
+plans:[
+{id:'p1', n:'1. terv — A Nagy Átkelés: fel liften, haza gyalog', b:'fo', age:'6+', meta:'~4 óra gyalog, végig lefelé',
+ steps:['gyalog/busz 10 perc a lomnici felvonóhoz','felvonó → Kő-pataki-tó','Magisztrálé 1¼ óra → Zamkovszky-ház (palacsinta)','45 perc le a Tarajkára + vízesés-kitérő','sikló → Ótátrafüred','TEŽ villamos haza'],
+ d:'A klasszikus lomnici kör az okos irányban: felfelé a felvonó dolgozik, az átkelést lefelé sétálod. Végig nagy kilátás, menedékház legendás palacsintával uzsonnaidőben, a végén vízesés.',
+ w:'Száraz napra; indulj 9-ig, hogy a Kő-pataki szakasz megelőzze a felhőt. Menekülőutak: le a Štarton át, vagy minden szakasz oda-vissza liften.', q:'Zamkovského chata'},
+{id:'p2', n:'2. terv — „Olimpiai" tavi lazanap', b:'megeri', age:'MINDEN KOR', meta:'könnyű · babakocsi OK · fél nap',
+ steps:['TEŽ végig a hegység alatt (~1¼ óra)','tavi kör 45 perc a vb-sáncok alatt','csónak + hegyi-hotelos fagyi','opció: aszfaltút a Poprádi-tóhoz, 2½ óra','villamos haza'],
+ d:'A Csorba-tó a lazítós lap: tükör-tó 1 350 m-en, fölötte az 1970-es sívilágbajnokság ugrósáncai, alatta csónakok — kötelező mászás: nulla. A busz el sem indul.',
+ w:'Bármely nap; korán = tükörvíz. Ez az esőtűrő hegyi nap.', q:'Štrbské pleso'},
+{id:'p3', n:'3. terv — Zöld-tó: a nagy nap', b:'fo', age:'7+', meta:'közepes · 5–6 óra', cash:true,
+ steps:['autó/busz 5 perc a Biela Voda parkolóig','egyenletes erdei út a völgyben','kövesebb felső szakasz a tókatlanba','leves + palacsinta a menedékházban (készpénz!)','ugyanazon az úton haza — enyhén lefelé'],
+ d:'A nagy családi nap csúcs nélkül: végig szelíd emelkedő, a végén zöld gleccsertó 2 000 méteres falak gyűrűjében, és menedékház a víz szélén. Minden hídnál van visszaforduló-pont.',
+ w:'Ingyenes; a ház készpénzes. Indulás 8:30-ig, vissza 16:00-ra. Borult időben hagyd ki — a tókatlan a jutalom.', q:'Chata pri Zelenom plese'},
+{id:'p4', n:'4. terv — Vízesések és a pici kunyhó', b:'megeri', age:'MINDEN KOR', meta:'babakocsival is · 3–4 óra',
+ steps:['TEŽ két megálló Ótátrafüredig','sikló → Tarajka','sík 20 perc a zúgókhoz','+15 perc a Rainer-kunyhóhoz — a Tátra legkisebb háza','fagyi a Tarajkán, sínen haza'],
+ d:'A legszelídebb igazi-Tátra nap. A Rainer-kunyhó gondnoka és régi felszerelés-múzeuma minden gyereket levesz a lábáról; a vízesések eső után csak szebbek.',
+ w:'Viharon kívül mindenben megy — a kijelölt „olyan-amilyen idő" hegyi nap.', q:'Rainerova chata'},
+{id:'p5', n:'5. terv — Nagy-Morgás (Veľká Svišťovka), a gerincnap', b:'megeri', age:'9+ · NEHÉZ', meta:'rövid változat 3–4 óra · teljes átkelés 7–8', cash:true,
+ steps:['felvonó a Kő-pataki-tóhoz','köves szerpentin a 2 037 m-es csúcsra (1–1½ óra)','A) vissza a felvonóhoz','B) láncos ereszkedés a Zöld-tóhoz + ebéd','C) tovább kelet felé, ki a Biela Voda-völgyön'],
+ d:'A tábor legnagyobb kilátása gyalog. A felvonó ledolgozza a szint felét; a gerincen a Lomnici-csúcs fala az egyik oldalon, a Bélai-Tátra a másikon. A B+C együtt teljes átkelés — nem a legkisebbekkel.',
+ w:'Csak derült, száraz napon; a hágó fölötti szakasz nov. 1.–jún. 15. közt zárva. Első felvonóval induljatok; a Zöld-tavi ház készpénzes.', q:'Veľká Svišťovka'}],
+
+scenarios:[
+{tag:'7–8 NAP · VAS→VAS', n:'A teljes kör (ajánlott)', d:'1. nap (vas): Eger → Boldogkő → alvás Végardó (A). 2. nap: Kalandpark, este termál (A). 3. nap (kedd): át Kassára — dízeles gyermekvasút + állatkert; alvás Camp Barca (B). 4. nap: Szepesi vár + Lőcse → estére a Tatranec bázisra, 4–7. éjszaka (D→F). 5. nap: Dunajec — 9:30-as vagy 12:30-as tutaj + bringa, hazafelé Bachledka (E). 6–7. nap: felvonók és napi tervek (F). 8. nap (vas): haza a gömöri folyosón — 2 a 3-ból: jégbarlang VAGY Betlér, aztán Szádelő, aztán Aggtelek — este Eger (C). Plusz nap esetén: jégbarlang után be a Szlovák Paradicsomba (C+), másnap Hornád-áttörés.'},
+{tag:'B-VARIÁNS · A GŐZÖSÉRT', n:'Kassa a végén', d:'Zemplén vas–hétfő → kedden át a Szepességen a Tatranecbe → Tátra + Dunajec szerda–péntek → SZOMBAT: le Kassára (gőzös + állatkert + óváros, alvás Barca) → vasárnap haza Szádelő + Aggtelek (mindkettő minden nap nyitva). Ára: a dobsinai jégbarlang kimarad — cserébe füstöl a Katka.'},
+{tag:'3–4 NAP', n:'A barlangfutam', d:'Hűvösebb előrejelzésre: Eger → Aggtelek/Baradla → Szádelő → Betlér + jégbarlang (C) → éjszaka Imrikfalván vagy Podlesokon, másnap Hornád-áttörés vagy Zejmarská (C+) → haza. A föld alatt szinte minden megy esőben is; a szurdokok nem.'}],
+
+today:[
+{id:'t1', ids:['a3','e4','d1','f1','cp4','cp1'], c:'Tűző nap', icon:'ph-sun', r:'Kalandpark-híd és bob · Dunajec-tutaj + bringa · Szepesi vár korán · felvonók · tavi fürdés'},
+{id:'t2', ids:['c1','c2','f4','b7','f5','f2','e7'], c:'Szürke / szitálás', icon:'ph-cloud-rain', r:'Jégbarlang és Bélai-barlang (nem hétfőn!) · Betlér · kassai óváros · monostor · termálfürdők · vízesés-séta'},
+{id:'t3', ids:['d1','e4','a3','b5','b6','cp1','d3'], c:'Hétfő van', icon:'ph-calendar-x', r:'Várak, romok, tutaj, libegő, gejzír, állatkert, szurdokok — minden, KIVÉVE az állami barlangokat és Betlért'},
+{id:'t4', ids:['b4','b6','b7','d3'], c:'Hétvége / ünnep', icon:'ph-train', r:'Kassai gőzös-nap — a retró gőzmenetek hétvégén és ünnepnap járnak (a szombati a biztos)'},
+{id:'t5', ids:['f5','d5','cp4','a2'], c:'Mindenki fáradt', icon:'ph-moon-stars', r:'Végardó vagy Felsőzúgó vagy AquaCity/Ménhárd + fagyi · csak rövid gurulások'},
+{id:'t6', ids:['b5','b4'], c:'Gejzír-ablak', icon:'ph-drop', r:'Terv a kukába, irány Ránkfüred 1 órával korábban, piknik, és nézed, ahogy a föld kilélegzik'}],
+
+essentials:[
+{n:'Szlovák e-matrica (eznamka.sk)', d:'A 10 napos matricát vedd meg online, mielőtt bármelyik D/R gyorsforgalmit érinted. A T2 (~1,8 t) sima személyautós matricát kap; a kezdőnap 60 nappal előre beállítható. Olcsó — a bírság nem az.'},
+{n:'Határok & pénz', d:'A magyar–szlovák és szlovák–lengyel határ schengeni: átgurulsz. Euró Szlovákiában, złoty csak Nedec/Szczawnica felé. CSAK KÉSZPÉNZT fogad: a dobsinai jégbarlang, a tutajosok és a Zöld-tavi menedékház — legyen nálatok euróval teli boríték.'},
+{n:'A T2', d:'Az útvonal kíméli a buszt: nincs hosszú, forró kapaszkodó. Parkoljatok lent: a szintet a liftek, fogaskerekűek és tutajok viszik. Ha mégis kapaszkodó jön: alacsony fokozat, szem az olajnyomásmérőn. A Csorba-tóhoz ne hajtsatok fel — arra ott a vonat.'},
+{n:'Időjárás-ökölszabály', d:'Libegő, függőhíd, bob, tutaj és várrom: napos idő. Barlangok (a jégbarlangban 0–4 °C!), Betlér, kassai óváros és termálfürdők: esős napra. Minden modulban akad mindkettőből.'},
+{n:'Hétfő', d:'A szlovák állami barlangok és Betlér HÉTFŐN ZÁRVA. Várak, romok, tutaj, libegő megy minden nap — a barlangnapokat keddtől vasárnapig tervezd.'}],
+
+checklist:[
+{id:'k1', t:'Meleg réteg legalább két embernek (jégbarlang, hajnali katlan) — kánikulában is'},
+{id:'k2', t:'Euró-boríték készpénzzel (jégbarlang, tutaj, Zöld-tavi ház)'},
+{id:'k3', t:'Fürdőcucc mindig elérhetően, nem bepakolva'},
+{id:'k4', t:'Bringa-kérdés a Dunajec-nap előtt eldöntve (bérelni lehet)'},
+{id:'k5', t:'E-matrica képernyőfotó offline'},
+{id:'k6', t:'Olajnyomás-mérő a sofőr szeme előtt, alacsony fokozat minden lejtőn'}]
+};
+
+window.T2GUIDE.itineraries = [
+{id:'full', name:'A teljes kör', tag:'7–8 nap · vas→vas', note:'Az ajánlott lánc: felfelé A → B → D, bázistábor a Tátrában, kirándulás a Dunajechez, hazafelé a gömöri folyosó. A kötelező program a felső blokk — alatta az aznap elérhető opciók.',
+ days:[
+ {d:1, wd:'vasárnap', t:'Eger → Zemplén', mod:'A', drive:'Eger → Boldogkő ≈ 1 óra', from:'Eger', stops:['a1'], opts:['a2'], sleep:'Végardófürdő Kemping, Sárospatak', sleepQ:'Végardó Fürdő Camping Sárospatak', tip:'Ha korán indultok, a Rákóczi-vár és a Megyer-hegyi tengerszem már ma belefér — akkor holnap tiszta kalandpark-nap lesz.'},
+ {d:2, wd:'hétfő', t:'Kalandpark-nap', mod:'A', drive:'rövid gurulások', from:'Végardó Fürdő Camping Sárospatak', stops:['a3'], opts:['a2','a4'], sleep:'Végardófürdő Kemping', sleepQ:'Végardó Fürdő Camping Sárospatak', tip:'A Rákóczi-vár hétfőn zárva — a tengerszem és a kalandpark viszont megy.'},
+ {d:3, wd:'kedd', t:'Át Kassára', mod:'B', drive:'Sátoraljaújhely → Kassa ≈ 45 perc', from:'Végardó Fürdő Camping Sárospatak', stops:['b4','b6'], opts:['b5','b7'], sleep:'Camp Route E58 / Barca, Kassa', sleepQ:'Camp Route E58 Košice', tip:'Kedden a gyermekvasút dízellel jár — gőzös nincs. Ha a Katka kell, válts a B-variánsra.'},
+ {d:4, wd:'szerda', t:'Szepesség → bázistábor', mod:'D', drive:'Kassa → Szepesi vár ≈ 1 óra · → Tátralomnic ≈ 1 óra', from:'Camp Route E58 Košice', stops:['d1'], opts:['d2','d3','d5'], sleep:'Intercamp Tatranec (4–7. éjszaka)', sleepQ:'Intercamp Tatranec Tatranská Lomnica', tip:'Estére beálltok a bázisra: innen négy éjszakán át nem kell csomagolni.'},
+ {d:5, wd:'csütörtök', t:'Dunajec-kirándulás', mod:'E', drive:'Tatranec → Vöröskolostor ≈ 1 óra a Magurán át', from:'Intercamp Tatranec Tatranská Lomnica', stops:['e4'], opts:['e5','e6','e7'], sleep:'Intercamp Tatranec', sleepQ:'Intercamp Tatranec Tatranská Lomnica', tip:'Indulj 8-kor a 9:30-as vagy 12:30-as tutajra — készpénz kell. Hazafelé Bachledka.'},
+ {d:6, wd:'péntek', t:'Felvonók napja', mod:'F', drive:'a busz áll — TEŽ és felvonó', from:'Intercamp Tatranec Tatranská Lomnica', stops:['f1','f2'], opts:['f4','f5','h3','p1'], sleep:'Intercamp Tatranec', sleepQ:'Intercamp Tatranec Tatranská Lomnica', tip:'Délelőtt tiszta a levegő, délutánra felhő ül a csúcsokra.'},
+ {d:7, wd:'szombat', t:'Tavak napja', mod:'F', drive:'TEŽ villamos', from:'Intercamp Tatranec Tatranská Lomnica', stops:['f3'], opts:['h7','p3','h5','f5'], sleep:'Intercamp Tatranec', sleepQ:'Intercamp Tatranec Tatranská Lomnica', tip:'Az elszántaknak a Zöld-tó — indulás 8:30-ig, a menedékház készpénzes.'},
+ {d:8, wd:'vasárnap', t:'Haza a gömöri folyosón', mod:'C', drive:'Poprád → jégbarlang ≈ 1 óra · → Eger ≈ 4 óra összesen', from:'Intercamp Tatranec Tatranská Lomnica', stops:['c1','c2'], opts:['c3','c4','cp1'], sleep:'otthon, Eger', sleepQ:'Eger', tip:'2 a 3-ból: jégbarlang VAGY Betlér, aztán Szádelő, aztán Aggtelek — mindhárom 11 órás nap lenne.'}]},
+{id:'steam', name:'Kassa a végén', tag:'B-variáns · a gőzösért', note:'Ugyanaz a kör visszafelé fűzve, hogy Kassa szombatra essen — akkor füstöl a Katka. Ára: a dobsinai jégbarlang kimarad.',
+ days:[
+ {d:1, wd:'vasárnap', t:'Eger → Zemplén', mod:'A', drive:'≈ 1 óra', from:'Eger', stops:['a1'], opts:['a2'], sleep:'Végardófürdő Kemping', sleepQ:'Végardó Fürdő Camping Sárospatak', tip:'A Rákóczi-vár és a tengerszem ide is befér, ha korán indultok.'},
+ {d:2, wd:'hétfő', t:'Kalandpark + termál', mod:'A', drive:'rövid gurulások', from:'Végardó Fürdő Camping Sárospatak', stops:['a3'], opts:['a4','a2'], sleep:'Végardófürdő Kemping', sleepQ:'Végardó Fürdő Camping Sárospatak', tip:''},
+ {d:3, wd:'kedd', t:'Szepességen át a bázisra', mod:'D', drive:'≈ 3 óra megállókkal', from:'Végardó Fürdő Camping Sárospatak', stops:['d1','d3'], opts:['d2','d5'], sleep:'Intercamp Tatranec', sleepQ:'Intercamp Tatranec Tatranská Lomnica', tip:''},
+ {d:4, wd:'szerda', t:'Tátra — felvonók', mod:'F', drive:'TEŽ', from:'Intercamp Tatranec Tatranská Lomnica', stops:['f1','f2'], opts:['f4','p1','h3'], sleep:'Intercamp Tatranec', sleepQ:'Intercamp Tatranec Tatranská Lomnica', tip:''},
+ {d:5, wd:'csütörtök', t:'Dunajec', mod:'E', drive:'≈ 1 óra', from:'Intercamp Tatranec Tatranská Lomnica', stops:['e4','e5'], opts:['e6','e7'], sleep:'Intercamp Tatranec', sleepQ:'Intercamp Tatranec Tatranská Lomnica', tip:''},
+ {d:6, wd:'péntek', t:'Tátra — tavak', mod:'F', drive:'TEŽ', from:'Intercamp Tatranec Tatranská Lomnica', stops:['f3'], opts:['h7','p3','f5'], sleep:'Intercamp Tatranec', sleepQ:'Intercamp Tatranec Tatranská Lomnica', tip:''},
+ {d:7, wd:'szombat', t:'Le Kassára — gőzösnap', mod:'B', drive:'Tátralomnic → Kassa ≈ 1 óra 45', from:'Intercamp Tatranec Tatranská Lomnica', stops:['b4','b6'], opts:['b7','b5'], sleep:'Camp Route E58 / Barca', sleepQ:'Camp Route E58 Košice', tip:'Szombaton a Katka gőzöl — ezért az egész variáns.'},
+ {d:8, wd:'vasárnap', t:'Haza Szádelőn és Aggteleken át', mod:'C', drive:'Kassa → Eger ≈ 3 óra megállókkal', from:'Camp Route E58 Košice', stops:['c3'], opts:['c2','c4'], sleep:'otthon, Eger', sleepQ:'Eger', tip:'Szádelő és Aggtelek minden nap nyitva — hétfő-probléma nincs.'}]},
+{id:'caves', name:'A barlangfutam', tag:'3–4 nap', note:'Hűvösebb előrejelzésre. A föld alatt szinte minden megy esőben is; a szurdokok nem.',
+ days:[
+ {d:1, wd:'1. nap', t:'Eger → Aggtelek → Szádelő', mod:'C', drive:'≈ 2,5 óra', from:'Eger', stops:['c3'], opts:['c4'], sleep:'Rozsnyó / Betlér környéke', sleepQ:'Rožňava camping', tip:'Aggtelek és Szádelő minden nap nyitva.'},
+ {d:2, wd:'2. nap', t:'Betlér + jégbarlang', mod:'C', drive:'≈ 1 óra', from:'Rožňava', stops:['c2','c1'], opts:['c4'], sleep:'Imrikfalva vagy Podlesok', sleepQ:'Autocamping Podlesok Hrabušice', tip:'Egyik sem megy hétfőn.'},
+ {d:3, wd:'3. nap', t:'Szurdoknap', mod:'CP', drive:'a kempingből gyalog', from:'Autocamping Podlesok Hrabušice', stops:['cp1'], opts:['cp2','cp4','cp6'], sleep:'Podlesok', sleepQ:'Autocamping Podlesok Hrabušice', tip:'Korán indulj — délutánra torlódnak a létrák.'},
+ {d:4, wd:'4. nap', t:'Haza', mod:'C', drive:'≈ 3 óra', from:'Autocamping Podlesok Hrabušice', stops:['cp3'], opts:['c3'], sleep:'otthon, Eger', sleepQ:'Eger', tip:''}]}
+];

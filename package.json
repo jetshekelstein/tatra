@@ -1,0 +1,10 @@
+{
+  "name": "t2-mobil-utikonyv",
+  "version": "1.0.0",
+  "private": true,
+  "description": "T2 Mobil Útikönyv — offline-capable PWA guidebook",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js"
+  }
+}

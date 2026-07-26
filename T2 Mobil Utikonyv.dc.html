@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>T2 Mobil Útikönyv</title>
+
+<!-- PWA: installability -->
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#161826">
+<link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
+
+<!-- PWA: iOS home-screen / standalone mode -->
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="T2 Útikönyv">
+
+<script src="./support.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(err => console.error('[pwa] sw register failed:', err));
+    });
+  }
+</script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/nocturne-ac2cafb2-92d5-4812-bf7e-e1f1372013a8/styles.css">
+  <script src="_ds/nocturne-ac2cafb2-92d5-4812-bf7e-e1f1372013a8/_ds_bundle.js"></script>
+  <script src="guide-data.js"></script>
+  <!-- Vendored locally (only the two weights this design actually uses: ph / ph-fill) -->
+  <link rel="stylesheet" href="vendor/phosphor/regular/style.css">
+  <link rel="stylesheet" href="vendor/phosphor/fill/style.css">
+  <style>
+    body{margin:0;-webkit-tap-highlight-color:transparent}
+    a{color:inherit;text-decoration:none}
+    input{font-family:inherit}
+    ::-webkit-scrollbar{width:0;height:0}
+  </style>
+</helmet>
+<div style="{{ rootStyle }}">
+<div style="max-width:520px;margin:0 auto;min-height:100vh;padding-bottom:110px;font-size:14.5px;line-height:1.55">
+
+  <div style="{{ headerStyle }}">
+    <div style="display:flex;align-items:baseline;gap:8px;min-width:0">
+      <span style="font-weight:600;font-size:13px;letter-spacing:0.12em;text-transform:uppercase;white-space:nowrap">T2 · Eger → Tátra</span>
+      <span class="text-muted" style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;white-space:nowrap">2026. júl.</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:2px">
+      <div role="button" tabindex="0" onClick="{{ toggleTheme }}" aria-label="Világos / sötét mód" style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:var(--radius-md)"><i class="{{ themeIcon }}" style="font-size:19px;color:var(--color-neutral-500)"></i></div>
+      <div role="button" tabindex="0" onClick="{{ goSaved }}" style="display:inline-flex;align-items:center;gap:4px;height:40px;padding:0 8px;cursor:pointer;font-size:12px;color:var(--color-neutral-500)"><i class="ph ph-bookmark-simple" style="font-size:17px"></i>{{ savedCount }}</div>
+    </div>
+  </div>
+
+  <sc-if value="{{ ready }}" hint-placeholder-val="{{ false }}">
+
+  <!-- ═══════════ POI RÉSZLET ═══════════ -->
+  <sc-if value="{{ poiOpen }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Hely részlet">
+    <div style="position:relative">
+      <div style="{{ poi.heroStyle }}"></div>
+      <sc-if value="{{ poi.noImg }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--color-neutral-600)"><i class="ph ph-image" style="font-size:30px"></i><span style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase">Fotó hamarosan</span></div>
+      </sc-if>
+      <div role="button" tabindex="0" onClick="{{ closePoi }}" aria-label="Vissza" style="position:absolute;top:12px;left:14px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:20px;background:rgba(12,13,20,0.62);backdrop-filter:blur(8px);cursor:pointer;color:#f3f5fe"><i class="ph ph-arrow-left" style="font-size:19px"></i></div>
+      <div role="button" tabindex="0" onClick="{{ poi.toggle }}" aria-label="Mentés" style="position:absolute;top:12px;right:14px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:20px;background:rgba(12,13,20,0.62);backdrop-filter:blur(8px);cursor:pointer"><i class="{{ poi.saveIcon }}" style="{{ poi.saveStyleLight }}"></i></div>
+    </div>
+    <div style="padding:16px 18px 8px">
+      <div role="button" tabindex="0" onClick="{{ poi.openModule }}" class="text-muted" style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer">{{ poi.where }} ›</div>
+      <h2 style="margin:6px 0 0;font-size:22px;line-height:1.2">{{ poi.n }}</h2>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px">
+        <span style="{{ poi.bStyle }}">{{ poi.bLabel }}</span>
+        <span style="{{ ageChip }}"><i class="ph ph-baby" style="margin-right:4px"></i>{{ poi.age }}</span>
+        <span class="text-muted" style="font-size:12px">{{ poi.meta }}</span>
+      </div>
+      <sc-if value="{{ poi.flags }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:9px">
+          <sc-if value="{{ poi.cash }}" hint-placeholder-val="{{ false }}"><span style="{{ warnChip }}"><i class="ph ph-money" style="margin-right:4px"></i>Csak készpénz</span></sc-if>
+          <sc-if value="{{ poi.mon }}" hint-placeholder-val="{{ false }}"><span style="{{ warnChip }}"><i class="ph ph-calendar-x" style="margin-right:4px"></i>Hétfőn zárva</span></sc-if>
+        </div>
+      </sc-if>
+
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <a class="btn btn-primary" href="{{ poi.dir }}" target="_blank" rel="noopener" style="flex:1;min-height:46px"><i class="ph ph-navigation-arrow"></i>Útvonal</a>
+        <a class="btn" href="{{ poi.rev }}" target="_blank" rel="noopener" style="flex:1;min-height:46px;border:1px solid var(--color-neutral-700)"><i class="ph ph-star"></i>Értékelések</a>
+      </div>
+
+      <p style="margin:16px 0 0;font-size:14.5px">{{ poi.d }}</p>
+      <div style="margin-top:14px;padding:12px 14px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md)">
+        <span style="{{ mikorLabel }}">Mikor, mennyiért</span>
+        <p class="text-muted" style="margin:5px 0 0;font-size:13px">{{ poi.w }}</p>
+      </div>
+
+      <h6 style="margin:24px 0 10px;color:var(--color-neutral-500)">Ugyanebben a modulban</h6>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px">
+        <sc-for list="{{ poi.siblings }}" as="s" hint-placeholder-count="3">
+          <div role="button" tabindex="0" onClick="{{ s.open }}" style="display:flex;align-items:center;gap:12px;min-height:64px;padding:8px 10px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md);cursor:pointer">
+            <div style="{{ s.thumbStyle }}"></div>
+            <div style="flex:1;min-width:0">
+              <div style="font-weight:500;font-size:14px">{{ s.n }}</div>
+              <div class="text-muted" style="font-size:12px">{{ s.meta }}</div>
+            </div>
+            <i class="ph ph-caret-right" style="color:var(--color-neutral-600)"></i>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ═══════════ MA ═══════════ -->
+  <sc-if value="{{ tToday }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Ma" style="padding:20px 18px 8px">
+    <h1 style="margin:0 0 14px;font-size:27px;line-height:1.1;letter-spacing:-0.02em">Ma</h1>
+    <h6 style="margin:0 0 10px;color:var(--color-neutral-500)">Hol tartunk — {{ planName }}</h6>
+    <div style="padding:15px 16px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-lg)">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+        <div role="button" tabindex="0" onClick="{{ prevDay }}" aria-label="Előző nap" style="width:40px;height:40px;margin-left:-8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--color-neutral-500)"><i class="ph ph-caret-left" style="font-size:18px"></i></div>
+        <div style="flex:1;text-align:center">
+          <div class="text-muted" style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase">{{ curDay.label }}</div>
+          <div style="font-weight:500;font-size:17px;margin-top:2px">{{ curDay.t }}</div>
+        </div>
+        <div role="button" tabindex="0" onClick="{{ nextDay }}" aria-label="Következő nap" style="width:40px;height:40px;margin-right:-8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--color-neutral-500)"><i class="ph ph-caret-right" style="font-size:18px"></i></div>
+      </div>
+      <div class="text-muted" style="display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:10px;font-size:12.5px;justify-content:center">
+        <span><i class="ph ph-van" style="margin-right:4px"></i>{{ curDay.drive }}</span>
+        <span><i class="ph ph-tent" style="margin-right:4px"></i>{{ curDay.sleep }}</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+        <sc-for list="{{ curDay.stops }}" as="s" hint-placeholder-count="2">
+          <div role="button" tabindex="0" onClick="{{ s.open }}" style="display:flex;align-items:center;gap:12px;min-height:62px;padding:7px 9px;background:var(--color-bg);border:1px solid var(--color-divider);border-radius:var(--radius-md);cursor:pointer">
+            <div style="{{ s.thumbStyle }}"></div>
+            <div style="flex:1;min-width:0">
+              <div style="font-weight:500;font-size:13.5px">{{ s.n }}</div>
+              <div class="text-muted" style="font-size:11.5px">{{ s.meta }}</div>
+              <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:5px">
+                <span style="{{ s.bStyle }}">{{ s.bLabel }}</span>
+                <span style="{{ ageChip }}">{{ s.age }}</span>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <sc-if value="{{ curDay.hasOpts }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:12px;padding-top:10px;border-top:1px dashed var(--color-divider)">
+          <div class="text-muted" style="font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase">Ha marad idő / helyette</div>
+          <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px">
+            <sc-for list="{{ curDay.opts }}" as="o" hint-placeholder-count="2">
+              <div role="button" tabindex="0" onClick="{{ o.open }}" style="display:flex;align-items:center;gap:10px;min-height:52px;padding:6px 8px;background:transparent;border:1px dashed var(--color-neutral-800);border-radius:var(--radius-md);cursor:pointer">
+                <div style="{{ o.thumbStyle }}"></div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-weight:500;font-size:13px">{{ o.n }}</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">
+                    <span style="{{ o.bStyle }}">{{ o.bLabel }}</span>
+                    <span style="{{ ageChip }}">{{ o.age }}</span>
+                    <span class="text-muted" style="font-size:11px">{{ o.meta }}</span>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ curDay.tip }}" hint-placeholder-val="{{ false }}">
+        <p style="{{ tipStyle }}"><i class="ph ph-lightbulb" style="margin-right:6px"></i>{{ curDay.tip }}</p>
+      </sc-if>
+      <a class="btn btn-primary" href="{{ curDay.route }}" target="_blank" rel="noopener" style="width:100%;min-height:44px;margin-top:11px"><i class="ph ph-path"></i>A nap útvonala a Mapsen</a>
+    </div>
+
+    <h6 style="margin:30px 0 8px;color:var(--color-neutral-500)">Mi legyen ma?</h6>
+    <p class="text-muted" style="margin:0 0 12px;font-size:13px">Válaszd ki, milyen a nap — a könyv kilistázza, mi megy.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <sc-for list="{{ todayItems }}" as="t" hint-placeholder-count="6">
+        <div role="button" tabindex="0" onClick="{{ t.pick }}" style="{{ t.style }}">
+          <i class="{{ t.iconCls }}" style="font-size:20px"></i>
+          <span style="font-size:13px;font-weight:500">{{ t.c }}</span>
+        </div>
+      </sc-for>
+    </div>
+    <div style="{{ todayPanel }}">
+      <div style="{{ mikorLabel }}">{{ todaySelC }}</div>
+      <p style="margin:7px 0 0;font-size:13.5px;line-height:1.55">{{ todaySelR }}</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">
+      <sc-for list="{{ todaySelItems }}" as="p" hint-placeholder-count="4">
+        <div role="button" tabindex="0" onClick="{{ p.open }}" style="display:flex;gap:12px;min-height:74px;padding:8px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md);cursor:pointer">
+          <div style="{{ p.thumbStyle }}"></div>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+            <div style="font-weight:500;font-size:14px;line-height:1.25">{{ p.n }}</div>
+            <div class="text-muted" style="font-size:11.5px">{{ p.where }} · {{ p.meta }}</div>
+            <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:2px">
+              <span style="{{ p.bStyle }}">{{ p.bLabel }}</span>
+              <span style="{{ ageChip }}">{{ p.age }}</span>
+            </div>
+          </div>
+          <i class="ph ph-caret-right" style="color:var(--color-neutral-600);align-self:center"></i>
+        </div>
+      </sc-for>
+    </div>
+
+    <div role="button" tabindex="0" onClick="{{ toggleEss }}" style="display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:50px;margin-top:26px;padding:12px 14px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md);cursor:pointer">
+      <span style="font-weight:500;font-size:14.5px">Amit nem lehet megúszni</span>
+      <i class="{{ essIcon }}" style="font-size:18px;color:var(--color-neutral-500)"></i>
+    </div>
+    <sc-if value="{{ essOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+        <sc-for list="{{ essentials }}" as="e" hint-placeholder-count="5">
+          <div style="padding:13px 14px;background:var(--color-neutral-900);border:1px solid var(--color-divider);border-radius:var(--radius-md)">
+            <div style="font-weight:500;font-size:14px">{{ e.n }}</div>
+            <p class="text-muted" style="margin:5px 0 0;font-size:13px">{{ e.d }}</p>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+    <p class="text-muted" style="margin:20px 0 0;font-size:11px;letter-spacing:0.06em;text-transform:uppercase">Adatok ellenőrizve 2026 júliusában · az árak és a nyitvatartás változik</p>
+  </div>
+  </sc-if>
+
+  <!-- ═══════════ ÚTITERV ═══════════ -->
+  <sc-if value="{{ tPlan }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Útiterv" style="padding:20px 18px 8px">
+    <h1 style="margin:0;font-size:27px;line-height:1.1;letter-spacing:-0.02em">Útiterv</h1>
+    <div style="display:flex;gap:7px;margin-top:14px;overflow-x:auto">
+      <sc-for list="{{ planTabs }}" as="p" hint-placeholder-count="3">
+        <div role="button" tabindex="0" onClick="{{ p.pick }}" style="{{ p.style }}">{{ p.name }}</div>
+      </sc-for>
+    </div>
+    <p class="text-muted" style="margin:12px 0 0;font-size:13px">{{ planNote }}</p>
+
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px;margin-bottom:8px">
+      <sc-for list="{{ planDays }}" as="d" hint-placeholder-count="8">
+        <div style="{{ d.cardStyle }}">
+          <div style="display:flex;align-items:flex-start;gap:12px">
+            <div style="{{ d.numStyle }}">{{ d.d }}</div>
+            <div style="flex:1;min-width:0">
+              <div class="text-muted" style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase">{{ d.wd }} · Modul {{ d.mod }}</div>
+              <div style="font-weight:500;font-size:16px;margin-top:2px">{{ d.t }}</div>
+            </div>
+            <div role="button" tabindex="0" onClick="{{ d.setCurrent }}" aria-label="Itt tartunk" style="width:40px;height:40px;margin:-6px -8px 0 0;display:flex;align-items:center;justify-content:center;cursor:pointer"><i class="{{ d.markIcon }}" style="{{ d.markStyle }}"></i></div>
+          </div>
+          <div class="text-muted" style="display:flex;flex-wrap:wrap;gap:3px 14px;margin-top:8px;font-size:12.5px">
+            <span><i class="ph ph-van" style="margin-right:4px"></i>{{ d.drive }}</span>
+            <span><i class="ph ph-tent" style="margin-right:4px"></i>{{ d.sleep }}</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:7px;margin-top:11px">
+            <sc-for list="{{ d.stops }}" as="s" hint-placeholder-count="2">
+              <div role="button" tabindex="0" onClick="{{ s.open }}" style="display:flex;align-items:center;gap:11px;min-height:62px;padding:7px 9px;background:var(--color-bg);border:1px solid var(--color-divider);border-radius:var(--radius-md);cursor:pointer">
+                <div style="{{ s.thumbStyle }}"></div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-weight:500;font-size:13.5px">{{ s.n }}</div>
+                  <div class="text-muted" style="font-size:11.5px">{{ s.meta }}</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:5px">
+                    <span style="{{ s.bStyle }}">{{ s.bLabel }}</span>
+                    <span style="{{ ageChip }}">{{ s.age }}</span>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <sc-if value="{{ d.hasOpts }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:12px;padding-top:10px;border-top:1px dashed var(--color-divider)">
+              <div class="text-muted" style="font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase">Ha marad idő / helyette</div>
+              <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px">
+                <sc-for list="{{ d.opts }}" as="o" hint-placeholder-count="2">
+                  <div role="button" tabindex="0" onClick="{{ o.open }}" style="display:flex;align-items:center;gap:10px;min-height:52px;padding:6px 8px;background:transparent;border:1px dashed var(--color-neutral-800);border-radius:var(--radius-md);cursor:pointer">
+                    <div style="{{ o.thumbStyle }}"></div>
+                    <div style="flex:1;min-width:0">
+                      <div style="font-weight:500;font-size:13px">{{ o.n }}</div>
+                      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">
+                        <span style="{{ o.bStyle }}">{{ o.bLabel }}</span>
+                        <span style="{{ ageChip }}">{{ o.age }}</span>
+                        <span class="text-muted" style="font-size:11px">{{ o.meta }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ d.tip }}" hint-placeholder-val="{{ false }}">
+            <p style="{{ tipStyle }}"><i class="ph ph-lightbulb" style="margin-right:6px"></i>{{ d.tip }}</p>
+          </sc-if>
+          <a class="btn btn-primary" href="{{ d.route }}" target="_blank" rel="noopener" style="width:100%;min-height:44px;margin-top:11px"><i class="ph ph-path"></i>Nap útvonala a Mapsen</a>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ═══════════ FELFEDEZÉS ═══════════ -->
+  <sc-if value="{{ tExplore }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Felfedezés" style="padding:20px 18px 8px">
+    <h1 style="margin:0 0 14px;font-size:27px;line-height:1.1;letter-spacing:-0.02em">Felfedezés</h1>
+    <div style="position:relative">
+      <i class="ph ph-magnifying-glass" style="position:absolute;left:12px;top:13px;font-size:17px;color:var(--color-neutral-600)"></i>
+      <input value="{{ query }}" onInput="{{ onQuery }}" placeholder="Keresés helyre, túrára, kajáldára…" style="{{ inputStyle }}">
+    </div>
+    <div style="display:flex;gap:7px;margin-top:12px;overflow-x:auto">
+      <sc-for list="{{ catTabs }}" as="c" hint-placeholder-count="5">
+        <div role="button" tabindex="0" onClick="{{ c.pick }}" style="{{ c.style }}">{{ c.label }}</div>
+      </sc-for>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:22px;margin-top:18px;margin-bottom:8px">
+      <sc-for list="{{ groups }}" as="g" hint-placeholder-count="4">
+        <div>
+          <div style="display:flex;align-items:baseline;gap:9px">
+            <span style="{{ g.letterStyle }}">{{ g.letter }}</span>
+            <div style="flex:1;min-width:0">
+              <div style="font-weight:500;font-size:16px">{{ g.title }}</div>
+              <div class="text-muted" style="font-size:11.5px">{{ g.sub }}</div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">
+            <sc-for list="{{ g.places }}" as="p" hint-placeholder-count="3">
+              <div role="button" tabindex="0" onClick="{{ p.open }}" style="display:flex;gap:12px;min-height:86px;padding:9px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md);cursor:pointer">
+                <div style="{{ p.cardThumb }}"></div>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+                  <div style="font-weight:500;font-size:14.5px;line-height:1.25">{{ p.n }}</div>
+                  <div class="text-muted" style="font-size:11.5px">{{ p.meta }}</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:auto">
+                    <span style="{{ p.bStyle }}">{{ p.bLabel }}</span>
+                    <span style="{{ ageChip }}">{{ p.age }}</span>
+                  </div>
+                </div>
+                <div role="button" tabindex="0" onClick="{{ p.toggle }}" aria-label="Mentés" style="flex:none;width:38px;display:flex;align-items:flex-start;justify-content:center;padding-top:2px;cursor:pointer"><i class="{{ p.saveIcon }}" style="{{ p.saveStyle }}"></i></div>
+              </div>
+            </sc-for>
+          </div>
+          <sc-if value="{{ g.hasSleep }}" hint-placeholder-val="{{ false }}">
+            <div style="{{ sleepBlock }}">
+              <div style="font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:{{ sleepLabelColor }}"><i class="ph ph-tent" style="margin-right:5px"></i>Hol aludj</div>
+              <div style="display:flex;flex-direction:column;gap:7px;margin-top:9px">
+                <sc-for list="{{ g.sleep }}" as="p" hint-placeholder-count="2">
+                  <div role="button" tabindex="0" onClick="{{ p.open }}" style="{{ p.baseCard }}">
+                    <div style="{{ p.thumbStyle }}"></div>
+                    <div style="flex:1;min-width:0">
+                      <div style="font-weight:500;font-size:13.5px">{{ p.n }}</div>
+                      <div class="text-muted" style="font-size:11.5px;margin-top:2px">{{ p.short }}</div>
+                    </div>
+                    <i class="ph ph-caret-right" style="color:var(--color-neutral-600);align-self:center"></i>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ g.hasEat }}" hint-placeholder-val="{{ false }}">
+            <div style="{{ eatBlock }}">
+              <div style="font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:{{ eatLabelColor }}"><i class="ph ph-fork-knife" style="margin-right:5px"></i>Hol egyél</div>
+              <div style="display:flex;flex-direction:column;gap:7px;margin-top:9px">
+                <sc-for list="{{ g.eat }}" as="p" hint-placeholder-count="3">
+                  <div role="button" tabindex="0" onClick="{{ p.open }}" style="{{ p.baseCard }}">
+                    <div style="{{ p.thumbStyle }}"></div>
+                    <div style="flex:1;min-width:0">
+                      <div style="font-weight:500;font-size:13.5px">{{ p.n }}</div>
+                      <div class="text-muted" style="font-size:11.5px;margin-top:2px">{{ p.short }}</div>
+                    </div>
+                    <i class="ph ph-caret-right" style="color:var(--color-neutral-600);align-self:center"></i>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </sc-for>
+      <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
+        <div style="text-align:center;padding:40px 0;color:var(--color-neutral-500)"><i class="ph ph-magnifying-glass" style="font-size:34px"></i><p style="margin:10px 0 0;font-size:13.5px">Nincs találat erre: „{{ query }}"</p></div>
+      </sc-if>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ═══════════ TÉRKÉP ═══════════ -->
+  <sc-if value="{{ tMap }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Térkép" style="padding:20px 18px 8px">
+    <h1 style="margin:0;font-size:27px;line-height:1.1;letter-spacing:-0.02em">Térképek</h1>
+    <p class="text-muted" style="margin:8px 0 0;font-size:13px">Egerből minden északkelet felé fut egy láncban: Zemplén (A) egy óra; a schengeni határon át Kassa (B) +30 perc. Kassáról választasz: nyugatra Gömör (C), vagy északra a Szepességen (D) át — mindkét út a Tátrában (F) végződik. A Pieniny (E) a szepesi út tetejéről lóg le, a Szlovák Paradicsom (C+) a két folyosó között félúton.</p>
+    <a class="btn btn-primary" href="{{ fullRoute }}" target="_blank" rel="noopener" style="width:100%;min-height:46px;margin-top:14px"><i class="ph ph-path"></i>A teljes kör a Google Mapsen</a>
+    <h6 style="margin:24px 0 8px;color:var(--color-neutral-500)">Napi útvonalak — {{ planName }}</h6>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <sc-for list="{{ dayRoutes }}" as="r" hint-placeholder-count="8">
+        <a href="{{ r.route }}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;min-height:48px;padding:8px 12px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md)">
+          <span style="{{ r.numStyle }}">{{ r.d }}</span>
+          <span style="flex:1;min-width:0"><span style="display:block;font-size:13.5px;font-weight:500">{{ r.t }}</span><span class="text-muted" style="display:block;font-size:11.5px">→ {{ r.sleep }}</span></span>
+          <i class="ph ph-navigation-arrow" style="color:var(--color-accent-300);font-size:17px"></i>
+        </a>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:18px;margin-top:22px;margin-bottom:8px">
+      <sc-for list="{{ mapList }}" as="m" hint-placeholder-count="5">
+        <div>
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px">
+            <div style="font-weight:500;font-size:15px">{{ m.t }}</div>
+            <div role="button" tabindex="0" onClick="{{ m.open }}" style="font-size:12.5px;color:var(--color-accent-300);cursor:pointer;white-space:nowrap">{{ m.link }} ›</div>
+          </div>
+          <div role="img" aria-label="{{ m.t }}" style="{{ m.style }}"></div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ═══════════ MENTVE ═══════════ -->
+  <sc-if value="{{ tSaved }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Mentve" style="padding:20px 18px 8px">
+    <h1 style="margin:0;font-size:27px;line-height:1.1;letter-spacing:-0.02em">Mentett helyek</h1>
+    <sc-if value="{{ savedEmpty }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:34px;text-align:center;color:var(--color-neutral-500)">
+        <i class="ph ph-bookmark-simple" style="font-size:42px"></i>
+        <p style="margin:12px auto 0;font-size:13.5px;max-width:24em">Még nincs mentett hely. A kártyák könyvjelzőjével gyűjtsd össze a saját napjaitokat.</p>
+      </div>
+    </sc-if>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
+      <sc-for list="{{ savedItems }}" as="p" hint-placeholder-count="2">
+        <div style="display:flex;gap:12px;padding:9px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md)">
+          <div role="button" tabindex="0" onClick="{{ p.open }}" style="{{ p.cardThumb }};cursor:pointer"></div>
+          <div style="flex:1;min-width:0">
+            <div class="text-muted" style="font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase">{{ p.where }}</div>
+            <div role="button" tabindex="0" onClick="{{ p.open }}" style="font-weight:500;font-size:14.5px;margin-top:2px;cursor:pointer">{{ p.n }}</div>
+            <div style="display:flex;gap:14px;margin-top:6px">
+              <a href="{{ p.dir }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;min-height:32px;font-size:12.5px;color:var(--color-accent-300)"><i class="ph ph-navigation-arrow"></i>Útvonal</a>
+              <a href="{{ p.rev }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;min-height:32px;font-size:12.5px;color:var(--color-accent-300)"><i class="ph ph-star"></i>Értékelések</a>
+            </div>
+          </div>
+          <div role="button" tabindex="0" onClick="{{ p.toggle }}" aria-label="Eltávolítás" style="flex:none;width:38px;display:flex;align-items:flex-start;justify-content:center;padding-top:2px;cursor:pointer"><i class="ph-fill ph-bookmark-simple" style="color:var(--color-accent);font-size:19px"></i></div>
+        </div>
+      </sc-for>
+    </div>
+
+    <h6 style="margin:30px 0 8px;color:var(--color-neutral-500)">Csomag-ellenőrző</h6>
+    <div style="display:flex;flex-direction:column;gap:2px;margin-bottom:8px">
+      <sc-for list="{{ checkItems }}" as="k" hint-placeholder-count="6">
+        <div role="button" tabindex="0" onClick="{{ k.toggle }}" style="display:flex;align-items:center;gap:12px;min-height:46px;padding:8px 6px;cursor:pointer;border-bottom:1px solid var(--color-divider)">
+          <i class="{{ k.icon }}" style="{{ k.iconStyle }}"></i>
+          <span style="{{ k.textStyle }}">{{ k.t }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  </sc-if>
+
+  </sc-if>
+
+  <div style="{{ navBarStyle }}">
+    <div style="display:flex;width:100%;max-width:520px">
+      <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="5">
+        <div role="button" tabindex="0" onClick="{{ n.tap }}" style="{{ n.style }}">
+          <i class="{{ n.icon }}" style="font-size:21px"></i>
+          <span style="font-size:10px;letter-spacing:0.03em">{{ n.label }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;412px&quot;,&quot;height&quot;:&quot;915px&quot;},&quot;showOptional&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Tartalom&quot;}}">
+// IndexedDB key-value store — replaces the old localStorage persistence so
+// saved places / checklist / settings / cached photo URLs survive as real
+// offline-capable app data instead of a single string blob.
+const IDB_NAME = 't2-utikonyv', IDB_STORE = 'kv';
+function idbOpen() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(IDB_NAME, 1);
+    req.onupgradeneeded = () => { req.result.createObjectStore(IDB_STORE); };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+function idbGet(key) {
+  return idbOpen().then(db => new Promise((resolve, reject) => {
+    const r = db.transaction(IDB_STORE, 'readonly').objectStore(IDB_STORE).get(key);
+    r.onsuccess = () => resolve(r.result);
+    r.onerror = () => reject(r.error);
+  }));
+}
+function idbSet(key, value) {
+  return idbOpen().then(db => new Promise((resolve, reject) => {
+    const tx = db.transaction(IDB_STORE, 'readwrite');
+    tx.objectStore(IDB_STORE).put(value, key);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  }));
+}
+
+const LOCAL_PHOTOS = ['hero','a3','b4','b6','d4','e5','e4','cp1','cp2','cp4','p5','cp3'];
+const WIKI_FILES = {
+  a1: 'Boldogk%C5%91%20-%20Castle.jpg', a2: 'S%C3%A1rospatak%20-%20Castle.jpg',
+  b5: 'Herlany%20gejzir.jpg', b7: 'D%C3%B3m%20sv%C3%A4tej%20Al%C5%BEbety.jpg',
+  c1: 'Dob%C5%A1insk%C3%A1%20%C4%BEadov%C3%A1%20jasky%C5%88a%20Ice%20form%20well.jpg', c2: 'Betliar%201.jpg',
+  d1: 'Spi%C5%A1sk%C3%BD%20hrad.jpg', d3: '%C4%BDubovniansky%20hrad%2C%20Apr%C3%ADl%202013.jpg',
+  f1: 'Skalnat%C3%A9%20pleso.jpg', f2: 'Hrebienok.jpg', f3: '%C5%A0trbsk%C3%A9%20pleso.jpg',
+  p1: 'Zamkovsk%C3%A9ho%20chata%204.JPG', p2: '%C5%A0trbsk%C3%A9%20pleso.jpg',
+  p3: 'Chata%20pri%20Zelenom%20plese.jpg', p4: 'Vodop%C3%A1dy%20Studen%C3%A9ho%20potoka.jpg'
+};
+
+class Component extends DCLogic {
+  state = { tab: 'today', poi: null, day: 1, plan: 'full', cat: 'all', query: '', today: 't1',
+            saved: [], checks: {}, theme: 'dark', wikiImgs: {}, essOpen: false, ready: false };
+
+  componentDidMount() {
+    Promise.all([idbGet('state'), idbGet('wikimg')]).then(([gStored, wStored]) => {
+      let g = gStored, w = wStored;
+      if (g === undefined) {
+        // one-time migration from the pre-IndexedDB build, if this browser has old data
+        try { g = JSON.parse(localStorage.getItem('t2m-state') || 'null') || {}; } catch (e) { g = {}; }
+        idbSet('state', g).catch(() => {});
+      }
+      if (w === undefined) {
+        try { w = JSON.parse(localStorage.getItem('t2m-wikimg2') || 'null') || {}; } catch (e) { w = {}; }
+        idbSet('wikimg', w).catch(() => {});
+      }
+      g = g || {}; w = w || {};
+      this.setState({
+        saved: Array.isArray(g.saved) ? g.saved : [], checks: g.checks || {},
+        theme: g.theme === 'light' ? 'light' : 'dark', tab: g.tab || 'today',
+        plan: g.plan || 'full', day: g.day || 1, wikiImgs: w
+      });
+    }).catch(() => {}).then(() => this.waitData());
+  }
+  componentDidUpdate() { this.paintBg(); }
+  paintBg() {
+    const c = this.state.theme === 'light' ? '#f2f2f6' : '#161826';
+    document.documentElement.style.background = c;
+    document.body.style.background = c;
+  }
+  waitData() {
+    if (window.T2GUIDE) { this.setState({ ready: true }); this.paintBg(); this.fetchWiki(); }
+    else setTimeout(() => this.waitData(), 60);
+  }
+  fetchWiki() {
+    const G = window.T2GUIDE;
+    const items = [];
+    G.modules.forEach(m => {
+      m.pois.forEach(p => items.push(p));
+      m.sleep.forEach((s, i) => items.push({ ...s, id: m.id + '-s' + i }));
+      m.eat.forEach((s, i) => items.push({ ...s, id: m.id + '-e' + i }));
+    });
+    G.hikes.forEach(h => items.push(h));
+    const todo = items.filter(i => i.wk && !this.state.wikiImgs[i.id] && LOCAL_PHOTOS.indexOf(i.id) < 0 && !WIKI_FILES[i.id]);
+    todo.forEach(i => {
+      const parts = i.wk.split(':');
+      fetch('https://' + parts[0] + '.wikipedia.org/api/rest_v1/page/summary/' + parts[1])
+        .then(r => r.ok ? r.json() : null)
+        .then(j => {
+          const src = (j && j.originalimage && j.originalimage.source) || (j && j.thumbnail && j.thumbnail.source);
+          if (!src) return;
+          const file = src.indexOf('/thumb/') >= 0
+            ? src.split('/thumb/')[1].split('/')[2]
+            : src.split('/').pop();
+          const big = 'https://commons.wikimedia.org/wiki/Special:FilePath/' + file + '?width=800';
+          this.setState(s => {
+            const w = { ...s.wikiImgs, [i.id]: big };
+            idbSet('wikimg', w).catch(() => {});
+            return { wikiImgs: w };
+          });
+        }).catch(() => {});
+    });
+  }
+  persist(patch) {
+    this.setState(patch, () => {
+      const s = this.state;
+      idbSet('state', { saved: s.saved, checks: s.checks, theme: s.theme, tab: s.tab, plan: s.plan, day: s.day }).catch(() => {});
+    });
+  }
+  nav(tab) { this.persist({ tab, poi: null }); window.scrollTo(0, 0); }
+  openPoi(id) { this.setState({ poi: id }); window.scrollTo(0, 0); }
+  toggleSave(id) { this.persist(s => ({ saved: s.saved.includes(id) ? s.saved.filter(x => x !== id) : [...s.saved, id] })); }
+  toggleCheck(id) { this.persist(s => ({ checks: { ...s.checks, [id]: !s.checks[id] } })); }
+
+  renderVals() {
+    const G = window.T2GUIDE;
+    const st = this.state;
+    const light = st.theme === 'light';
+    const showOptional = this.props.showOptional ?? true;
+    const dir = q => 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(q) + '&travelmode=driving';
+    const rev = q => 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q);
+    const css = s => { const o = {}; s.split(';').forEach(r => { const i = r.indexOf(':'); if (i > 0) o[r.slice(0, i).trim().replace(/-([a-z])/g, (_, c) => c.toUpperCase())] = r.slice(i + 1).trim(); }); return o; };
+
+    const lightVars = {
+      '--color-bg': '#f2f2f6', '--color-surface': '#ffffff', '--color-text': '#191b26',
+      '--color-divider': 'rgba(25,27,38,0.14)',
+      '--color-neutral-900': '#eaeaf1', '--color-neutral-800': '#dcdce6', '--color-neutral-700': '#c3c4d2',
+      '--color-neutral-600': '#8b8d9e', '--color-neutral-500': '#6c6e80', '--color-neutral-400': '#585a6b',
+      '--color-neutral-300': '#3f4152', '--color-neutral-200': '#2b2d3b', '--color-neutral-100': '#191b26',
+      '--color-accent': '#6355b8', '--color-accent-900': '#eeecfa', '--color-accent-800': '#d6d1f4',
+      '--color-accent-300': '#4b3f96', '--color-accent-200': '#372c78', '--color-accent-100': '#2a2159'
+    };
+    const rootStyle = { minHeight: '100vh', background: 'var(--color-bg)', color: 'var(--color-text)', ...(light ? lightVars : {}) };
+
+    const chipBase = 'display:inline-block;font-size:10px;line-height:1.6;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:3px 8px;border-radius:4px;';
+    const badgeFo = css(chipBase + 'background:#c0401c;color:#fff6f2;border:1px solid #d9603a');
+    const badgeMegeri = css(chipBase + 'background:#134a5a;color:#eef9fd;border:1px solid #2a7a92');
+    const badgeOpc = css(chipBase + 'background:transparent;color:var(--color-neutral-500);border:1px solid var(--color-neutral-700)');
+    const ageChip = css(chipBase + 'background:var(--color-neutral-900);color:var(--color-neutral-400);border:1px solid transparent;letter-spacing:0.05em;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis');
+    const warnChip = css(chipBase + 'background:transparent;color:' + (light ? '#a8471f' : '#e8875f') + ';border:1px solid ' + (light ? '#e0b7a4' : '#7a3418'));
+    const mikorLabel = css('font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:' + (light ? '#a8471f' : '#e0724d'));
+    const tipStyle = css('margin:11px 0 0;padding:9px 11px;background:var(--color-neutral-900);border-radius:var(--radius-sm);font-size:12.5px;color:var(--color-neutral-300)');
+    const badge = b => b === 'fo' ? { s: badgeFo, l: '★ Fő program' } : b === 'megeri' ? { s: badgeMegeri, l: 'Megéri' } : { s: badgeOpc, l: 'Opcionális' };
+    const headerStyle = css('position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px 8px 18px;background:color-mix(in srgb, var(--color-bg) 88%, transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--color-divider)');
+    const navBarStyle = css('position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;justify-content:center;background:color-mix(in srgb, var(--color-bg) 92%, transparent);backdrop-filter:blur(16px);border-top:1px solid var(--color-divider);padding-bottom:env(safe-area-inset-bottom)');
+    const inputStyle = css('width:100%;min-height:44px;padding:10px 12px 10px 36px;font-size:14px;color:var(--color-text);background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md);outline:none');
+
+    if (!G || !st.ready) return { ready: false, rootStyle, headerStyle, navBarStyle, savedCount: 0, navItems: [], ageChip, warnChip, mikorLabel, tipStyle, inputStyle, themeIcon: 'ph ph-moon' };
+
+    const imgOf = id => LOCAL_PHOTOS.indexOf(id) >= 0 ? 'photos/' + id + '.webp'
+      : WIKI_FILES[id] ? 'https://commons.wikimedia.org/wiki/Special:FilePath/' + WIKI_FILES[id] + '?width=800'
+      : st.wikiImgs[id] || null;
+    const GLYPH = {
+      sleep: 'M3 17V9a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v8M3 17h18M3 17v2M21 17v2M7 9h4v3H7z',
+      eat: 'M7 3v8m0 0v10M4 3v5a3 3 0 0 0 3 3M10 3v5a3 3 0 0 1-3 3M17 3c-1.5 2-2 4-2 6s.5 3 2 3 2-1 2-3-.5-4-2-6zm0 9v9',
+      hike: 'M3 18l6-9 4 5 3-4 5 8z',
+      plan: 'M4 6h16M4 12h10M4 18h7',
+      poi: 'M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11zm0-13.2a2.2 2.2 0 1 1 0 4.4 2.2 2.2 0 0 1 0-4.4z'
+    };
+    const ph = kind => {
+      const c = light ? '%238b8d9e' : '%2375798c';
+      const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="' + c.replace('%23', '#') + '" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="' + (GLYPH[kind] || GLYPH.poi) + '"/></svg>';
+      return 'url("data:image/svg+xml;utf8,' + encodeURIComponent(svg) + '")';
+    };
+    const bgImg = (id, extra, kind) => {
+      const src = imgOf(id);
+      return { ...css(extra),
+        backgroundImage: src ? 'url("' + src + '")' : ph(kind),
+        backgroundSize: src ? 'cover' : '26px 26px',
+        backgroundPosition: 'center', backgroundRepeat: 'no-repeat',
+        backgroundColor: 'var(--color-neutral-900)' };
+    };
+    const thumb = (id, kind) => bgImg(id, 'flex:none;width:52px;height:44px;border-radius:6px', kind);
+    const cardThumb = (id, kind) => bgImg(id, 'flex:none;width:78px;height:68px;border-radius:6px', kind);
+
+    const saveBits = id => {
+      const on = st.saved.includes(id);
+      return { saveIcon: (on ? 'ph-fill' : 'ph') + ' ph-bookmark-simple',
+        saveStyle: { fontSize: '19px', color: on ? 'var(--color-accent)' : 'var(--color-neutral-500)' },
+        saveStyleLight: { fontSize: '19px', color: on ? '#b5abfc' : '#f3f5fe' },
+        toggle: e => { if (e && e.stopPropagation) e.stopPropagation(); this.toggleSave(id); } };
+    };
+
+    // ---- flat index of everything ----
+    const all = [];
+    G.modules.forEach(m => {
+      m.pois.forEach(p => all.push({ ...p, kind: 'poi', modId: m.id, where: m.letter + ' · ' + m.title }));
+      m.sleep.forEach((s, i) => all.push({ ...s, id: m.id + '-s' + i, kind: 'sleep', b: 'opc', age: 'kemping', meta: 'alvóhely', d: s.d, w: '', modId: m.id, where: m.letter + ' · ' + m.title }));
+      m.eat.forEach((s, i) => all.push({ ...s, id: m.id + '-e' + i, kind: 'eat', b: 'opc', age: 'étterem', meta: 'kajálda', d: s.d, w: '', modId: m.id, where: m.letter + ' · ' + m.title }));
+    });
+    G.hikes.forEach(h => all.push({ ...h, kind: 'hike', b: h.diff === 'nehez' ? 'opc' : h.diff === 'kozepes' ? 'fo' : 'megeri', age: h.kid, meta: h.time, d: h.go + ' · szint: ' + h.elev, w: 'Gyerek: ' + h.kid, modId: 'F', where: 'F+ · Túra' }));
+    G.plans.forEach(p => all.push({ ...p, kind: 'plan', age: p.age, meta: p.meta, w: p.w, modId: 'F', where: 'F+ · Napi terv' }));
+    const byId = {};
+    all.forEach(a => { byId[a.id] = a; });
+
+    const decorate = a => ({ ...a, bStyle: badge(a.b).s, bLabel: badge(a.b).l, flags: !!(a.cash || a.mon),
+      dir: dir(a.q || a.n), rev: rev(a.q || a.n), img: imgOf(a.id), thumbStyle: thumb(a.id, a.kind), cardThumb: cardThumb(a.id, a.kind),
+      open: () => this.openPoi(a.id), ...saveBits(a.id) });
+
+    // ---- POI detail ----
+    const rawPoi = st.poi ? byId[st.poi] : null;
+    const poi = rawPoi ? { ...decorate(rawPoi),
+      heroStyle: bgImg(rawPoi.id, 'width:100%;height:230px', rawPoi.kind),
+      noImg: false,
+      openModule: () => { this.persist({ tab: 'explore', cat: 'all', query: '' }); this.setState({ poi: null }); window.scrollTo(0, 0); },
+      siblings: all.filter(x => x.modId === rawPoi.modId && x.kind === rawPoi.kind && x.id !== rawPoi.id).slice(0, 4)
+        .map(x => ({ n: x.n, meta: x.meta, thumbStyle: thumb(x.id, x.kind), open: () => this.openPoi(x.id) })) } : null;
+
+    // ---- itinerary ----
+    const plan = G.itineraries.find(p => p.id === st.plan) || G.itineraries[0];
+    const planTabs = G.itineraries.map(p => ({ name: p.name, pick: () => this.persist({ plan: p.id, day: 1 }),
+      style: css('flex:none;padding:8px 13px;min-height:38px;display:flex;align-items:center;font-size:12.5px;font-weight:500;border-radius:999px;cursor:pointer;white-space:nowrap;' +
+        (p.id === st.plan ? 'background:var(--color-accent);color:#fff;border:1px solid var(--color-accent)' : 'background:var(--color-surface);color:var(--color-neutral-400);border:1px solid var(--color-divider)')) }));
+    const dayList = ids => (ids || []).map(id => byId[id]).filter(Boolean).map(x => ({ n: x.n, meta: x.meta, age: x.age, bStyle: badge(x.b).s, bLabel: badge(x.b).l, thumbStyle: thumb(x.id, x.kind), open: () => this.openPoi(x.id) }));
+    const dayStops = d => dayList(d.stops);
+    const routeUrl = d => {
+      const pts = (d.stops || []).map(id => byId[id]).filter(Boolean).map(x => x.q || x.n);
+      let u = 'https://www.google.com/maps/dir/?api=1&travelmode=driving&origin=' + encodeURIComponent(d.from || 'Eger') + '&destination=' + encodeURIComponent(d.sleepQ || d.sleep);
+      if (pts.length) u += '&waypoints=' + pts.map(encodeURIComponent).join('%7C');
+      return u;
+    };
+    const planDays = plan.days.map(d => ({ ...d, stops: dayStops(d), opts: dayList(d.opts), hasOpts: !!(d.opts && d.opts.length), route: routeUrl(d),
+      cardStyle: css('padding:14px;background:var(--color-surface);border-radius:var(--radius-lg);border:1px solid ' + (d.d === st.day ? 'var(--color-accent)' : 'var(--color-divider)')),
+      numStyle: css('flex:none;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:17px;font-size:15px;font-weight:600;background:' + (d.d === st.day ? 'var(--color-accent)' : 'var(--color-neutral-900)') + ';color:' + (d.d === st.day ? '#fff' : 'var(--color-neutral-400)')),
+      markIcon: (d.d === st.day ? 'ph-fill' : 'ph') + ' ph-map-pin',
+      markStyle: { fontSize: '18px', color: d.d === st.day ? 'var(--color-accent)' : 'var(--color-neutral-600)' },
+      setCurrent: () => this.persist({ day: d.d }) }));
+    const curRaw = plan.days.find(d => d.d === st.day) || plan.days[0];
+    const curDay = { ...curRaw, label: curRaw.d + '. nap · ' + curRaw.wd + ' · Modul ' + curRaw.mod,
+      stops: dayStops(curRaw), opts: dayList(curRaw.opts), hasOpts: !!(curRaw.opts && curRaw.opts.length), route: routeUrl(curRaw) };
+    const dayRoutes = plan.days.map(d => ({ d: d.d, t: d.t, sleep: d.sleep, route: routeUrl(d),
+      numStyle: css('flex:none;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:13px;font-size:12px;font-weight:600;background:var(--color-neutral-900);color:var(--color-neutral-400)') }));
+    const fullRoute = (() => {
+      const stopsQ = [];
+      plan.days.forEach(d => { const q = d.sleepQ || d.sleep; if (q && stopsQ[stopsQ.length - 1] !== q) stopsQ.push(q); });
+      const dest = stopsQ.pop();
+      return 'https://www.google.com/maps/dir/?api=1&travelmode=driving&origin=' + encodeURIComponent(plan.days[0].from || 'Eger') +
+        '&destination=' + encodeURIComponent(dest) + (stopsQ.length ? '&waypoints=' + stopsQ.slice(0, 9).map(encodeURIComponent).join('%7C') : '');
+    })();
+
+    // ---- explore ----
+    const cats = [{ id: 'all', label: 'Mind' }, { id: 'poi', label: 'Látnivalók' }, { id: 'hike', label: 'Túrák' }, { id: 'plan', label: 'Napi tervek' }, { id: 'sleep', label: 'Alvás' }, { id: 'eat', label: 'Evés' }];
+    const catTabs = cats.map(c => ({ label: c.label, pick: () => this.setState({ cat: c.id }),
+      style: css('flex:none;padding:7px 13px;min-height:36px;display:flex;align-items:center;font-size:12.5px;font-weight:500;border-radius:999px;cursor:pointer;white-space:nowrap;' +
+        (c.id === st.cat ? 'background:var(--color-accent);color:#fff;border:1px solid var(--color-accent)' : 'background:var(--color-surface);color:var(--color-neutral-400);border:1px solid var(--color-divider)')) }));
+    const q = st.query.trim().toLowerCase();
+    const match = a => (st.cat === 'all' || a.kind === st.cat)
+      && (showOptional || a.b !== 'opc' || a.kind !== 'poi')
+      && (!q || (a.n + ' ' + (a.d || '') + ' ' + (a.meta || '')).toLowerCase().includes(q));
+    const letterColor = id => (id === 'CP' || id === 'F') ? (light ? '#12617a' : '#3e93ad') : (light ? '#b03a19' : '#d9603a');
+    const sleepTint = light ? '#e9f3f7' : '#111d24';
+    const sleepBorder = light ? '#b8d5e0' : '#1d3a47';
+    const sleepLabelColor = light ? '#0f6079' : '#63aec4';
+    const eatTint = light ? '#fbf0ea' : '#231610';
+    const eatBorder = light ? '#e6c6b6' : '#4a2a1c';
+    const eatLabelColor = light ? '#a8471f' : '#e08a63';
+    const blk = (t, b) => css('margin-top:10px;padding:12px;background:' + t + ';border:1px solid ' + b + ';border-radius:var(--radius-md)');
+    const card = b => css('display:flex;gap:11px;min-height:58px;padding:7px 8px;background:var(--color-surface);border:1px solid ' + b + ';border-radius:var(--radius-sm);cursor:pointer');
+    const sleepBlock = blk(sleepTint, sleepBorder), eatBlock = blk(eatTint, eatBorder);
+    const decBase = a => ({ ...decorate(a), baseCard: card(a.kind === 'sleep' ? sleepBorder : eatBorder),
+      short: (a.d || '').length > 84 ? (a.d || '').slice(0, 84).trim() + '…' : a.d });
+    const isBase = a => a.kind === 'sleep' || a.kind === 'eat';
+    const groups = [];
+    G.modules.forEach(m => {
+      const mine = all.filter(a => a.modId === m.id && match(a));
+      const places = mine.filter(a => !isBase(a)).map(decorate);
+      const sleep = mine.filter(a => a.kind === 'sleep').map(decBase);
+      const eat = mine.filter(a => a.kind === 'eat').map(decBase);
+      if (places.length || sleep.length || eat.length) groups.push({ letter: m.letter, title: m.title, sub: m.sub, places, sleep, eat,
+        hasSleep: sleep.length > 0, hasEat: eat.length > 0,
+        letterStyle: { flex: 'none', width: '34px', fontSize: '25px', fontWeight: 500, letterSpacing: '-0.03em', color: letterColor(m.id) } });
+    });
+    const extra = all.filter(a => (a.kind === 'hike' || a.kind === 'plan') && match(a)).map(decorate);
+    if (extra.length) groups.push({ letter: 'F+', title: 'Túrák és napi tervek', sub: 'A Tatranec bázisból', places: extra, sleep: [], eat: [], hasSleep: false, hasEat: false,
+      letterStyle: { flex: 'none', width: '34px', fontSize: '22px', fontWeight: 500, letterSpacing: '-0.03em', color: letterColor('F') } });
+
+    // ---- maps ----
+    const mapDefs = [
+      { f: 'maps/01-map.png', t: 'A teljes kör', link: 'Útiterv', go: () => this.nav('plan') },
+      { f: 'maps/02-map.png', t: 'A és B modul — Zemplén, Kassa', link: 'Felfedezés', go: () => this.nav('explore') },
+      { f: 'maps/03-map.png', t: 'D és E modul — Szepesség, Dunajec', link: 'Felfedezés', go: () => this.nav('explore') },
+      { f: 'maps/04-map.png', t: 'Túrák és felvonók a Tátrában', link: 'Felfedezés', go: () => this.nav('explore') },
+      { f: 'maps/05-map.png', t: 'Hazafelé — C modul', link: 'Felfedezés', go: () => this.nav('explore') }
+    ];
+    const mapList = mapDefs.map(m => ({ t: m.t, link: m.link, open: m.go,
+      style: { width: '100%', aspectRatio: '924 / 540', marginTop: '9px', backgroundImage: 'url("' + m.f + '")', backgroundSize: 'cover', backgroundPosition: 'center', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-divider)' } }));
+
+    // ---- today ----
+    const todayItems = G.today.map(t => ({ ...t, iconCls: 'ph ' + t.icon, pick: () => this.setState({ today: t.id }),
+      style: css('display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-height:64px;padding:11px 12px;border-radius:var(--radius-md);cursor:pointer;' +
+        (st.today === t.id ? 'background:var(--color-accent-900);border:1px solid var(--color-accent);color:var(--color-accent-200)' : 'background:var(--color-surface);border:1px solid var(--color-divider);color:var(--color-neutral-400)')) }));
+    const todaySel = G.today.find(t => t.id === st.today) || G.today[0];
+    const todaySelItems = (todaySel.ids || []).map(id => byId[id]).filter(Boolean).map(decorate);
+
+    const savedItems = st.saved.map(id => byId[id]).filter(Boolean).map(decorate);
+    const checkItems = G.checklist.map(k => {
+      const on = !!st.checks[k.id];
+      return { ...k, toggle: () => this.toggleCheck(k.id), icon: on ? 'ph-fill ph-check-square' : 'ph ph-square',
+        iconStyle: { fontSize: '21px', flex: 'none', color: on ? 'var(--color-accent)' : 'var(--color-neutral-500)' },
+        textStyle: { fontSize: '13.5px', color: on ? 'var(--color-neutral-500)' : 'var(--color-text)', textDecoration: on ? 'line-through' : 'none' } };
+    });
+
+    const tabs = [
+      { id: 'today', label: 'Ma', icon: 'ph-sun-horizon' },
+      { id: 'plan', label: 'Útiterv', icon: 'ph-path' },
+      { id: 'explore', label: 'Felfedezés', icon: 'ph-compass' },
+      { id: 'map', label: 'Térkép', icon: 'ph-map-trifold' },
+      { id: 'saved', label: 'Mentve', icon: 'ph-bookmark-simple' }
+    ];
+    const navItems = tabs.map(t => {
+      const on = st.tab === t.id && !st.poi;
+      return { label: t.label, icon: (on ? 'ph-fill ' : 'ph ') + t.icon, tap: () => this.nav(t.id),
+        style: css('flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 0 12px;min-height:58px;cursor:pointer;border-top:2px solid ' + (on ? 'var(--color-accent)' : 'transparent') + ';color:' + (on ? 'var(--color-accent-300)' : 'var(--color-neutral-500)')) };
+    });
+
+    const open = st.tab;
+    return {
+      ready: true, rootStyle, headerStyle, navBarStyle, inputStyle,
+      themeIcon: light ? 'ph ph-moon' : 'ph ph-sun',
+      toggleTheme: () => this.persist({ theme: light ? 'dark' : 'light' }),
+      goSaved: () => this.nav('saved'),
+      savedCount: st.saved.length,
+      poiOpen: !!poi, poi,
+      closePoi: () => this.setState({ poi: null }),
+      tToday: open === 'today' && !poi, tPlan: open === 'plan' && !poi, tExplore: open === 'explore' && !poi,
+      tMap: open === 'map' && !poi, tSaved: open === 'saved' && !poi,
+      todayItems, todaySelC: todaySel.c, todaySelR: todaySel.r, todaySelItems,
+      essOpen: st.essOpen, essIcon: st.essOpen ? 'ph ph-caret-up' : 'ph ph-caret-down',
+      toggleEss: () => this.setState(s => ({ essOpen: !s.essOpen })),
+      sleepBlock, eatBlock, sleepLabelColor, eatLabelColor, dayRoutes, fullRoute,
+      todayPanel: css('margin-top:14px;padding:15px 16px;background:var(--color-accent-900);border:1px solid var(--color-accent-800);border-radius:var(--radius-lg);color:var(--color-accent-100)'),
+      planName: plan.name, planNote: plan.note, planTabs, planDays,
+      curDay, prevDay: () => this.persist({ day: Math.max(1, st.day - 1) }), nextDay: () => this.persist({ day: Math.min(plan.days.length, st.day + 1) }),
+      catTabs, groups, noResults: groups.length === 0,
+      query: st.query, onQuery: e => this.setState({ query: e.target.value }),
+      mapList, essentials: G.essentials, checkItems,
+      savedItems, savedEmpty: savedItems.length === 0,
+      navItems, ageChip, warnChip, mikorLabel, tipStyle
+    };
+  }
+}
+</script>
+</body>
+</html>
