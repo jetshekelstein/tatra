@@ -1,6 +1,6 @@
 {
-  "version": "2026-08-19.3",
-  "sw": "v5",
+  "version": "2026-08-19.4",
+  "sw": "v6",
   "date": "2026-08-19",
-  "notes": "Az Útiterv nyílik elsőként, a Ma fül a döntéstáblával kezd, a fejlécben nyomvonal vezet vissza az útikönyvekhez, és a helyeknél megjelenik a Google-értékelés."
+  "notes": "A világos mód végre világos: az Android saját sötétítése nem üti át többé, és a felső sávot is követi a téma."
 }

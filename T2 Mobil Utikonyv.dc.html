@@ -8,6 +8,10 @@
 <!-- PWA: installability -->
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#161826">
+<!-- Without this, Chrome on Android (Auto dark theme) and Samsung Internet
+     (Dark mode) re-darken the page themselves, so the app's own light theme came
+     out dark. Declaring support for both schemes opts out of that. -->
+<meta name="color-scheme" content="light dark">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
 
@@ -721,9 +725,18 @@ class Component extends DCLogic {
   }
 
   paintBg() {
-    const c = this.state.theme === 'light' ? '#f2f2f6' : '#161826';
+    const light = this.state.theme === 'light';
+    const c = light ? '#f2f2f6' : '#161826';
     document.documentElement.style.background = c;
     document.body.style.background = c;
+    // Tell the browser which scheme we are actually painting. Beyond keeping
+    // scrollbars and form controls in step, this is what stops Android from
+    // applying its own darkening on top of our light theme.
+    document.documentElement.style.colorScheme = light ? 'light' : 'dark';
+    // And move the system bars with it — the meta tag is a fixed dark value, so
+    // in light mode the status bar used to stay dark.
+    const m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', c);
   }
 
   // ── Trips ──────────────────────────────────────────────────────────────────
