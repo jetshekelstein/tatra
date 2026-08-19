@@ -610,11 +610,13 @@ const TRIP_DEFAULTS = { saved: [], checks: {}, tab: 'today', plan: null, day: 1,
 //  2. The GitHub commits API (public repo, no auth). Informational only: it
 //     shows what changed last and when, and it still notices a push where
 //     version.json was not bumped.
+// Bumped when the 'app' blob needs a one-time fix-up on existing installs.
+const APP_SCHEMA = 2;
 const REPO = 'jetshekelstein/tatra', REPO_BRANCH = 'main';
 const CHECK_EVERY = 30 * 60 * 1000;   // don't re-check on every tab focus
 
 class Component extends DCLogic {
-  state = { trips: [], trip: null, ready: false,
+  state = { trips: [], trip: null, ready: false, booting: true,
             tab: 'today', poi: null, poiStack: [], day: 1, plan: null, cat: 'all', query: '', today: null,
             saved: [], checks: {}, theme: 'dark', wikiImgs: {}, essOpen: false,
             showTop: false, updateReady: false,
@@ -782,7 +784,11 @@ class Component extends DCLogic {
 
       if (app === undefined) {
         // First run on the multi-trip build: any old data belonged to Tátra.
-        app = { theme: legacy && legacy.theme, trip: legacy ? 'tatra' : null };
+        // Leave `trip` null so this launch lands on the picker — resuming
+        // straight into Tátra would look exactly like the old single-trip app
+        // and never reveal that there is now more than one guidebook. The saved
+        // places, checklist and current day still migrate below.
+        app = { theme: legacy && legacy.theme, trip: null, v: APP_SCHEMA };
         if (legacy) {
           this._tripState.tatra = { ...TRIP_DEFAULTS,
             saved: Array.isArray(legacy.saved) ? legacy.saved : [],
@@ -797,24 +803,35 @@ class Component extends DCLogic {
 
       // Dark by default: the manifest's splash colour is dark, so starting light
       // would flash. The header toggle switches it and the choice is remembered.
+      // The first multi-trip build shipped without the guard above, so installs
+      // that already opened it are stuck resuming Tátra. Send them to the picker
+      // once; after that the remembered-trip behaviour is theirs to control.
+      if (app.v !== APP_SCHEMA) {
+        app = { ...app, v: APP_SCHEMA, trip: null };
+        idbSet('app', app).catch(() => {});
+      }
+
       const theme = app.theme === 'light' ? 'light' : 'dark';
-      this._app = { theme, trip: app.trip || null };
+      this._app = { theme, trip: app.trip || null, v: APP_SCHEMA };
 
       const openables = trips.filter(t => this.openable(t));
       let id = (app.trip && openables.some(t => t.id === app.trip)) ? app.trip : null;
       // Nothing to pick from → don't make them tap through an empty picker.
       if (!id && trips.length === 1 && openables.length === 1) id = openables[0].id;
 
-      this.setState({ trips, theme, wikiImgs: wik || {}, ready: true }, () => {
+      // `booting` keeps the picker off screen while a remembered trip loads —
+      // rendering it first and swapping a moment later reads as the app opening
+      // the wrong screen.
+      this.setState({ trips, theme, wikiImgs: wik || {}, ready: true, booting: !!id }, () => {
         if (id) this.enterTrip(id);
         else this.paintBg();
       });
-    }).catch(() => this.setState({ trips, ready: true }));
+    }).catch(() => this.setState({ trips, ready: true, booting: false }));
   }
 
   enterTrip(id) {
     const trip = (this.state.trips || []).find(t => t.id === id);
-    if (!this.openable(trip)) return;
+    if (!this.openable(trip)) { this.setState({ booting: false }); return; }
     if (!this.state.trip) this._pickerScroll = window.scrollY;
     const cached = this._tripState[id];
     const load = cached !== undefined ? Promise.resolve(cached) : idbGet('trip:' + id).catch(() => undefined);
@@ -835,15 +852,15 @@ class Component extends DCLogic {
       this.persistApp({ trip: id });
       this.setState({ trip: id, tab, poi, poiStack: Array.isArray(s.poiStack) ? s.poiStack : [],
         day: s.day || 1, plan, today, saved: Array.isArray(s.saved) ? s.saved : [], checks: s.checks || {},
-        cat: 'all', query: '', essOpen: false }, () => this.fetchWiki());
-    });
+        cat: 'all', query: '', essOpen: false, booting: false }, () => this.fetchWiki());
+    }, () => this.setState({ booting: false }));
   }
 
   exitTrip() {
     this.saveTrip();
     this._pending = this._pickerScroll || 0;
     this.persistApp({ trip: null });
-    this.setState({ trip: null, poi: null, poiStack: [] });
+    this.setState({ trip: null, poi: null, poiStack: [], booting: false });
   }
 
   fetchWiki() {
@@ -881,7 +898,7 @@ class Component extends DCLogic {
   // ── Persistence helpers ────────────────────────────────────────────────────
   persistApp(patch) {
     this._app = { ...this._app, ...patch };
-    idbSet('app', { theme: this._app.theme, trip: this._app.trip }).catch(() => {});
+    idbSet('app', { theme: this._app.theme, trip: this._app.trip, v: APP_SCHEMA }).catch(() => {});
   }
   saveTrip() {
     const s = this.state, id = s.trip;
@@ -1059,12 +1076,12 @@ class Component extends DCLogic {
     })();
 
     const base = {
-      ready: st.ready, rootStyle, headerStyle, navBarStyle, inputStyle,
+      ready: st.ready && !st.booting, rootStyle, headerStyle, navBarStyle, inputStyle,
       ageChip, warnChip, mikorLabel, tipStyle,
       themeIcon: light ? 'ph ph-moon' : 'ph ph-sun',
       toggleTheme: () => this.setTheme(light ? 'dark' : 'light'),
       // header
-      tripName: 'Mobil Útikönyv', tripPeriod: '', canSwitchTrip: false,
+      tripName: st.booting ? '' : 'Mobil Útikönyv', tripPeriod: '', canSwitchTrip: false,
       tripBtnStyle: css('display:flex;align-items:baseline;gap:8px;min-width:0'),
       openPicker: () => {}, tripOpen: false, navVisible: false,
       // screens
@@ -1080,7 +1097,7 @@ class Component extends DCLogic {
       doUpdate: () => this.applyUpdate()
     };
 
-    if (!st.ready) return base;
+    if (!st.ready || st.booting) return base;
 
     const T = this.trip();
     const trips = st.trips || [];
@@ -1294,11 +1311,14 @@ class Component extends DCLogic {
       { id: 'map', label: 'Térkép', icon: 'ph-map-trifold' },
       { id: 'saved', label: 'Mentve', icon: 'ph-bookmark-simple' }
     ];
+    const navStyle = on => css('flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 2px 12px;min-height:58px;cursor:pointer;border-top:2px solid ' + (on ? 'var(--color-accent)' : 'transparent') + ';color:' + (on ? 'var(--color-accent-300)' : 'var(--color-neutral-500)'));
     const navItems = tabs.map(t => {
       const on = st.tab === t.id && !st.poi;
-      return { label: t.label, icon: (on ? 'ph-fill ' : 'ph ') + t.icon, tap: () => this.nav(t.id),
-        style: css('flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 0 12px;min-height:58px;cursor:pointer;border-top:2px solid ' + (on ? 'var(--color-accent)' : 'transparent') + ';color:' + (on ? 'var(--color-accent-300)' : 'var(--color-neutral-500)')) };
+      return { label: t.label, icon: (on ? 'ph-fill ' : 'ph ') + t.icon, tap: () => this.nav(t.id), style: navStyle(on) };
     });
+    // Back to the guidebook shelf. The header chip does the same thing, but the
+    // nav bar is where people look for it.
+    if (canSwitch) navItems.unshift({ label: 'Útikönyv', icon: 'ph ph-books', tap: () => this.exitTrip(), style: navStyle(false) });
 
     const open = st.tab;
     return {
@@ -1306,7 +1326,11 @@ class Component extends DCLogic {
       tripOpen: true, navVisible: true,
       tripName: T.name || T.title || '', tripPeriod: T.period || '',
       canSwitchTrip: canSwitch,
-      tripBtnStyle: css('display:flex;align-items:baseline;gap:8px;min-width:0' + (canSwitch ? ';cursor:pointer' : '')),
+      // With more than one guidebook this is the only way back to the picker, so
+      // give it a border and a chevron instead of leaving it looking like a label.
+      tripBtnStyle: css('display:flex;align-items:center;gap:7px;min-width:0;' + (canSwitch
+        ? 'cursor:pointer;margin-left:-9px;padding:5px 9px;border:1px solid var(--color-divider);border-radius:999px'
+        : '')),
       openPicker: () => { if (canSwitch) this.exitTrip(); },
       savedCount: st.saved.length,
       goSaved: () => this.nav('saved'),

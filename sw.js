@@ -2,7 +2,7 @@
 // App-shell files are precached on install; everything else (including
 // cross-origin CDN/font/Wikimedia requests) is cached the first time it's
 // fetched, then served stale-while-revalidate.
-const VERSION = 'v3';
+const VERSION = 'v4';
 const PRECACHE = 'precache-' + VERSION;
 const RUNTIME = 'runtime-' + VERSION;
 

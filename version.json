@@ -1,6 +1,6 @@
 {
-  "version": "2026-08-19.1",
-  "sw": "v3",
+  "version": "2026-08-19.2",
+  "sw": "v4",
   "date": "2026-08-19",
-  "notes": "Több út egy appban: útválasztó indításnál, Gombaszög kalauz, görgetés-visszaállítás a vissza gombra."
+  "notes": "Indításnál az útválasztó jön be, nem ugrik vissza a Tátrába; a fejlécben látszik, hogy váltani lehet."
 }

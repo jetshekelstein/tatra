@@ -10,7 +10,7 @@
 const data = {
 modules: [
 
-{id:'CS', letter:'CS', title:'Gombaszög', full:'Gombaszög — barlang a kerítésen kívül', kicker:'Csütörtök · a bázisnap', sub:'Nagy füves rét a Szlovák-karszt kapujában, patakkal · 1–2+ éj', transit:'Bátor → Eger → Gombaszög ≈ 2 óra · érkezés szerda este · innen minden 20–45 percen belül',
+{id:'CS', letter:'CS', title:'Gombaszög', full:'Gombaszög — barlang a kerítésen kívül', kicker:'Csütörtök · a bázisnap', sub:'Nagy füves rét a Szlovák-karszt kapujában, patakkal · 1–2+ éj', transit:'Eger → Bátor → Gombaszög ≈ 2 óra · érkezés szerda este · innen minden 20–45 percen belül',
  pois:[
  {id:'cs1', n:'Gombasecká-barlang', q:'Gombasecká jaskyňa', b:'fo', age:'MINDEN KOR', meta:'kvapľová jaskyňa · 530 m · 30 perc', mon:true, cash:true,
   d:'A karszt leghíresebb szalmacseppkövei: 2–3 mm vékony, három méter hosszú „bŕka" függők, amilyet máshol nem láttok. Sík, rövid túra — hordozóban a kétéves is végigviszi, a hatéves pedig végigkérdezi. UNESCO-lista, ingyen parkoló, magyar és szlovák vezetés, más nyelvre kézikészülék. A kempingtől gyalog 3 perc.',
@@ -191,7 +191,7 @@ checklist:[
 data.itineraries = [
 {id:'bazis', name:'Marad a bázis', tag:'3 éj · Gombaszög', note:'Nem költözöl: minden nap a Gombaszögi kempingből indul és oda tér vissza. A programok kettőig tartanak, utána a patak a program.',
  days:[
- {d:1, wd:'szerda', t:'Bátor → Eger → Gombaszög', mod:'CS', drive:'≈ 2 óra · esti érkezés', from:'Bátor', stops:['cs3'], opts:[], sleep:'Gombaszögi kemping', sleepQ:'Gombaszög kemping Slavec', tip:'Bánrévétől euró. Plešivecen (7 km) az utolsó bankomat és bolt — a barlangok csak készpénzt fogadnak. Este már csak a patak van.'},
+ {d:1, wd:'szerda', t:'Eger → Bátor → Gombaszög', mod:'CS', drive:'≈ 2 óra · esti érkezés', from:'Eger', stops:['cs3'], opts:[], sleep:'Gombaszögi kemping', sleepQ:'Gombaszög kemping Slavec', tip:'Bátorban felvesszük az utolsó utast. Bánrévétől euró; Plešivecen (7 km) az utolsó bankomat és bolt — a barlangok csak készpénzt fogadnak. Este már csak a patak van.'},
  {d:2, wd:'csütörtök · ünnepnap', t:'Bázisnap — barlang és patak', mod:'CS', drive:'nulla kilométer', from:'Gombaszög kemping Slavec', stops:['cs1','cs3'], opts:['cs2','d1'], sleep:'Gombaszögi kemping', sleepQ:'Gombaszög kemping Slavec', tip:'Aug. 20-án a magyar oldal csúcsra jár — ma a szlovák barlang megy, az első turnussal. A Silická ľadnica a legmelegebb délutánra.'},
  {d:3, wd:'péntek', t:'Gömör-délelőtt', mod:'FIX', drive:'Gombaszög → Betlér ≈ 25 perc', from:'Gombaszög kemping Slavec', stops:['fx1','fx2'], opts:['fx3','fx4','c4'], sleep:'Gombaszögi kemping', sleepQ:'Gombaszög kemping Slavec', tip:'14:00-ra vissza a bázisra — a délután a patakhoz tartozik. Rozsnyón esik útba a nagybevásárlás.'},
  {d:4, wd:'szombat', t:'Szádelő egynapos kirándulásként', mod:'B', drive:'Gombaszög → Szádelő ≈ 35 perc', from:'Gombaszög kemping Slavec', stops:['b1','b2'], opts:['b0','b3'], sleep:'Gombaszögi kemping', sleepQ:'Gombaszög kemping Slavec', tip:'Szádelő reggel, amíg hűvös és üres; Háj ebéd után; Tornai vár késő délután, a fényért.'},
@@ -199,7 +199,7 @@ data.itineraries = [
 
 {id:'koltozes', name:'Egy költözés', tag:'4 éj · Gombaszög + Hammer Lake', note:'Két éj a bázison, aztán át keletre a Hammer Lake Campre. Hazafelé Szádvár — a plusz nap a hazaútba fűzve.',
  days:[
- {d:1, wd:'szerda', t:'Bátor → Eger → Gombaszög', mod:'CS', drive:'≈ 2 óra · esti érkezés', from:'Bátor', stops:['cs3'], opts:[], sleep:'Gombaszögi kemping', sleepQ:'Gombaszög kemping Slavec', tip:'Bánrévétől euró; Plešivecen az utolsó bankomat. Este már csak a patak van.'},
+ {d:1, wd:'szerda', t:'Eger → Bátor → Gombaszög', mod:'CS', drive:'≈ 2 óra · esti érkezés', from:'Eger', stops:['cs3'], opts:[], sleep:'Gombaszögi kemping', sleepQ:'Gombaszög kemping Slavec', tip:'Bátorban felvesszük az utolsó utast. Bánrévétől euró; Plešivecen az utolsó bankomat. Este már csak a patak van.'},
  {d:2, wd:'csütörtök · ünnepnap', t:'Bázisnap — barlang és patak', mod:'CS', drive:'nulla kilométer', from:'Gombaszög kemping Slavec', stops:['cs1','cs3'], opts:['cs2','d1'], sleep:'Gombaszögi kemping', sleepQ:'Gombaszög kemping Slavec', tip:'Ünnepnap: a szlovák barlang megy, első turnussal.'},
  {d:3, wd:'péntek', t:'Gömör-délelőtt', mod:'FIX', drive:'≈ 25 perc oda-vissza', from:'Gombaszög kemping Slavec', stops:['fx1','fx2'], opts:['fx3','fx4'], sleep:'Gombaszögi kemping', sleepQ:'Gombaszög kemping Slavec', tip:'Ez az egyetlen nap, ami esőben is működik — ha szitál, ide csúsztassátok.'},
  {d:4, wd:'szombat', t:'Át Hammer Lake-re — Szádelő', mod:'B', drive:'Gombaszög → Szádelő ≈ 35 perc · → Medzev +20', from:'Gombaszög kemping Slavec', stops:['b1','b2'], opts:['b0','b3','d2'], sleep:'Hammer Lake Camp, Nižný Medzev', sleepQ:'Hammer Lake Camp Nižný Medzev', tip:'Útközben Hrhov (5 perc). Reggel szóljatok a tulajnak, hogy estére pisztrángot grilleznétek.'},
@@ -207,7 +207,7 @@ data.itineraries = [
 
 {id:'mind', name:'Mind a három', tag:'5 éj · Gombaszög + Hammer Lake + Baradla', note:'A teljes program: két éj a bázison, kettő keleten, egy Aggteleken. A plusz nap a köztes napra esik, a hazaút Rudabányán át.',
  days:[
- {d:1, wd:'szerda', t:'Bátor → Eger → Gombaszög', mod:'CS', drive:'≈ 2 óra · esti érkezés', from:'Bátor', stops:['cs3'], opts:[], sleep:'Gombaszögi kemping', sleepQ:'Gombaszög kemping Slavec', tip:'Bánrévétől euró; Plešivecen az utolsó bankomat és bolt. Este már csak a patak van.'},
+ {d:1, wd:'szerda', t:'Eger → Bátor → Gombaszög', mod:'CS', drive:'≈ 2 óra · esti érkezés', from:'Eger', stops:['cs3'], opts:[], sleep:'Gombaszögi kemping', sleepQ:'Gombaszög kemping Slavec', tip:'Bátorban felvesszük az utolsó utast. Bánrévétől euró; Plešivecen az utolsó bankomat és bolt. Este már csak a patak van.'},
  {d:2, wd:'csütörtök · ünnepnap', t:'Bázisnap — barlang és patak', mod:'CS', drive:'nulla kilométer', from:'Gombaszög kemping Slavec', stops:['cs1','cs3'], opts:['cs2','d1'], sleep:'Gombaszögi kemping', sleepQ:'Gombaszög kemping Slavec', tip:'Ünnepnap: szlovák oldal, első turnus. Délután Silická ľadnica.'},
  {d:3, wd:'péntek', t:'Gömör-délelőtt, aztán át keletre', mod:'FIX', drive:'Betlér ≈ 25 perc · Medzev ≈ 55 perc', from:'Gombaszög kemping Slavec', stops:['fx1','fx2'], opts:['fx3','fx4','c4'], sleep:'Hammer Lake Camp, Nižný Medzev', sleepQ:'Hammer Lake Camp Nižný Medzev', tip:'Délelőtt Betlér, ebéd Rozsnyón (nagybevásárlás), délután beállás a Hammer Lake-re.'},
  {d:4, wd:'szombat', t:'Szurdoknap — Szádelő és Háj', mod:'B', drive:'Medzev → Szádelő ≈ 20 perc', from:'Hammer Lake Camp Nižný Medzev', stops:['b1','b2'], opts:['b3','b4','d2'], sleep:'Hammer Lake Camp', sleepQ:'Hammer Lake Camp Nižný Medzev', tip:'Szádelő reggel, Háj ebéd után, Tornai vár a fényért. Este pisztráng a saját tóból.'},
@@ -222,15 +222,15 @@ window.registerTrip({
   name: 'Gombaszög',
   period: '2026. aug.',
   title: 'Gombaszög és környéke',
-  kicker: 'Bátor → Gombaszög · 3–5 nap · 6 modul',
+  kicker: 'Eger → Gombaszög · 3–5 nap · 6 modul',
   tagline: 'Barlangok, patakok és egy kastélypark. Bázis a Gombaszögi kempingben, onnan Szádelő, Aggtelek, Betlér és Szádvár — mindegyik nap megáll a maga lábán, alvóhellyel és patakkal.',
   cover: 'photos/gombaszog/cover.webp',
   verified: 'Adatok ellenőrizve 2026. augusztus 19-én · az árak és a nyitvatartás változik',
-  origin: 'Bátor',
+  origin: 'Eger',
   // Modules drawn with the teal initial: a magyar oldal és a hazaút.
   accentModules: ['A', 'H'],
   extraGroup: { letter: '★', title: 'Délután a bázison', sub: 'A programok kettőig tartanak — utána a kemping a program' },
-  mapIntro: 'Bátorban felvesszük az utolsó utast, onnan Egeren és a 25-ös úton át ≈ 2 óra a Gombaszögi kemping — ide érkezünk szerda este, és ez a bázis. Onnan minden 20–45 percen belül van: keletre a Szádelői-völgy és a Hammer Lake Camp (B), nyugatra Aggtelek–Jósvafő (A), a kettő között félúton Szögliget romjai (C), északra pedig Betlér és Rozsnyó, a fix Gömör-délelőtt. A és B ugyanazon az úton fekszik (Hrhov mellett halad el), mégis két külön bázis — helyben döntitek el, melyik irányba költöztök tovább.',
+  mapIntro: 'Egerből indulunk, Bátorban felvesszük az utolsó utast, onnan a 25-ös úton át ≈ 2 óra a Gombaszögi kemping — ide érkezünk szerda este, és ez a bázis. Onnan minden 20–45 percen belül van: keletre a Szádelői-völgy és a Hammer Lake Camp (B), nyugatra Aggtelek–Jósvafő (A), a kettő között félúton Szögliget romjai (C), északra pedig Betlér és Rozsnyó, a fix Gömör-délelőtt. A és B ugyanazon az úton fekszik (Hrhov mellett halad el), mégis két külön bázis — helyben döntitek el, melyik irányba költöztök tovább.',
   maps: [],
   // id → fájlnév a photoDir alatt; a többi helyszín a Wikipédia képére esik
   // vissza (wk mező), végül a „fotó hamarosan" placeholderre.
