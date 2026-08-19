@@ -74,8 +74,16 @@ betűvel szedi a hosszabbat, hogy beférjen.
   w:'MIKOR, MENNYIÉRT — nyitvatartás, ár, taktika',
   mon:true,      // „Hétfőn zárva" figyelmeztető chip
   cash:true,     // „Csak készpénz" figyelmeztető chip
+  rating:4.7,    // Google-értékelés, ha kézzel írod be
+  reviews:1234,  // értékelések száma (opcionális)
   wk:'hu:Cikk' } // fotó-fallback
 ```
+
+A `rating`/`reviews` a listákon és a részletes lapon is megjelenik egy borostyán
+chipben. Ha a `config.js`-ben van Places API-kulcs, az app minden helyszínre
+letölti ezeket, és a letöltött érték felülírja a fájlba írtat — kulcs nélkül
+csak az látszik, amit ide beírsz. Lásd `config.js` a részletekért; a számokat az
+app IndexedDB-be gyorsítótárazza, tehát helyszínenként egy lekérés az egész.
 
 ### Napi terv (`itineraries[].days[]`)
 

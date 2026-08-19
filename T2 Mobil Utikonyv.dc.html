@@ -46,6 +46,7 @@
 <helmet>
   <link rel="stylesheet" href="_ds/nocturne-ac2cafb2-92d5-4812-bf7e-e1f1372013a8/styles.css">
   <script src="_ds/nocturne-ac2cafb2-92d5-4812-bf7e-e1f1372013a8/_ds_bundle.js"></script>
+  <script src="config.js"></script>
   <script src="trips/registry.js"></script>
   <!-- One file per trip; order is irrelevant, the registry sorts newest-first. -->
   <script src="trips/gombaszog.js"></script>
@@ -64,16 +65,16 @@
 <div style="max-width:520px;margin:0 auto;min-height:100vh;padding-bottom:110px;font-size:14.5px;line-height:1.55">
 
   <div style="{{ headerStyle }}">
-    <div role="button" tabindex="0" onClick="{{ openPicker }}" aria-label="Út váltása" style="{{ tripBtnStyle }}">
-      <span style="font-weight:600;font-size:13px;letter-spacing:0.12em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ tripName }}</span>
-      <span class="text-muted" style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;white-space:nowrap">{{ tripPeriod }}</span>
-      <sc-if value="{{ canSwitchTrip }}" hint-placeholder-val="{{ false }}">
-        <i class="ph ph-caret-down" style="flex:none;font-size:12px;color:var(--color-neutral-600)"></i>
-      </sc-if>
+    <div style="display:flex;align-items:center;min-width:0;flex:1">
+      <sc-for list="{{ crumbs }}" as="c" hint-placeholder-count="2">
+        <div role="button" tabindex="0" onClick="{{ c.tap }}" aria-label="{{ c.aria }}" style="{{ c.style }}">
+          <i class="ph ph-caret-right" style="{{ c.sepStyle }}"></i>{{ c.label }}
+        </div>
+      </sc-for>
     </div>
-    <div style="display:flex;align-items:center;gap:2px">
+    <div style="display:flex;align-items:center;gap:2px;flex:none">
       <div role="button" tabindex="0" onClick="{{ toggleTheme }}" aria-label="Világos / sötét mód" style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:var(--radius-md)"><i class="{{ themeIcon }}" style="font-size:19px;color:var(--color-neutral-500)"></i></div>
-      <sc-if value="{{ tripOpen }}" hint-placeholder-val="{{ false }}">
+      <sc-if value="{{ showSaved }}" hint-placeholder-val="{{ false }}">
         <div role="button" tabindex="0" onClick="{{ goSaved }}" style="display:inline-flex;align-items:center;gap:4px;height:40px;padding:0 8px;cursor:pointer;font-size:12px;color:var(--color-neutral-500)"><i class="ph ph-bookmark-simple" style="font-size:17px"></i>{{ savedCount }}</div>
       </sc-if>
     </div>
@@ -137,6 +138,9 @@
         <span style="{{ poi.bStyle }}">{{ poi.bLabel }}</span>
         <span style="{{ ageChip }}"><i class="ph ph-baby" style="margin-right:4px"></i>{{ poi.age }}</span>
         <span class="text-muted" style="font-size:12px">{{ poi.meta }}</span>
+        <sc-if value="{{ poi.hasRating }}" hint-placeholder-val="{{ false }}">
+          <span style="{{ poi.ratingStyle }}">{{ poi.ratingLong }}</span>
+        </sc-if>
       </div>
       <sc-if value="{{ poi.flags }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:9px">
@@ -164,6 +168,9 @@
             <div style="flex:1;min-width:0">
               <div style="font-weight:500;font-size:14px">{{ s.n }}</div>
               <div class="text-muted" style="font-size:12px">{{ s.meta }}</div>
+              <sc-if value="{{ s.hasRating }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:5px"><span style="{{ s.ratingStyle }}">{{ s.ratingText }}</span></div>
+              </sc-if>
             </div>
             <i class="ph ph-caret-right" style="color:var(--color-neutral-600)"></i>
           </div>
@@ -176,64 +183,8 @@
   <!-- ═══════════ MA ═══════════ -->
   <sc-if value="{{ tToday }}" hint-placeholder-val="{{ false }}">
   <div data-screen-label="Ma" style="padding:20px 18px 8px">
-    <h1 style="margin:0 0 14px;font-size:27px;line-height:1.1;letter-spacing:-0.02em">Ma</h1>
-    <h6 style="margin:0 0 10px;color:var(--color-neutral-500)">Hol tartunk — {{ planName }}</h6>
-    <div style="padding:15px 16px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-lg)">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
-        <div role="button" tabindex="0" onClick="{{ prevDay }}" aria-label="Előző nap" style="width:40px;height:40px;margin-left:-8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--color-neutral-500)"><i class="ph ph-caret-left" style="font-size:18px"></i></div>
-        <div style="flex:1;text-align:center">
-          <div class="text-muted" style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase">{{ curDay.label }}</div>
-          <div style="font-weight:500;font-size:17px;margin-top:2px">{{ curDay.t }}</div>
-        </div>
-        <div role="button" tabindex="0" onClick="{{ nextDay }}" aria-label="Következő nap" style="width:40px;height:40px;margin-right:-8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--color-neutral-500)"><i class="ph ph-caret-right" style="font-size:18px"></i></div>
-      </div>
-      <div class="text-muted" style="display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:10px;font-size:12.5px;justify-content:center">
-        <span><i class="ph ph-van" style="margin-right:4px"></i>{{ curDay.drive }}</span>
-        <span><i class="ph ph-tent" style="margin-right:4px"></i>{{ curDay.sleep }}</span>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
-        <sc-for list="{{ curDay.stops }}" as="s" hint-placeholder-count="2">
-          <div role="button" tabindex="0" onClick="{{ s.open }}" style="display:flex;align-items:center;gap:12px;min-height:62px;padding:7px 9px;background:var(--color-bg);border:1px solid var(--color-divider);border-radius:var(--radius-md);cursor:pointer">
-            <div style="{{ s.thumbStyle }}"></div>
-            <div style="flex:1;min-width:0">
-              <div style="font-weight:500;font-size:13.5px">{{ s.n }}</div>
-              <div class="text-muted" style="font-size:11.5px">{{ s.meta }}</div>
-              <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:5px">
-                <span style="{{ s.bStyle }}">{{ s.bLabel }}</span>
-                <span style="{{ ageChip }}">{{ s.age }}</span>
-              </div>
-            </div>
-          </div>
-        </sc-for>
-      </div>
-      <sc-if value="{{ curDay.hasOpts }}" hint-placeholder-val="{{ false }}">
-        <div style="margin-top:12px;padding-top:10px;border-top:1px dashed var(--color-divider)">
-          <div class="text-muted" style="font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase">Ha marad idő / helyette</div>
-          <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px">
-            <sc-for list="{{ curDay.opts }}" as="o" hint-placeholder-count="2">
-              <div role="button" tabindex="0" onClick="{{ o.open }}" style="display:flex;align-items:center;gap:10px;min-height:52px;padding:6px 8px;background:transparent;border:1px dashed var(--color-neutral-800);border-radius:var(--radius-md);cursor:pointer">
-                <div style="{{ o.thumbStyle }}"></div>
-                <div style="flex:1;min-width:0">
-                  <div style="font-weight:500;font-size:13px">{{ o.n }}</div>
-                  <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">
-                    <span style="{{ o.bStyle }}">{{ o.bLabel }}</span>
-                    <span style="{{ ageChip }}">{{ o.age }}</span>
-                    <span class="text-muted" style="font-size:11px">{{ o.meta }}</span>
-                  </div>
-                </div>
-              </div>
-            </sc-for>
-          </div>
-        </div>
-      </sc-if>
-      <sc-if value="{{ curDay.tip }}" hint-placeholder-val="{{ false }}">
-        <p style="{{ tipStyle }}"><i class="ph ph-lightbulb" style="margin-right:6px"></i>{{ curDay.tip }}</p>
-      </sc-if>
-      <a class="btn btn-primary" href="{{ curDay.route }}" target="_blank" rel="noopener" style="width:100%;min-height:44px;margin-top:11px"><i class="ph ph-path"></i>A nap útvonala a Mapsen</a>
-    </div>
-
-    <h6 style="margin:30px 0 8px;color:var(--color-neutral-500)">Mi legyen ma?</h6>
-    <p class="text-muted" style="margin:0 0 12px;font-size:13px">Válaszd ki, milyen a nap — a könyv kilistázza, mi megy.</p>
+    <h1 style="margin:0;font-size:27px;line-height:1.1;letter-spacing:-0.02em">Mi legyen ma?</h1>
+    <p class="text-muted" style="margin:9px 0 14px;font-size:13px">Válaszd ki, milyen a nap — a könyv kilistázza, mi megy. A napok sorrendje az Útitervben van.</p>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
       <sc-for list="{{ todayItems }}" as="t" hint-placeholder-count="6">
         <div role="button" tabindex="0" onClick="{{ t.pick }}" style="{{ t.style }}">
@@ -256,6 +207,7 @@
             <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:2px">
               <span style="{{ p.bStyle }}">{{ p.bLabel }}</span>
               <span style="{{ ageChip }}">{{ p.age }}</span>
+              <sc-if value="{{ p.hasRating }}" hint-placeholder-val="{{ false }}"><span style="{{ p.ratingStyle }}">{{ p.ratingText }}</span></sc-if>
             </div>
           </div>
           <i class="ph ph-caret-right" style="color:var(--color-neutral-600);align-self:center"></i>
@@ -317,6 +269,7 @@
                   <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:5px">
                     <span style="{{ s.bStyle }}">{{ s.bLabel }}</span>
                     <span style="{{ ageChip }}">{{ s.age }}</span>
+                    <sc-if value="{{ s.hasRating }}" hint-placeholder-val="{{ false }}"><span style="{{ s.ratingStyle }}">{{ s.ratingText }}</span></sc-if>
                   </div>
                 </div>
               </div>
@@ -334,6 +287,7 @@
                       <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">
                         <span style="{{ o.bStyle }}">{{ o.bLabel }}</span>
                         <span style="{{ ageChip }}">{{ o.age }}</span>
+                        <sc-if value="{{ o.hasRating }}" hint-placeholder-val="{{ false }}"><span style="{{ o.ratingStyle }}">{{ o.ratingText }}</span></sc-if>
                         <span class="text-muted" style="font-size:11px">{{ o.meta }}</span>
                       </div>
                     </div>
@@ -389,6 +343,7 @@
                   <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:auto">
                     <span style="{{ p.bStyle }}">{{ p.bLabel }}</span>
                     <span style="{{ ageChip }}">{{ p.age }}</span>
+                    <sc-if value="{{ p.hasRating }}" hint-placeholder-val="{{ false }}"><span style="{{ p.ratingStyle }}">{{ p.ratingText }}</span></sc-if>
                   </div>
                 </div>
                 <div role="button" tabindex="0" onClick="{{ p.toggle }}" aria-label="Mentés" style="flex:none;width:38px;display:flex;align-items:flex-start;justify-content:center;padding-top:2px;cursor:pointer"><i class="{{ p.saveIcon }}" style="{{ p.saveStyle }}"></i></div>
@@ -405,6 +360,9 @@
                     <div style="flex:1;min-width:0">
                       <div style="font-weight:500;font-size:13.5px">{{ p.n }}</div>
                       <div class="text-muted" style="font-size:11.5px;margin-top:2px">{{ p.short }}</div>
+                      <sc-if value="{{ p.hasRating }}" hint-placeholder-val="{{ false }}">
+                        <div style="margin-top:5px"><span style="{{ p.ratingStyle }}">{{ p.ratingText }}</span></div>
+                      </sc-if>
                     </div>
                     <i class="ph ph-caret-right" style="color:var(--color-neutral-600);align-self:center"></i>
                   </div>
@@ -422,6 +380,9 @@
                     <div style="flex:1;min-width:0">
                       <div style="font-weight:500;font-size:13.5px">{{ p.n }}</div>
                       <div class="text-muted" style="font-size:11.5px;margin-top:2px">{{ p.short }}</div>
+                      <sc-if value="{{ p.hasRating }}" hint-placeholder-val="{{ false }}">
+                        <div style="margin-top:5px"><span style="{{ p.ratingStyle }}">{{ p.ratingText }}</span></div>
+                      </sc-if>
                     </div>
                     <i class="ph ph-caret-right" style="color:var(--color-neutral-600);align-self:center"></i>
                   </div>
@@ -487,6 +448,9 @@
           <div style="flex:1;min-width:0">
             <div class="text-muted" style="font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase">{{ p.where }}</div>
             <div role="button" tabindex="0" onClick="{{ p.open }}" style="font-weight:500;font-size:14.5px;margin-top:2px;cursor:pointer">{{ p.n }}</div>
+            <sc-if value="{{ p.hasRating }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:5px"><span style="{{ p.ratingStyle }}">{{ p.ratingText }}</span></div>
+            </sc-if>
             <div style="display:flex;gap:14px;margin-top:6px">
               <a href="{{ p.dir }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;min-height:32px;font-size:12.5px;color:var(--color-accent-300)"><i class="ph ph-navigation-arrow"></i>Útvonal</a>
               <a href="{{ p.rev }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;min-height:32px;font-size:12.5px;color:var(--color-accent-300)"><i class="ph ph-star"></i>Értékelések</a>
@@ -598,7 +562,7 @@ function idbSet(key, value) {
 
 // Everything a trip remembers on its own. `scroll` maps a view key
 // ('t:<tab>' / 'p:<poiId>') to the scroll offset it was left at.
-const TRIP_DEFAULTS = { saved: [], checks: {}, tab: 'today', plan: null, day: 1, today: null, poi: null, poiStack: [], scroll: {} };
+const TRIP_DEFAULTS = { saved: [], checks: {}, tab: 'plan', plan: null, day: 1, today: null, poi: null, poiStack: [], scroll: {} };
 
 // ── Update checking ─────────────────────────────────────────────────────────
 // Two signals, in order of authority:
@@ -618,7 +582,7 @@ const CHECK_EVERY = 30 * 60 * 1000;   // don't re-check on every tab focus
 class Component extends DCLogic {
   state = { trips: [], trip: null, ready: false, booting: true,
             tab: 'today', poi: null, poiStack: [], day: 1, plan: null, cat: 'all', query: '', today: null,
-            saved: [], checks: {}, theme: 'dark', wikiImgs: {}, essOpen: false,
+            saved: [], checks: {}, theme: 'dark', wikiImgs: {}, places: {}, essOpen: false,
             showTop: false, updateReady: false,
             upd: { state: 'idle', live: null, running: null, newer: false, repo: null, when: 0 } };
 
@@ -777,7 +741,7 @@ class Component extends DCLogic {
       if (idbVal !== undefined) return idbVal;
       try { return JSON.parse(localStorage.getItem(lsKey) || 'null') || undefined; } catch (e) { return undefined; }
     };
-    Promise.all([idbGet('app'), idbGet('wikimg'), idbGet('state')]).then(([appRaw, wikRaw, stRaw]) => {
+    Promise.all([idbGet('app'), idbGet('wikimg'), idbGet('state'), idbGet('places')]).then(([appRaw, wikRaw, stRaw, plRaw]) => {
       const legacy = orLocal(stRaw, 't2m-state');
       let wik = orLocal(wikRaw, 't2m-wikimg2');
       let app = appRaw;
@@ -822,14 +786,17 @@ class Component extends DCLogic {
       // `booting` keeps the picker off screen while a remembered trip loads —
       // rendering it first and swapping a moment later reads as the app opening
       // the wrong screen.
-      this.setState({ trips, theme, wikiImgs: wik || {}, ready: true, booting: !!id }, () => {
-        if (id) this.enterTrip(id);
+      this.setState({ trips, theme, wikiImgs: wik || {}, places: plRaw || {}, ready: true, booting: !!id }, () => {
+        if (id) this.enterTrip(id, true);
         else this.paintBg();
       });
     }).catch(() => this.setState({ trips, ready: true, booting: false }));
   }
 
-  enterTrip(id) {
+  // `resume` is true only for the remembered trip reopened at launch — that one
+  // comes back exactly where it was left. Picking a guidebook off the shelf is a
+  // fresh start, and starts on the itinerary.
+  enterTrip(id, resume) {
     const trip = (this.state.trips || []).find(t => t.id === id);
     if (!this.openable(trip)) { this.setState({ booting: false }); return; }
     if (!this.state.trip) this._pickerScroll = window.scrollY;
@@ -845,14 +812,14 @@ class Component extends DCLogic {
       const plan = its.some(p => p.id === s.plan) ? s.plan : ((its[0] || {}).id || null);
       const days = G.today || [];
       const today = days.some(t => t.id === s.today) ? s.today : ((days[0] || {}).id || null);
-      const poi = s.poi || null;
-      const tab = s.tab || 'today';
+      const poi = resume ? (s.poi || null) : null;
+      const tab = (resume && s.tab) || 'plan';
       // Come back exactly where we left off — including mid-list.
       this._pending = poi ? (this._scroll['p:' + poi] || 0) : (this._scroll['t:' + tab] || 0);
       this.persistApp({ trip: id });
       this.setState({ trip: id, tab, poi, poiStack: Array.isArray(s.poiStack) ? s.poiStack : [],
         day: s.day || 1, plan, today, saved: Array.isArray(s.saved) ? s.saved : [], checks: s.checks || {},
-        cat: 'all', query: '', essOpen: false, booting: false }, () => this.fetchWiki());
+        cat: 'all', query: '', essOpen: false, booting: false }, () => { this.fetchWiki(); this.fetchRatings(); });
     }, () => this.setState({ booting: false }));
   }
 
@@ -893,6 +860,63 @@ class Component extends DCLogic {
           });
         }).catch(() => {});
     });
+  }
+
+  // Every place in the active trip that has a Maps search term, with the
+  // synthetic ids the sleep/eat entries get elsewhere so the keys line up.
+  searchables() {
+    const T = this.trip();
+    if (!T) return [];
+    const G = T.data, out = [];
+    (G.modules || []).forEach(m => {
+      (m.pois || []).forEach(x => out.push(x));
+      (m.sleep || []).forEach((x, i) => out.push({ ...x, id: m.id + '-s' + i }));
+      (m.eat || []).forEach((x, i) => out.push({ ...x, id: m.id + '-e' + i }));
+    });
+    (G.hikes || []).forEach(x => out.push(x));
+    (G.plans || []).forEach(x => out.push(x));
+    return out.filter(x => x.id && (x.q || x.n));
+  }
+
+  // Google rating + review count per place, if config.js carries a Places key.
+  // Results are cached in IndexedDB ('places'), so this costs one lookup per
+  // place per install and nothing at all offline. Failures are silent: a missing
+  // number just means no chip.
+  fetchRatings() {
+    const key = window.GUIDE_PLACES_KEY;
+    const T = this.trip();
+    if (!key || !T) return;
+    const todo = this.searchables().filter(x => !this.state.places[T.id + ':' + x.id]);
+    if (!todo.length) return;
+    // Sequential with a small gap: dozens of parallel POSTs to one endpoint is
+    // the kind of thing that gets a key rate-limited.
+    const step = i => {
+      if (i >= todo.length) return;
+      const x = todo[i];
+      fetch('https://places.googleapis.com/v1/places:searchText', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Goog-Api-Key': key,
+          'X-Goog-FieldMask': 'places.rating,places.userRatingCount'
+        },
+        body: JSON.stringify({ textQuery: x.q || x.n, maxResultCount: 1, languageCode: 'hu' })
+      })
+        .then(r => r.ok ? r.json() : null)
+        .then(j => {
+          const hit = j && j.places && j.places[0];
+          // Cache the miss too — an empty object stops us asking again forever.
+          const val = hit && hit.rating ? { r: hit.rating, n: hit.userRatingCount || 0 } : {};
+          this.setState(st => {
+            const pl = { ...st.places, [T.id + ':' + x.id]: val };
+            idbSet('places', pl).catch(() => {});
+            return { places: pl };
+          });
+        })
+        .catch(() => {})
+        .then(() => setTimeout(() => step(i + 1), 120));
+    };
+    step(0);
   }
 
   // ── Persistence helpers ────────────────────────────────────────────────────
@@ -1075,15 +1099,28 @@ class Component extends DCLogic {
       };
     })();
 
+    // One breadcrumb segment. `tap` null = this is where you already are.
+    // display:block, not flex — text-overflow:ellipsis has no effect on the
+    // anonymous text item inside a flex container, and the last crumb has to be
+    // able to trail off.
+    const crumbLabel = 'font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;white-space:nowrap;';
+    const crumbSep = 'font-size:10px;margin-right:5px;vertical-align:1px;color:var(--color-neutral-600)';
+    const crumb = (label, tap, last, first) => ({
+      label, tap: tap || (() => {}), aria: tap ? label : '',
+      sepStyle: css(first ? 'display:none' : crumbSep),
+      style: css(crumbLabel + (last
+        ? 'flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;color:var(--color-text)'
+        : 'flex:none;color:' + (tap ? 'var(--color-accent-300)' : 'var(--color-neutral-500)') + (tap ? ';cursor:pointer' : '')))
+    });
+
     const base = {
       ready: st.ready && !st.booting, rootStyle, headerStyle, navBarStyle, inputStyle,
       ageChip, warnChip, mikorLabel, tipStyle,
       themeIcon: light ? 'ph ph-moon' : 'ph ph-sun',
       toggleTheme: () => this.setTheme(light ? 'dark' : 'light'),
-      // header
-      tripName: st.booting ? '' : 'Mobil Útikönyv', tripPeriod: '', canSwitchTrip: false,
-      tripBtnStyle: css('display:flex;align-items:baseline;gap:8px;min-width:0'),
-      openPicker: () => {}, tripOpen: false, navVisible: false,
+      // header breadcrumb: Útikönyvek › <út> › <hely>
+      crumbs: st.booting ? [] : [crumb('Útikönyvek', null, true, true)],
+      tripOpen: false, showSaved: false, navVisible: false,
       // screens
       pickerOpen: false, tripCards: [], poiOpen: false, poi: null,
       tToday: false, tPlan: false, tExplore: false, tMap: false, tSaved: false,
@@ -1135,7 +1172,7 @@ class Component extends DCLogic {
           ctaStyle: css('display:inline-flex;align-items:center;margin-top:13px;font-size:13px;font-weight:500;color:' + (ok ? 'var(--color-accent-300)' : 'var(--color-neutral-600)'))
         };
       });
-      return { ...base, pickerOpen: true, tripCards, canSwitchTrip: false, showTop: st.showTop };
+      return { ...base, pickerOpen: true, tripCards, showTop: st.showTop };
     }
 
     // ── Active trip ──────────────────────────────────────────────────────────
@@ -1169,6 +1206,22 @@ class Component extends DCLogic {
     const thumb = (id, kind) => bgImg(id, 'flex:none;width:52px;height:44px;border-radius:6px', kind);
     const cardThumb = (id, kind) => bgImg(id, 'flex:none;width:78px;height:68px;border-radius:6px', kind);
 
+    // Google rating. A live lookup (config.js key) wins over anything written
+    // into the trip file; with neither, nothing renders.
+    const ratingStyle = css(chipBase + 'background:transparent;letter-spacing:0.04em;color:'
+      + (light ? '#8a6516' : '#d8ad55') + ';border:1px solid ' + (light ? '#e3d3a8' : '#4d3d18'));
+    const dec = n => String(n).replace('.', ',');
+    const thou = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '\u202f');
+    const ratingOf = a => {
+      const live = st.places[T.id + ':' + a.id];
+      const r = (live && live.r) || a.rating || null;
+      const n = (live && live.n) || a.reviews || null;
+      if (!r) return { hasRating: false, ratingText: '', ratingLong: '', ratingStyle };
+      return { hasRating: true, ratingStyle,
+        ratingText: '★ ' + dec(r) + (n ? ' (' + thou(n) + ')' : ''),
+        ratingLong: '★ ' + dec(r) + (n ? ' · ' + thou(n) + ' értékelés' : ' · Google') };
+    };
+
     const saveBits = id => {
       const on = st.saved.includes(id);
       return { saveIcon: (on ? 'ph-fill' : 'ph') + ' ph-bookmark-simple',
@@ -1194,7 +1247,7 @@ class Component extends DCLogic {
     const decorate = a => ({ ...a, bStyle: badge(a.b).s, bLabel: badge(a.b).l, flags: !!(a.cash || a.mon),
       dir: dir(a.q || a.n), rev: rev(a.q || a.n), img: imgOf(a.id), thumbStyle: thumb(a.id, a.kind),
       cardThumb: cardThumb(a.id, a.kind), cardThumbTap: { ...cardThumb(a.id, a.kind), cursor: 'pointer' },
-      open: () => this.openPoi(a.id), ...saveBits(a.id) });
+      open: () => this.openPoi(a.id), ...ratingOf(a), ...saveBits(a.id) });
 
     // ---- POI detail ----
     const rawPoi = st.poi ? byId[st.poi] : null;
@@ -1203,7 +1256,7 @@ class Component extends DCLogic {
       noImg: !imgOf(rawPoi.id),
       openModule: () => this.goExplore(),
       siblings: all.filter(x => x.modId === rawPoi.modId && x.kind === rawPoi.kind && x.id !== rawPoi.id).slice(0, 4)
-        .map(x => ({ n: x.n, meta: x.meta, thumbStyle: thumb(x.id, x.kind), open: () => this.openPoi(x.id) })) } : null;
+        .map(x => ({ n: x.n, meta: x.meta, thumbStyle: thumb(x.id, x.kind), open: () => this.openPoi(x.id), ...ratingOf(x) })) } : null;
 
     // ---- itinerary ----
     const its = G.itineraries || [];
@@ -1211,7 +1264,7 @@ class Component extends DCLogic {
     const planTabs = its.map(p => ({ name: p.name, pick: () => this.persist({ plan: p.id, day: 1 }),
       style: css('flex:none;padding:8px 13px;min-height:38px;display:flex;align-items:center;font-size:12.5px;font-weight:500;border-radius:999px;cursor:pointer;white-space:nowrap;' +
         (p.id === st.plan ? 'background:var(--color-accent);color:#fff;border:1px solid var(--color-accent)' : 'background:var(--color-surface);color:var(--color-neutral-400);border:1px solid var(--color-divider)')) }));
-    const dayList = ids => (ids || []).map(id => byId[id]).filter(Boolean).map(x => ({ n: x.n, meta: x.meta, age: x.age, bStyle: badge(x.b).s, bLabel: badge(x.b).l, thumbStyle: thumb(x.id, x.kind), open: () => this.openPoi(x.id) }));
+    const dayList = ids => (ids || []).map(id => byId[id]).filter(Boolean).map(x => ({ n: x.n, meta: x.meta, age: x.age, bStyle: badge(x.b).s, bLabel: badge(x.b).l, thumbStyle: thumb(x.id, x.kind), open: () => this.openPoi(x.id), ...ratingOf(x) }));
     const dayStops = d => dayList(d.stops);
     const routeUrl = d => {
       const pts = (d.stops || []).map(id => byId[id]).filter(Boolean).map(x => x.q || x.n);
@@ -1225,9 +1278,6 @@ class Component extends DCLogic {
       markIcon: (d.d === st.day ? 'ph-fill' : 'ph') + ' ph-map-pin',
       markStyle: { fontSize: '18px', color: d.d === st.day ? 'var(--color-accent)' : 'var(--color-neutral-600)' },
       setCurrent: () => this.persist({ day: d.d }) }));
-    const curRaw = (plan.days || []).find(d => d.d === st.day) || (plan.days || [])[0] || { d: 1, wd: '', t: '', mod: '', drive: '', sleep: '', stops: [] };
-    const curDay = { ...curRaw, label: curRaw.d + '. nap · ' + curRaw.wd + ' · Modul ' + curRaw.mod,
-      stops: dayStops(curRaw), opts: dayList(curRaw.opts), hasOpts: !!(curRaw.opts && curRaw.opts.length), route: routeUrl(curRaw) };
     const dayRoutes = (plan.days || []).map(d => ({ d: d.d, t: d.t, sleep: d.sleep, route: routeUrl(d),
       numStyle: css('flex:none;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:13px;font-size:12px;font-weight:600;background:var(--color-neutral-900);color:var(--color-neutral-400)') }));
     const fullRoute = (() => {
@@ -1305,8 +1355,8 @@ class Component extends DCLogic {
     const checkDone = checklist.filter(k => st.checks[k.id]).length;
 
     const tabs = [
-      { id: 'today', label: 'Ma', icon: 'ph-sun-horizon' },
       { id: 'plan', label: 'Útiterv', icon: 'ph-path' },
+      { id: 'today', label: 'Ma', icon: 'ph-sun-horizon' },
       { id: 'explore', label: 'Felfedezés', icon: 'ph-compass' },
       { id: 'map', label: 'Térkép', icon: 'ph-map-trifold' },
       { id: 'saved', label: 'Mentve', icon: 'ph-bookmark-simple' }
@@ -1324,14 +1374,22 @@ class Component extends DCLogic {
     return {
       ...base,
       tripOpen: true, navVisible: true,
-      tripName: T.name || T.title || '', tripPeriod: T.period || '',
-      canSwitchTrip: canSwitch,
-      // With more than one guidebook this is the only way back to the picker, so
-      // give it a border and a chevron instead of leaving it looking like a label.
-      tripBtnStyle: css('display:flex;align-items:center;gap:7px;min-width:0;' + (canSwitch
-        ? 'cursor:pointer;margin-left:-9px;padding:5px 9px;border:1px solid var(--color-divider);border-radius:999px'
-        : '')),
-      openPicker: () => { if (canSwitch) this.exitTrip(); },
+      // Útikönyvek › <út> › <hely>. Each earlier segment walks back one level.
+      crumbs: (() => {
+        const tripName = T.name || T.title || '';
+        if (!poi) return [
+          crumb('Útikönyvek', canSwitch ? () => this.exitTrip() : null, false, true),
+          crumb(tripName, null, true)
+        ];
+        return [
+          crumb('Útikönyvek', canSwitch ? () => this.exitTrip() : null, false, true),
+          crumb(tripName, () => this.uiBack()),
+          crumb(poi.n, null, true)
+        ];
+      })(),
+      // The place screen has its own bookmark button in the hero, and the trail
+      // needs the room.
+      showSaved: !poi,
       savedCount: st.saved.length,
       goSaved: () => this.nav('saved'),
       poiOpen: !!poi, poi,
@@ -1344,7 +1402,6 @@ class Component extends DCLogic {
       sleepBlock, eatBlock, sleepLabelColor, eatLabelColor, dayRoutes, fullRoute,
       todayPanel: css('margin-top:14px;padding:15px 16px;background:var(--color-accent-900);border:1px solid var(--color-accent-800);border-radius:var(--radius-lg);color:var(--color-accent-100)'),
       planName: plan.name, planNote: plan.note, planTabs, planDays,
-      curDay, prevDay: () => this.persist({ day: Math.max(1, st.day - 1) }), nextDay: () => this.persist({ day: Math.min((plan.days || []).length || 1, st.day + 1) }),
       catTabs, groups, noResults: groups.length === 0,
       query: st.query, onQuery: e => this.setState({ query: e.target.value }),
       hasQuery: st.query.length > 0, clearQuery: () => this.setState({ query: '' }),

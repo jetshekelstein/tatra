@@ -2,7 +2,7 @@
 // App-shell files are precached on install; everything else (including
 // cross-origin CDN/font/Wikimedia requests) is cached the first time it's
 // fetched, then served stale-while-revalidate.
-const VERSION = 'v4';
+const VERSION = 'v5';
 const PRECACHE = 'precache-' + VERSION;
 const RUNTIME = 'runtime-' + VERSION;
 
@@ -13,6 +13,7 @@ const APP_SHELL = [
   './manifest.json',
   './version.json',
   './support.js',
+  './config.js',
   './trips/registry.js',
   './trips/tatra.js',
   './trips/gombaszog.js',
@@ -75,6 +76,9 @@ const APP_SHELL = [
 // photos from Wikimedia (falls back to the "photo hamarosan" placeholder).
 // React/ReactDOM/Phosphor icons are vendored locally, so they're already
 // covered by APP_SHELL above and don't need a CDN at all.
+// Not listed here on purpose: places.googleapis.com. Rating lookups must not be
+// cached by the worker — the app caches the *numbers* in IndexedDB instead, so a
+// cached HTTP response would only ever hide a refresh.
 const RUNTIME_HOSTS = new Set([
   'fonts.googleapis.com',
   'fonts.gstatic.com',

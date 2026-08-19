@@ -22,9 +22,9 @@ modules: [
   d:'Európai ritkaság ezen a szélességen: jeges torkú zsomboly, aminek a szája elé oda lehet sétálni — augusztusban is hideget lehel. Bemenni nem lehet, és nem is kell: a hidegfújás maga a mutatvány, a gyerekek arca pedig a jutalom.',
   w:'Mindig nyitva, ingyen. Kánikulai délutánra időzítsétek — ez a család klímaberendezése.'}],
  sleep:[
- {n:'Gombaszögi kemping — a horgony', q:'Gombaszög kemping Slavec', tel:'+421 917 057 077',
+ {n:'Gombaszögi kemping — a horgony', q:'Gombaszög kemping Slavec', tel:'+421 917 057 077', rating:4.7,
   d:'Nagy füves rét a Szlovák-karszt kapujában: patak függőhíddal és műkrokodilokkal, 9 °C-os barlangvizű természetes medence, lovak, függőágyak. A Gombasecká-barlang kétszáz méter. A zipline fejlesztés miatt jelenleg zárva. 4,7★ · kemping@gombaszog.sk · Bookingon is foglalható. Akkor ez: ha a barlangot gyalog akarjátok elérni, és a gyerekek fél napot a patakban töltenének.'},
- {n:'✕ Dedinky · Hotel Priehrada kemping — túl messze', q:'Hotel Priehrada Dedinky',
+ {n:'✕ Dedinky · Hotel Priehrada kemping — túl messze', q:'Hotel Priehrada Dedinky', rating:3.3,
   d:'Gyönyörű tófekvés 800 méteren — de gyenge vizesblokk, hétvégi zaj, és jóval messzebb, mint amit ez a hétvége elbír. 3,3★. Ezen az úton nem ajánlott; a Szlovák Paradicsom-modullal párosítva legközelebb — az egy másik nyaralás, saját szurdokokkal.'}],
  eat:[
  {n:'Koliba-büfék a Gombasecká parkolójánál', q:'Gombasecká jaskyňa', d:'Grill és leves a barlang előtt vagy után — a legrövidebb séta a kempingből.'},
@@ -71,7 +71,7 @@ modules: [
   d:'Klasszikus cseppkőbarlang, kényelmes tempóban. A kicsikkel figyeljetek: a túra közepén van egy „teljes sötétség" pillanat — előre beszéljétek meg, és akkor élmény lesz, nem ijedtség.',
   w:'Kedd–vasárnap 9–16, HÉTFŐN ZÁRVA, CSAK KÉSZPÉNZ. Bent 9–10 °C: pulóver.'}],
  sleep:[
- {n:'Hammer Lake Camp, Nižný Medzev — a horgony', q:'Hammer Lake Camp Nižný Medzev', tel:'+421 902 202 030',
+ {n:'Hammer Lake Camp, Nižný Medzev — a horgony', q:'Hammer Lake Camp Nižný Medzev', tel:'+421 902 202 030', rating:4.9,
   d:'Kis családi kemping saját patakkal gátépítéshez és pisztrángtóval: fogd ki és grillezd meg — gyerek-főnyeremény. Játszótér, konyha, angolul beszélő, segítőkész tulaj, sétatávra nyitott medence. Csendes, kevés emberrel: a ti „fél nap a pataknál" filozófiátok testet öltve. 4,9★ · egész évben · hammerlakecamp.sk. Akkor ez: ha a hosszú hétvégén tömeg helyett saját patakot akartok.'}],
  eat:[
  {n:'Pisztráng a saját tóból, a grillen', q:'Hammer Lake Camp Nižný Medzev', d:'A kempingből ki sem kell mozdulni. Reggel szóljatok a tulajnak, hogy estére grilleznétek — így a fogás is a program része lesz.'},
@@ -99,7 +99,7 @@ modules: [
   d:'FIGYELEM: az alacsony vízállás miatt a híres csónakos túra 2026. február 1. óta nem üzemel — csak a gyalogos kör megy. Így másodhegedűs a Baradla mögött; akkor éri meg, ha amúgy is a szlovák oldalon maradnátok.',
   w:'Kedd–vasárnap 9–16, HÉTFŐN ZÁRVA, CSAK KÉSZPÉNZ.'}],
  sleep:[
- {n:'Baradla Kemping és Turistaszálló — a horgony', q:'Baradla Kemping Aggtelek', tel:'+36 48 503 005',
+ {n:'Baradla Kemping és Turistaszálló — a horgony', q:'Baradla Kemping Aggtelek', tel:'+36 48 503 005', rating:4.3,
   d:'Közvetlenül az aggteleki barlangbejáratnál: csendes, tiszta — ha kicsit régies — vizesblokk, konyha, étterem a szomszédban. Egész évben nyitva, kártya és SZÉP-kártya is megy. 4,3★ · Aggtelek, Baradla oldal 3 · +36 30 861 9427 · ~€20/éj lakóautó + 2 fő nagyságrend. Akkor ez: ha a Baradla első turnusára akartok érni. Patak nincs — ez a gyengéje.'}],
  eat:[
  {n:'Baradla Étterem a bejáratnál', q:'Baradla Étterem Aggtelek', d:'Gulyás, palacsinta, reggeli is.'},

@@ -1,6 +1,6 @@
 {
-  "version": "2026-08-19.2",
-  "sw": "v4",
+  "version": "2026-08-19.3",
+  "sw": "v5",
   "date": "2026-08-19",
-  "notes": "Indításnál az útválasztó jön be, nem ugrik vissza a Tátrába; a fejlécben látszik, hogy váltani lehet."
+  "notes": "Az Útiterv nyílik elsőként, a Ma fül a döntéstáblával kezd, a fejlécben nyomvonal vezet vissza az útikönyvekhez, és a helyeknél megjelenik a Google-értékelés."
 }
