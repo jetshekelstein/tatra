@@ -104,8 +104,11 @@ Két helyre kell felvenni a fájlt:
    A sorrend nem számít — a registry `date` szerint rendez.
 
 2. `sw.js`, az `APP_SHELL` listában: a trip fájl és a fotói, hogy offline is
-   meglegyenek. **És emeld a `VERSION`-t** (`v2` → `v3`), különben a régi cache
+   meglegyenek. **És emeld a `VERSION`-t** (`v3` → `v4`), különben a régi cache
    marad érvényben.
+
+3. `version.json`: emeld a `version` mezőt, és írd át a `notes`-t egy mondatra.
+   Erről tudja az app, hogy van új kiadás — lásd lentebb.
 
 ## 3. Fotók
 
@@ -116,6 +119,41 @@ cache-be, tehát a méret közvetlenül a telepítés méretét növeli.
 Ebben a konténerben nincs `cwebp` és `PIL`, de a headless Chromium tud WebP-t
 írni — a `photos/gombaszog/` készlete így készült (canvas → `toDataURL('image/webp', 0.68)`,
 max 800 px szélesség).
+
+## 4. Kiadás — hogy az app észrevegye
+
+Minden deploynál **emeld a `version.json` `version` mezőjét**. Ez a kiadás
+azonosítója; az app ezt hasonlítja össze, és ebből lesz a „Van új verzió"
+értesítés. A `notes` szövege jelenik meg a felhasználónak, szóval írj bele
+emberi nyelven egy mondatot arról, mi változott.
+
+```json
+{
+  "version": "2026-08-20.1",
+  "sw": "v3",
+  "date": "2026-08-20",
+  "notes": "Szádelő nyitvatartás javítva."
+}
+```
+
+Hogyan működik a keresés (`Mentve` fül alján, `Alkalmazás` blokk):
+
+| Jel | Mit néz |
+| --- | --- |
+| `version.json` | A service worker gyorsítótárában lévő példány a **futó** kiadást bélyegzi (telepítéskor került oda); a hálózatról lekért (`?live=`) példány azt, ami **most van kiadva**. Ha a kettő eltér, van frissítés. |
+| `sw.js` | `registration.update()` — ha a `VERSION` változott, a böngésző magától újratelepíti a workert. |
+| GitHub commit API | Csak információ: kiírja, mi változott utoljára és mikor. Publikus repó, token nem kell. Ha nem érhető el, a keresés ettől is működik. |
+
+Ellenőriz: indítás után 4 másodperccel, valahányszor előhozod az appot
+(félóránként legfeljebb egyszer), és amikor rákoppintasz.
+
+A „Frissítés most" megkéri a service workert, hogy töltse le újra az
+app-shellt a meglévő cache **fölé**, és csak utána tölt újra — a cache
+törlése ugyanis hagyna egy pillanatot, amikor az újratöltés nem talál
+semmit, és az app stílus nélkül jön fel.
+
+Ha elfelejtetted emelni a `version.json`-t, a `Gyorsítótár törlése` link
+ugyanezt kézzel elvégzi.
 
 ## Amit a váz automatikusan hoz
 

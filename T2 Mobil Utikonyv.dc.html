@@ -112,6 +112,10 @@
       </sc-for>
     </div>
     <p class="text-muted" style="margin:18px 0 0;font-size:11px;letter-spacing:0.06em;text-transform:uppercase">Offline is működik · minden út saját mentett helyekkel és csomaglistával</p>
+    <div style="display:flex;align-items:center;gap:10px;margin-top:10px">
+      <span class="text-muted" style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase">{{ updVersionLine }}</span>
+      <div role="button" tabindex="0" onClick="{{ checkNow }}" style="min-height:34px;display:flex;align-items:center;font-size:12px;color:var(--color-accent-300);cursor:pointer">Frissítés keresése</div>
+    </div>
   </div>
   </sc-if>
 
@@ -507,6 +511,27 @@
         </div>
       </sc-for>
     </div>
+
+    <h6 style="margin:30px 0 0;color:var(--color-neutral-500)">Alkalmazás</h6>
+    <div style="{{ updBoxStyle }}">
+      <div style="display:flex;align-items:flex-start;gap:11px">
+        <i class="{{ updIcon }}" style="{{ updIconStyle }}"></i>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:500;font-size:14px">{{ updTitle }}</div>
+          <p class="text-muted" style="margin:4px 0 0;font-size:12.5px">{{ updNote }}</p>
+        </div>
+      </div>
+      <sc-if value="{{ updHasRepo }}" hint-placeholder-val="{{ false }}">
+        <p class="text-muted" style="margin:11px 0 0;padding-top:10px;border-top:1px solid var(--color-divider);font-size:12px"><i class="ph ph-git-commit" style="margin-right:6px"></i>{{ updRepoLine }}</p>
+      </sc-if>
+      <div style="display:flex;align-items:center;gap:14px;margin-top:13px">
+        <div role="button" tabindex="0" onClick="{{ updAction }}" style="{{ updBtnStyle2 }}">{{ updBtnLabel }}</div>
+        <sc-if value="{{ updShowForce }}" hint-placeholder-val="{{ false }}">
+          <div role="button" tabindex="0" onClick="{{ updForce }}" class="text-muted" style="min-height:38px;display:flex;align-items:center;font-size:12px;cursor:pointer">Gyorsítótár törlése</div>
+        </sc-if>
+      </div>
+    </div>
+    <p class="text-muted" style="margin:14px 0 0;font-size:11px;letter-spacing:0.06em;text-transform:uppercase">Automatikusan is ellenőriz, valahányszor előhozod az appot</p>
   </div>
   </sc-if>
 
@@ -516,9 +541,9 @@
     <div role="button" tabindex="0" onClick="{{ scrollTop }}" aria-label="Vissza a tetejére" style="{{ topBtnStyle }}"><i class="ph ph-arrow-up" style="font-size:18px"></i></div>
   </sc-if>
 
-  <sc-if value="{{ updateReady }}" hint-placeholder-val="{{ false }}">
+  <sc-if value="{{ updBanner }}" hint-placeholder-val="{{ false }}">
     <div style="{{ updateBarStyle }}">
-      <span style="flex:1;min-width:0;font-size:13px">Új verzió töltődött le.</span>
+      <span style="flex:1;min-width:0;font-size:13px">Új verzió elérhető.</span>
       <div role="button" tabindex="0" onClick="{{ doUpdate }}" style="{{ updateBtnStyle }}">Frissítés</div>
     </div>
   </sc-if>
@@ -575,11 +600,25 @@ function idbSet(key, value) {
 // ('t:<tab>' / 'p:<poiId>') to the scroll offset it was left at.
 const TRIP_DEFAULTS = { saved: [], checks: {}, tab: 'today', plan: null, day: 1, today: null, poi: null, poiStack: [], scroll: {} };
 
+// ── Update checking ─────────────────────────────────────────────────────────
+// Two signals, in order of authority:
+//  1. version.json. The copy in the service worker's precache was fetched at
+//     install time, so it stamps the build that is *running*; the copy on the
+//     network is what GitHub Pages serves right now. Different stamps mean a
+//     newer build is live. sw.js deliberately never answers version.json from
+//     cache, so the network read can't come back stale.
+//  2. The GitHub commits API (public repo, no auth). Informational only: it
+//     shows what changed last and when, and it still notices a push where
+//     version.json was not bumped.
+const REPO = 'jetshekelstein/tatra', REPO_BRANCH = 'main';
+const CHECK_EVERY = 30 * 60 * 1000;   // don't re-check on every tab focus
+
 class Component extends DCLogic {
   state = { trips: [], trip: null, ready: false,
             tab: 'today', poi: null, poiStack: [], day: 1, plan: null, cat: 'all', query: '', today: null,
             saved: [], checks: {}, theme: 'dark', wikiImgs: {}, essOpen: false,
-            showTop: false, updateReady: false };
+            showTop: false, updateReady: false,
+            upd: { state: 'idle', live: null, running: null, newer: false, repo: null, when: 0 } };
 
   componentDidMount() {
     this._app = {};          // the shared 'app' blob
@@ -617,6 +656,12 @@ class Component extends DCLogic {
     window.addEventListener('guide-update', this._onUpd);
     if (window.__guideUpdateReady) this.setState({ updateReady: true });
 
+    // Coming back to a backgrounded PWA is exactly when a new deploy is likely,
+    // so re-check then — throttled, so switching tabs doesn't spam anything.
+    this._onVis = () => { if (document.visibilityState === 'visible') this.checkUpdates(false); };
+    document.addEventListener('visibilitychange', this._onVis);
+    setTimeout(() => this.checkUpdates(false), 4000);
+
     this.waitTrips();
   }
 
@@ -624,6 +669,65 @@ class Component extends DCLogic {
     window.removeEventListener('popstate', this._onPop);
     window.removeEventListener('scroll', this._onScroll);
     window.removeEventListener('guide-update', this._onUpd);
+    document.removeEventListener('visibilitychange', this._onVis);
+  }
+
+  checkUpdates(manual) {
+    const cur = this.state.upd || {};
+    if (cur.state === 'checking') return;
+    if (!manual && cur.when && Date.now() - cur.when < CHECK_EVERY) return;
+    this.setState({ upd: { ...cur, state: 'checking' } });
+
+    // Nudge the browser into re-fetching sw.js. If its VERSION moved, the
+    // 'updatefound' handler in the page head raises the banner on its own.
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.getRegistration().then(r => r && r.update()).catch(() => {});
+    }
+
+    // ?live= bypasses the worker entirely → what the server has now.
+    const live = fetch('./version.json?live=' + Date.now(), { cache: 'no-store' })
+      .then(r => r.ok ? r.json() : null).catch(() => null);
+    // Plain path is answered from the worker's cache without revalidating → the
+    // stamp of the build we are actually running.
+    const running = fetch('./version.json')
+      .then(r => r.ok ? r.json() : null).catch(() => null);
+    const repo = fetch('https://api.github.com/repos/' + REPO + '/commits?sha=' + REPO_BRANCH + '&per_page=1')
+      .then(r => r.ok ? r.json() : null)
+      .then(j => (j && j[0] && j[0].commit) ? {
+        sha: String(j[0].sha).slice(0, 7),
+        msg: String(j[0].commit.message || '').split('\n')[0],
+        date: j[0].commit.author && j[0].commit.author.date,
+        url: j[0].html_url
+      } : null)
+      .catch(() => null);
+
+    Promise.all([live, running, repo]).then(([l, r, g]) => {
+      // Equal stamps (or no stamp at all, before the worker has cached one) mean
+      // the page already is the live build — not an update.
+      const newer = !!(l && r && l.version && r.version && l.version !== r.version);
+      this.setState({ upd: { state: l ? 'ok' : 'fail', live: l, running: r || l, newer, repo: g, when: Date.now() } });
+    });
+  }
+
+  applyUpdate() {
+    let settled = false;
+    const done = () => { if (settled) return; settled = true; window.location.reload(); };
+    const sw = navigator.serviceWorker;
+    // A new worker installed itself (sw.js calls skipWaiting), so it is already
+    // active and a plain reload lands on the new build.
+    if (this.state.updateReady || !sw || !sw.controller) { done(); return; }
+    // Content-only deploy: sw.js is unchanged, so no install ran and its cache
+    // still holds the old files. Have the worker refetch the shell in place —
+    // clearing the cache from here would leave a window where the reload finds
+    // nothing to serve and comes up unstyled.
+    this.setState({ upd: { ...(this.state.upd || {}), state: 'applying' } });
+    const onMsg = e => {
+      const t = (e.data || {}).type;
+      if (t === 'refreshed' || t === 'refresh-failed') done();
+    };
+    sw.addEventListener('message', onMsg);
+    setTimeout(done, 15000);   // never leave the button spinning forever
+    sw.controller.postMessage({ type: 'refresh' });
   }
 
   componentDidUpdate() {
@@ -891,6 +995,69 @@ class Component extends DCLogic {
     const updateBarStyle = css('position:fixed;left:50%;transform:translateX(-50%);bottom:calc(74px + env(safe-area-inset-bottom));z-index:46;width:calc(100% - 32px);max-width:488px;display:flex;align-items:center;gap:10px;padding:11px 12px 11px 14px;border-radius:var(--radius-md);background:var(--color-accent);color:#fff;box-shadow:0 8px 24px rgba(0,0,0,0.28)');
     const updateBtnStyle = css('flex:none;padding:7px 12px;min-height:34px;display:flex;align-items:center;font-size:12.5px;font-weight:600;border-radius:999px;cursor:pointer;background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.35)');
 
+    // ---- update state ----
+    const upd = st.upd || {};
+    const rel = iso => {
+      const ms = Date.now() - new Date(iso).getTime();
+      if (!(ms >= 0)) return '';
+      const m = Math.round(ms / 60000);
+      if (m < 1) return 'épp most';
+      if (m < 60) return m + ' perce';
+      const h = Math.round(m / 60);
+      if (h < 24) return h + (h === 1 ? ' órája' : ' órája');
+      return Math.round(h / 24) + ' napja';
+    };
+    const updNewer = !!(upd.newer || st.updateReady);
+    const liveV = (upd.live && upd.live.version) || '';
+    const runV = (upd.running && upd.running.version) || '';
+    const updVals = (() => {
+      const box = b => css('margin-top:8px;padding:13px 14px;background:var(--color-surface);border:1px solid ' + b + ';border-radius:var(--radius-md)');
+      const btn = accent => css('flex:none;padding:8px 14px;min-height:38px;display:flex;align-items:center;font-size:12.5px;font-weight:600;border-radius:999px;cursor:pointer;' +
+        (accent ? 'background:var(--color-accent);color:#fff;border:1px solid var(--color-accent)' : 'background:transparent;color:var(--color-neutral-400);border:1px solid var(--color-neutral-700)'));
+      const icon = (cls, color) => ({ cls, style: { fontSize: '19px', flex: 'none', marginTop: '1px', color } });
+      let i, title, note;
+      if (upd.state === 'applying') {
+        i = icon('ph ph-arrows-clockwise', 'var(--color-accent)');
+        title = 'Frissítés…';
+        note = 'Az új verzió letöltése, aztán újraindul. Ne zárd be.';
+      } else if (updNewer) {
+        i = icon('ph-fill ph-arrow-circle-down', 'var(--color-accent)');
+        title = 'Új verzió elérhető';
+        note = ((upd.live && upd.live.notes) ? upd.live.notes + ' ' : '') +
+          (liveV ? '(v' + liveV + (runV ? ' · most: v' + runV : '') + ')' : '');
+      } else if (upd.state === 'checking') {
+        i = icon('ph ph-arrows-clockwise', 'var(--color-neutral-500)');
+        title = 'Ellenőrzés…';
+        note = 'Frissítés keresése a GitHubon.';
+      } else if (upd.state === 'fail') {
+        i = icon('ph ph-wifi-slash', 'var(--color-neutral-500)');
+        title = 'Nem sikerült ellenőrizni';
+        note = 'Offline? A könyv offline is működik — a frissítéshez internet kell.';
+      } else if (upd.state === 'ok') {
+        i = icon('ph ph-check-circle', light ? '#0f6079' : '#63aec4');
+        title = 'Az app friss';
+        note = (runV ? 'v' + runV + ' · ' : '') + 'ellenőrizve ' + rel(new Date(upd.when).toISOString());
+      } else {
+        i = icon('ph ph-cloud-arrow-down', 'var(--color-neutral-500)');
+        title = 'Frissítés keresése';
+        note = 'Megnézi, van-e újabb kiadás a GitHubon. Offline is használható marad.';
+      }
+      return {
+        updIcon: i.cls, updIconStyle: i.style, updTitle: title, updNote: note,
+        updBoxStyle: box(updNewer ? 'var(--color-accent)' : 'var(--color-divider)'),
+        updBtnStyle2: btn(updNewer), updBtnLabel: updNewer ? 'Frissítés most' : 'Frissítés keresése',
+        updAction: () => updNewer ? this.applyUpdate() : this.checkUpdates(true),
+        updBusy: upd.state === 'checking' || upd.state === 'applying',
+        updShowForce: !updNewer && upd.state !== 'checking' && upd.state !== 'applying',
+        updForce: () => this.applyUpdate(),
+        updRepoLine: upd.repo ? (upd.repo.msg + (upd.repo.date ? ' · ' + rel(upd.repo.date) : '')) : '',
+        updHasRepo: !!upd.repo,
+        updBanner: updNewer,
+        updVersionLine: runV ? 'v' + runV : '',
+        checkNow: () => this.checkUpdates(true)
+      };
+    })();
+
     const base = {
       ready: st.ready, rootStyle, headerStyle, navBarStyle, inputStyle,
       ageChip, warnChip, mikorLabel, tipStyle,
@@ -904,11 +1071,13 @@ class Component extends DCLogic {
       pickerOpen: false, tripCards: [], poiOpen: false, poi: null,
       tToday: false, tPlan: false, tExplore: false, tMap: false, tSaved: false,
       savedCount: 0, navItems: [],
+      // update block / banner
+      ...updVals,
       // overlays
       showTop: false, goSaved: () => {},
       scrollTop: () => { try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, 0); } },
       topBtnStyle, updateReady: st.updateReady, updateBarStyle, updateBtnStyle,
-      doUpdate: () => window.location.reload()
+      doUpdate: () => this.applyUpdate()
     };
 
     if (!st.ready) return base;
