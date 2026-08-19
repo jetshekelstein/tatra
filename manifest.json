@@ -1,7 +1,7 @@
 {
   "name": "T2 Mobil Útikönyv",
   "short_name": "T2 Útikönyv",
-  "description": "Eger → Tátra családi útikönyv: modulok, útiterv, térképek, mentett helyek — offline is elérhető.",
+  "description": "Családi útikönyvek egy appban: válaszd ki az utat, aztán modulok, útiterv, térképek, mentett helyek — offline is elérhető.",
   "start_url": "./T2%20Mobil%20Utikonyv.dc.html",
   "scope": "./",
   "id": "/T2%20Mobil%20Utikonyv.dc.html",

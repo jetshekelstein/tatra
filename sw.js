@@ -2,7 +2,7 @@
 // App-shell files are precached on install; everything else (including
 // cross-origin CDN/font/Wikimedia requests) is cached the first time it's
 // fetched, then served stale-while-revalidate.
-const VERSION = 'v1';
+const VERSION = 'v2';
 const PRECACHE = 'precache-' + VERSION;
 const RUNTIME = 'runtime-' + VERSION;
 
@@ -12,7 +12,9 @@ const APP_SHELL = [
   './T2%20Mobil%20Utikonyv.dc.html',
   './manifest.json',
   './support.js',
-  './guide-data.js',
+  './trips/registry.js',
+  './trips/tatra.js',
+  './trips/gombaszog.js',
   './_ds/nocturne-ac2cafb2-92d5-4812-bf7e-e1f1372013a8/styles.css',
   './_ds/nocturne-ac2cafb2-92d5-4812-bf7e-e1f1372013a8/_ds_bundle.js',
   './icons/icon-192.png',
@@ -38,6 +40,28 @@ const APP_SHELL = [
   './photos/cp3.webp',
   './photos/cp4.webp',
   './photos/p5.webp',
+  './photos/gombaszog/aggtelek.webp',
+  './photos/gombaszog/baradla-a.webp',
+  './photos/gombaszog/baradla-c.webp',
+  './photos/gombaszog/betliar-a.webp',
+  './photos/gombaszog/cover.webp',
+  './photos/gombaszog/dedinky.webp',
+  './photos/gombaszog/derenk-a.webp',
+  './photos/gombaszog/gombasecka.webp',
+  './photos/gombaszog/haj.webp',
+  './photos/gombaszog/karszt.webp',
+  './photos/gombaszog/krasnohorska.webp',
+  './photos/gombaszog/mauzoleum.webp',
+  './photos/gombaszog/medzev.webp',
+  './photos/gombaszog/ochtina.webp',
+  './photos/gombaszog/potok.webp',
+  './photos/gombaszog/roznava.webp',
+  './photos/gombaszog/rudabanya.webp',
+  './photos/gombaszog/silica.webp',
+  './photos/gombaszog/straw.webp',
+  './photos/gombaszog/szadvar-b.webp',
+  './photos/gombaszog/torna.webp',
+  './photos/gombaszog/zadiel-b.webp',
   './maps/01-map.png',
   './maps/02-map.png',
   './maps/03-map.png',

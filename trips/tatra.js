@@ -1,5 +1,8 @@
-// T2 Útikönyv — tartalom (a nyomtatott kalauzból). window.T2GUIDE
-window.T2GUIDE = {
+// Trip: T2 · Eger → Tátra (2026. július) — content from the printed guidebook.
+// Registered into the shared shell via registerTrip(); see docs/ADDING-A-TRIP.md.
+(function () {
+
+const data = {
 modules: [
 {id:'A', letter:'A', title:'Zemplén', full:'Zemplén — várak vulkáni kúpokon és egy óriási híd', kicker:'Modul A · Magyar oldal', sub:'Vulkáni dombok, hegytetői romok, termálvíz · 1–2 nap', transit:'Eger → Boldogkő ≈ 1 óra · a végén 5 percre a szlovák határtól',
  pois:[
@@ -235,7 +238,7 @@ checklist:[
 {id:'k6', t:'Olajnyomás-mérő a sofőr szeme előtt, alacsony fokozat minden lejtőn'}]
 };
 
-window.T2GUIDE.itineraries = [
+data.itineraries = [
 {id:'full', name:'A teljes kör', tag:'7–8 nap · vas→vas', note:'Az ajánlott lánc: felfelé A → B → D, bázistábor a Tátrában, kirándulás a Dunajechez, hazafelé a gömöri folyosó. A kötelező program a felső blokk — alatta az aznap elérhető opciók.',
  days:[
  {d:1, wd:'vasárnap', t:'Eger → Zemplén', mod:'A', drive:'Eger → Boldogkő ≈ 1 óra', from:'Eger', stops:['a1'], opts:['a2'], sleep:'Végardófürdő Kemping, Sárospatak', sleepQ:'Végardó Fürdő Camping Sárospatak', tip:'Ha korán indultok, a Rákóczi-vár és a Megyer-hegyi tengerszem már ma belefér — akkor holnap tiszta kalandpark-nap lesz.'},
@@ -263,3 +266,48 @@ window.T2GUIDE.itineraries = [
  {d:3, wd:'3. nap', t:'Szurdoknap', mod:'CP', drive:'a kempingből gyalog', from:'Autocamping Podlesok Hrabušice', stops:['cp1'], opts:['cp2','cp4','cp6'], sleep:'Podlesok', sleepQ:'Autocamping Podlesok Hrabušice', tip:'Korán indulj — délutánra torlódnak a létrák.'},
  {d:4, wd:'4. nap', t:'Haza', mod:'C', drive:'≈ 3 óra', from:'Autocamping Podlesok Hrabušice', stops:['cp3'], opts:['c3'], sleep:'otthon, Eger', sleepQ:'Eger', tip:''}]}
 ];
+
+window.registerTrip({
+  id: 'tatra',
+  // Sort key for the picker — newest trip first.
+  date: '2026-07-19',
+  // Header line inside the app, and the picker card.
+  name: 'T2 · Eger → Tátra',
+  period: '2026. júl.',
+  title: 'Eger → Tátra',
+  kicker: 'T2 · 8 nap · 7 modul',
+  tagline: 'Zemplén, Kassa, a Szepesség, a Dunajec és a Magas-Tátra egy láncban — bázistábor Tátralomnicon, hazafelé a gömöri barlangfolyosó.',
+  cover: 'photos/hero.webp',
+  verified: 'Adatok ellenőrizve 2026 júliusában · az árak és a nyitvatartás változik',
+  // Default origin for the day-route deep links.
+  origin: 'Eger',
+  // Modules drawn with the teal initial instead of the brick-red one.
+  accentModules: ['CP', 'F'],
+  // Explore-tab bucket for items that hang off a base camp rather than a module.
+  extraGroup: { letter: 'F+', title: 'Túrák és napi tervek', sub: 'A Tatranec bázisból' },
+  mapIntro: 'Egerből minden északkelet felé fut egy láncban: Zemplén (A) egy óra; a schengeni határon át Kassa (B) +30 perc. Kassáról választasz: nyugatra Gömör (C), vagy északra a Szepességen (D) át — mindkét út a Tátrában (F) végződik. A Pieniny (E) a szepesi út tetejéről lóg le, a Szlovák Paradicsom (C+) a két folyosó között félúton.',
+  maps: [
+    { f: 'maps/01-map.png', t: 'A teljes kör', link: 'Útiterv', tab: 'plan' },
+    { f: 'maps/02-map.png', t: 'A és B modul — Zemplén, Kassa', link: 'Felfedezés', tab: 'explore' },
+    { f: 'maps/03-map.png', t: 'D és E modul — Szepesség, Dunajec', link: 'Felfedezés', tab: 'explore' },
+    { f: 'maps/04-map.png', t: 'Túrák és felvonók a Tátrában', link: 'Felfedezés', tab: 'explore' },
+    { f: 'maps/05-map.png', t: 'Hazafelé — C modul', link: 'Felfedezés', tab: 'explore' }
+  ],
+  // Photos shipped in the repo (photos/<id>.webp) — everything else falls back
+  // to Wikimedia, then to the "fotó hamarosan" placeholder.
+  photoDir: 'photos/',
+  photos: ['hero', 'a3', 'b4', 'b6', 'd4', 'e5', 'e4', 'cp1', 'cp2', 'cp4', 'p5', 'cp3'],
+  // Pinned Wikimedia files where the Wikipedia summary API picks a weak image.
+  wikiFiles: {
+    a1: 'Boldogk%C5%91%20-%20Castle.jpg', a2: 'S%C3%A1rospatak%20-%20Castle.jpg',
+    b5: 'Herlany%20gejzir.jpg', b7: 'D%C3%B3m%20sv%C3%A4tej%20Al%C5%BEbety.jpg',
+    c1: 'Dob%C5%A1insk%C3%A1%20%C4%BEadov%C3%A1%20jasky%C5%88a%20Ice%20form%20well.jpg', c2: 'Betliar%201.jpg',
+    d1: 'Spi%C5%A1sk%C3%BD%20hrad.jpg', d3: '%C4%BDubovniansky%20hrad%2C%20Apr%C3%ADl%202013.jpg',
+    f1: 'Skalnat%C3%A9%20pleso.jpg', f2: 'Hrebienok.jpg', f3: '%C5%A0trbsk%C3%A9%20pleso.jpg',
+    p1: 'Zamkovsk%C3%A9ho%20chata%204.JPG', p2: '%C5%A0trbsk%C3%A9%20pleso.jpg',
+    p3: 'Chata%20pri%20Zelenom%20plese.jpg', p4: 'Vodop%C3%A1dy%20Studen%C3%A9ho%20potoka.jpg'
+  },
+  data: data
+});
+
+})();
