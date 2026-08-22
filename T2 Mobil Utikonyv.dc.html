@@ -138,11 +138,12 @@
             <p class="text-muted" style="margin:10px 0 0;font-size:12.5px">A könyvekből semmi sincs ilyen közel — válts nagyobb távra, vagy nézd meg, mit tud a környék:</p>
           </sc-if>
           <sc-if value="{{ geoOn }}" hint-placeholder-val="{{ false }}">
-            <div style="display:flex;align-items:center;gap:12px;margin-top:11px">
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:4px 14px;margin-top:11px">
               <div role="button" tabindex="0" onClick="{{ stopGeo }}" class="text-muted" style="min-height:36px;display:flex;align-items:center;font-size:12.5px;cursor:pointer"><i class="ph ph-pause-circle" style="margin-right:5px"></i>Követés le</div>
               <sc-if value="{{ envSupported }}" hint-placeholder-val="{{ false }}">
                 <div role="button" tabindex="0" onClick="{{ fetchEnvirons }}" style="min-height:36px;display:flex;align-items:center;font-size:12.5px;color:var(--color-accent-300);cursor:pointer"><i class="ph ph-sparkle" style="margin-right:5px"></i>Mit ajánl a Google?</div>
               </sc-if>
+              <a href="{{ liveMapsUrl }}" target="_blank" rel="noopener" style="min-height:36px;display:inline-flex;align-items:center;font-size:12.5px;color:var(--color-accent-300)"><i class="ph ph-google-logo" style="margin-right:5px"></i>Élőben a Google Térképen</a>
             </div>
           </sc-if>
           <sc-if value="{{ envBusy }}" hint-placeholder-val="{{ false }}">
@@ -434,11 +435,12 @@
             </sc-for>
           </div>
           <sc-if value="{{ geoOn }}" hint-placeholder-val="{{ false }}">
-            <div style="display:flex;align-items:center;gap:12px;margin-top:11px">
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:4px 14px;margin-top:11px">
               <div role="button" tabindex="0" onClick="{{ stopGeo }}" class="text-muted" style="min-height:36px;display:flex;align-items:center;font-size:12.5px;cursor:pointer"><i class="ph ph-pause-circle" style="margin-right:5px"></i>Követés le</div>
               <sc-if value="{{ envSupported }}" hint-placeholder-val="{{ false }}">
                 <div role="button" tabindex="0" onClick="{{ fetchEnvirons }}" style="min-height:36px;display:flex;align-items:center;font-size:12.5px;color:var(--color-accent-300);cursor:pointer"><i class="ph ph-sparkle" style="margin-right:5px"></i>Mit érdemes még a környéken?</div>
               </sc-if>
+              <a href="{{ liveMapsUrl }}" target="_blank" rel="noopener" style="min-height:36px;display:inline-flex;align-items:center;font-size:12.5px;color:var(--color-accent-300)"><i class="ph ph-google-logo" style="margin-right:5px"></i>Élőben a Google Térképen</a>
             </div>
           </sc-if>
           <sc-if value="{{ envBusy }}" hint-placeholder-val="{{ false }}">
@@ -653,6 +655,24 @@
         <span style="font-size:13.5px">Közeledés-jelzés a Közelben követés alatt</span>
       </div>
       <p class="text-muted" style="margin:6px 0 0;font-size:11.5px">A jelzés csak nyitott app mellett működik — webalkalmazás a háttérből nem tud magától felébredni.</p>
+
+      <div class="text-muted" style="font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;margin-top:16px">Google-értékelések és appon belüli ajánlások</div>
+      <sc-if value="{{ hasKey }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;align-items:center;gap:10px;margin-top:9px">
+          <i class="ph-fill ph-check-circle" style="font-size:18px;color:var(--color-accent)"></i>
+          <span style="flex:1;font-size:13px">Kulcs beállítva ({{ keyMasked }}) — minden helynél Google-értékelés</span>
+          <div role="button" tabindex="0" onClick="{{ clearKey }}" class="text-muted" style="min-height:36px;display:flex;align-items:center;font-size:12px;cursor:pointer">Törlés</div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ noKey }}" hint-placeholder-val="{{ false }}">
+        <p class="text-muted" style="margin:8px 0 0;font-size:12.5px">Kulcs nélkül csak a nyomtatott könyvben rögzített értékelések látszanak (a legtöbb helynél semmi), és a Google-ajánlások csak a Térkép-linken élnek. Egy ingyenes Google Places API-kulccsal minden hely csillagot + darabszámot kap. Kulcs: console.cloud.google.com → Places API → API key (korlátozd erre az oldalra!).</p>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <input value="{{ keyDraft }}" onInput="{{ onKeyDraft }}" placeholder="AIza… kulcs beillesztése" style="{{ keyInputStyle }}">
+          <sc-if value="{{ canSaveKey }}" hint-placeholder-val="{{ false }}">
+            <div role="button" tabindex="0" onClick="{{ saveKey }}" style="{{ keyBtnStyle }}">Mentés</div>
+          </sc-if>
+        </div>
+      </sc-if>
     </div>
 
     <h6 style="margin:30px 0 0;color:var(--color-neutral-500)">Alkalmazás</h6>
@@ -829,7 +849,7 @@ class Component extends DCLogic {
             dl: {}, tripVers: {},
             // live location: on/off, fix, error, and the sight we last alerted on
             geo: { on: false, lat: null, lng: null, acc: null, err: null }, alertId: null, alerted: {},
-            profile: 'kicsik', radius: 5, alerts: true, envMode: 'auto',
+            profile: 'kicsik', radius: 5, alerts: true, envMode: 'auto', placesKey: '', keyDraft: '',
             nearOpen: false, envItems: null, envBusy: false, events: [] };
 
   componentDidMount() {
@@ -1073,7 +1093,8 @@ class Component extends DCLogic {
       const radius = [2, 5, 10].indexOf(app.radius) >= 0 ? app.radius : 5;
       const alerts = app.alerts !== false;
       const envMode = ENV_MODES.some(x => x.id === app.envMode) ? app.envMode : 'auto';
-      this._app = { theme, trip: app.trip || null, v: APP_SCHEMA, profile, radius, alerts, envMode };
+      const placesKey = typeof app.placesKey === 'string' ? app.placesKey : '';
+      this._app = { theme, trip: app.trip || null, v: APP_SCHEMA, profile, radius, alerts, envMode, placesKey };
 
       const openables = trips.filter(t => this.openable(t));
       let id = (app.trip && openables.some(t => t.id === app.trip)) ? app.trip : null;
@@ -1084,7 +1105,7 @@ class Component extends DCLogic {
       // rendering it first and swapping a moment later reads as the app opening
       // the wrong screen.
       this.setState({ trips, theme, wikiImgs: wik || {}, places: plRaw || {}, tripVers: tvRaw || {},
-        profile: this._app.profile, radius: this._app.radius, alerts: this._app.alerts, envMode: this._app.envMode,
+        profile: this._app.profile, radius: this._app.radius, alerts: this._app.alerts, envMode: this._app.envMode, placesKey: this._app.placesKey,
         events: (evRaw && evRaw.events) || [], ready: true, booting: !!id }, () => {
         if (id) this.enterTrip(id, true);
         else this.paintBg();
@@ -1211,7 +1232,7 @@ class Component extends DCLogic {
   // place per install and nothing at all offline. Failures are silent: a missing
   // number just means no chip.
   fetchRatings() {
-    const key = window.GUIDE_PLACES_KEY;
+    const key = this.placesKey();
     const T = this.trip();
     if (!key || !T) return;
     const todo = this.searchables().filter(x => !this.state.places[T.id + ':' + x.id]);
@@ -1245,6 +1266,17 @@ class Component extends DCLogic {
         .then(() => setTimeout(() => step(i + 1), 120));
     };
     step(0);
+  }
+
+  // The Places key: settings-entered wins, config.js is the fallback.
+  placesKey() { return (this.state.placesKey || window.GUIDE_PLACES_KEY || '').trim(); }
+  saveKey() {
+    const k = (this.state.keyDraft || '').trim();
+    this.setPref({ placesKey: k });
+    this.setState({ keyDraft: '' }, () => {
+      // A fresh key should show results immediately, not on the next visit.
+      if (k && this.state.trip) this.fetchRatings();
+    });
   }
 
   // ── Location ───────────────────────────────────────────────────────────────
@@ -1301,7 +1333,7 @@ class Component extends DCLogic {
   // network; results are session-only on purpose (they are suggestions, not
   // guidebook content).
   fetchEnvirons() {
-    const key = window.GUIDE_PLACES_KEY;
+    const key = this.placesKey();
     const g = this.state.geo;
     if (!key || !g.lat) return;
     const types = this.state.profile === 'paros'
@@ -1347,7 +1379,7 @@ class Component extends DCLogic {
   persistApp(patch) {
     this._app = { ...this._app, ...patch };
     const a = this._app;
-    idbSet('app', { theme: a.theme, trip: a.trip, v: APP_SCHEMA, profile: a.profile, radius: a.radius, alerts: a.alerts, envMode: a.envMode }).catch(() => {});
+    idbSet('app', { theme: a.theme, trip: a.trip, v: APP_SCHEMA, profile: a.profile, radius: a.radius, alerts: a.alerts, envMode: a.envMode, placesKey: a.placesKey || '' }).catch(() => {});
   }
   setPref(patch) { this.persistApp(patch); this.setState(patch); }
   saveTrip() {
@@ -1557,7 +1589,7 @@ class Component extends DCLogic {
       nearOpen: false, nearCaret: 'ph ph-caret-down', geoOn: false, geoErr: '', hasGeoErr: false,
       geoWaiting: false, nearItems: [], hasNear: false, crossNear: [], hasCross: false, noCross: false,
       envModeChips: [], envSupported: false, envBusy: false, envItems: [], hasEnv: false, envEmpty: false,
-      toggleNear: () => {}, stopGeo: () => {}, startGeo: () => {}, fetchEnvirons: () => {},
+      toggleNear: () => {}, stopGeo: () => {}, startGeo: () => {}, fetchEnvirons: () => {}, liveMapsUrl: '',
       nearHint: '', hasAlert: false, alertPoi: null,
       // update block / banner
       ...updVals,
@@ -1582,6 +1614,11 @@ class Component extends DCLogic {
       const dec2 = n => String(n).replace('.', ',');
       const compact2 = n => n >= 10000 ? Math.round(n / 1000) + ' E' : n >= 1000 ? (Math.round(n / 100) / 10).toFixed(1).replace('.', ',') + ' E' : String(n);
       const geo = st.geo;
+      const liveQuery = st.profile === 'paros' ? 'látnivalók'
+        : st.profile === 'nagyok' ? 'kalandpark vagy látnivaló' : 'családi program játszótér látnivaló';
+      const liveMapsUrl = geo.lat
+        ? 'https://www.google.com/maps/search/' + encodeURIComponent(liveQuery) + '/@' + geo.lat + ',' + geo.lng + ',12z'
+        : 'https://www.google.com/maps/search/' + encodeURIComponent(liveQuery);
       const kmTxt = km => km < 1 ? Math.round(km * 1000) + ' m' : km.toFixed(1).replace('.', ',') + ' km';
       const mode = ENV_MODES.find(x => x.id === st.envMode) || ENV_MODES[1];
       // Nearest in-book sights across EVERY loaded guidebook, weighted by the
@@ -1658,7 +1695,7 @@ class Component extends DCLogic {
         nearHint: mode.label + ' · profil: ' + (PROFILES.find(x => x.id === st.profile) || PROFILES[0]).label,
         envModeChips, crossNear, hasCross: crossNear.length > 0,
         noCross: geo.on && !!geo.lat && crossNear.length === 0,
-        envSupported: !!window.GUIDE_PLACES_KEY, envBusy: st.envBusy,
+        envSupported: !!this.placesKey(), envBusy: st.envBusy, liveMapsUrl,
         envItems: envItemsPk, hasEnv: !!st.envItems && envItemsPk.length > 0,
         envEmpty: !!st.envItems && envItemsPk.length === 0,
         fetchEnvirons: () => this.fetchEnvirons() };
@@ -1868,7 +1905,14 @@ class Component extends DCLogic {
     const checkDone = checklist.filter(k => st.checks[k.id]).length;
 
     // ---- Közelben (live GPS) ----
+    // Keyless real-time discovery: a deep link into Google Maps centred on the
+    // fix, with a profile-tuned query — live Google suggestions without any API.
+    const liveQuery = st.profile === 'paros' ? 'látnivalók'
+      : st.profile === 'nagyok' ? 'kalandpark vagy látnivaló' : 'családi program játszótér látnivaló';
     const geo = st.geo;
+    const liveMapsUrl = geo.lat
+      ? 'https://www.google.com/maps/search/' + encodeURIComponent(liveQuery) + '/@' + geo.lat + ',' + geo.lng + ',12z'
+      : 'https://www.google.com/maps/search/' + encodeURIComponent(liveQuery);
     const kmTxt = km => km < 1 ? Math.round(km * 1000) + ' m' : km.toFixed(1).replace('.', ',') + ' km';
     const nearItems = (geo.on && geo.lat) ? all
       .filter(a => a.ll && a.kind !== 'sleep' && a.kind !== 'eat' && profileScore(st.profile, a.age) > 0)
@@ -1885,7 +1929,7 @@ class Component extends DCLogic {
     const alertPoi = alertRaw ? { n: alertRaw.n, meta: alertRaw.meta,
       open: () => { this.setState({ alertId: null }); this.openPoi(alertRaw.id); },
       dismiss: () => this.setState({ alertId: null }) } : null;
-    const envSupported = !!window.GUIDE_PLACES_KEY;
+    const envSupported = !!this.placesKey();
     const envItems = (st.envItems || []).map(e => ({ ...e,
       line: [e.type, e.km != null ? kmTxt(e.km) : null].filter(Boolean).join(' · '),
       ratingText: e.r ? '★ ' + dec(e.r) + (e.c ? ' (' + compact(e.c) + ')' : '') : '',
@@ -1968,7 +2012,7 @@ class Component extends DCLogic {
       nearOpen: st.nearOpen, nearCaret: st.nearOpen ? 'ph ph-caret-up' : 'ph ph-caret-down',
       geoOn: geo.on, geoErr: geo.err || '', hasGeoErr: !!geo.err,
       geoWaiting: geo.on && !geo.lat, nearItems, hasNear: nearItems.length > 0,
-      startGeo: () => this.startGeo(), stopGeo: () => this.stopGeo(),
+      startGeo: () => this.startGeo(), stopGeo: () => this.stopGeo(), liveMapsUrl,
       toggleNear: () => this.setState(s2 => { const open = !s2.nearOpen; if (open && !s2.geo.on) this.startGeo(); return { nearOpen: open }; }),
       nearHint: 'A(z) „' + profileDef.label + '" profilra szűrve · jelzés ' + st.radius + ' km-en belül',
       alertPoi, hasAlert: !!alertPoi,
@@ -1981,6 +2025,15 @@ class Component extends DCLogic {
       profileChips, radiusChips,
       alertsOn: st.alerts, toggleAlerts: () => this.setPref({ alerts: !st.alerts }),
       alertsIcon: st.alerts ? 'ph-fill ph-check-square' : 'ph ph-square',
+      // Google-kulcs a beállításokban — így telefonról is beilleszthető,
+      // GitHub-szerkesztés nélkül.
+      hasKey: !!this.placesKey(), noKey: !this.placesKey(),
+      keyMasked: this.placesKey() ? '•••' + this.placesKey().slice(-4) : '',
+      keyDraft: st.keyDraft, onKeyDraft: e => this.setState({ keyDraft: e.target.value }),
+      saveKey: () => this.saveKey(), canSaveKey: !!(st.keyDraft || '').trim(),
+      clearKey: () => { this.setPref({ placesKey: '' }); },
+      keyBtnStyle: css('flex:none;padding:8px 14px;min-height:40px;display:flex;align-items:center;font-size:12.5px;font-weight:600;border-radius:var(--radius-md);cursor:pointer;background:var(--color-accent);color:#fff;border:1px solid var(--color-accent)'),
+      keyInputStyle: css('flex:1;min-width:0;min-height:40px;padding:8px 11px;font-size:13px;color:var(--color-text);background:var(--color-bg);border:1px solid var(--color-divider);border-radius:var(--radius-md);outline:none'),
       // offline
       dlLine, hasDlLine: !!dlLine,
       navItems, showTop: st.showTop

@@ -1,8 +1,8 @@
 {
-  "version": "2026-08-20.1",
+  "version": "2026-08-20.2",
   "sw": "v7",
   "date": "2026-08-20",
-  "notes": "Megbízható offline: a könyvek letöltődnek és net nélkül is nyílnak · Felfedezés nyílik elsőként · Közelben: GPS-alapú ajánlások és jelzés · családi profil beállítás · értékelésszámok",
+  "notes": "Google-kulcs mostantól az appban, a Beállításokban illeszthető be (értékelések minden helyre + appon belüli ajánlások); kulcs nélkül is: élő Google Térkép-ajánlások a pozíciódnál.",
   "trips": {
     "tatra": "2026-07-19.1",
     "gombaszog": "2026-08-19.1"
