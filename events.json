@@ -1,0 +1,5 @@
+{
+  "_doc": "Esemény-feed: fesztiválok, programok a könyvek helyszínein. Az app frissítés-ellenőrzéskor tölti le és IndexedDB-be teszi, tehát appfrissítés nélkül, bármikor bővíthető — offline a legutóbb letöltött állapot él. Mező-séma: trip = útikönyv id; poi = helyszín id (VAGY ll:[lat,lng] + km hatókör, ha nem könyvbeli helyhez kötődik); n = az esemény neve; from/to = ISO dátumok (to napja még érvényes); url = opcionális link. A jelvény csak a from−7. naptól látszik, és to után magától eltűnik.",
+  "version": "2026-08-20.1",
+  "events": []
+}

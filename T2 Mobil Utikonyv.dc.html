@@ -48,6 +48,7 @@
 <body>
 <x-dc>
 <helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="_ds/nocturne-ac2cafb2-92d5-4812-bf7e-e1f1372013a8/styles.css">
   <script src="_ds/nocturne-ac2cafb2-92d5-4812-bf7e-e1f1372013a8/_ds_bundle.js"></script>
   <script src="config.js"></script>
@@ -91,7 +92,86 @@
   <div data-screen-label="Útválasztó" style="padding:24px 18px 8px">
     <h1 style="margin:0;font-size:29px;line-height:1.08;letter-spacing:-0.02em">Melyik útra?</h1>
     <p class="text-muted" style="margin:9px 0 0;font-size:13.5px">Válaszd ki a kalauzt. A legutóbb nyitott út legközelebb magától indul, pontosan ott, ahol elhagytad.</p>
-    <div style="display:flex;flex-direction:column;gap:13px;margin-top:20px;margin-bottom:8px">
+
+    <div style="margin-top:16px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-lg);overflow:hidden">
+      <div role="button" tabindex="0" onClick="{{ toggleNear }}" style="display:flex;align-items:center;gap:11px;min-height:54px;padding:12px 14px;cursor:pointer">
+        <i class="ph-fill ph-map-pin" style="font-size:20px;color:var(--color-accent)"></i>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:500;font-size:14.5px">Mi van a közelben?</div>
+          <div class="text-muted" style="font-size:11.5px">{{ nearHint }}</div>
+        </div>
+        <i class="{{ nearCaret }}" style="font-size:17px;color:var(--color-neutral-500)"></i>
+      </div>
+      <sc-if value="{{ nearOpen }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:0 14px 14px">
+          <div style="display:flex;gap:7px;overflow-x:auto;padding-bottom:2px">
+            <sc-for list="{{ envModeChips }}" as="c" hint-placeholder-count="3">
+              <div role="button" tabindex="0" onClick="{{ c.pick }}" style="{{ c.style }}">{{ c.label }}</div>
+            </sc-for>
+          </div>
+          <sc-if value="{{ hasGeoErr }}" hint-placeholder-val="{{ false }}">
+            <p class="text-muted" style="margin:10px 0 0;font-size:12.5px"><i class="ph ph-warning" style="margin-right:5px"></i>{{ geoErr }}</p>
+          </sc-if>
+          <sc-if value="{{ geoWaiting }}" hint-placeholder-val="{{ false }}">
+            <p class="text-muted" style="margin:10px 0 0;font-size:12.5px"><i class="ph ph-crosshair" style="margin-right:5px"></i>Pozíció bemérése…</p>
+          </sc-if>
+          <sc-if value="{{ hasCross }}" hint-placeholder-val="{{ false }}">
+            <div class="text-muted" style="font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;margin-top:12px">A könyveitekből</div>
+            <div style="display:flex;flex-direction:column;gap:7px;margin-top:8px">
+              <sc-for list="{{ crossNear }}" as="p" hint-placeholder-count="4">
+                <div role="button" tabindex="0" onClick="{{ p.open }}" style="display:flex;align-items:center;gap:11px;min-height:54px;padding:8px 10px;background:var(--color-bg);border:1px solid var(--color-divider);border-radius:var(--radius-md);cursor:pointer">
+                  <div style="flex:1;min-width:0">
+                    <div style="font-weight:500;font-size:13.5px">{{ p.n }}</div>
+                    <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;align-items:center">
+                      <span style="{{ ageChip }}"><i class="ph ph-navigation-arrow" style="margin-right:4px"></i>{{ p.kmT }}</span>
+                      <span class="text-muted" style="font-size:11px">{{ p.book }}</span>
+                      <sc-if value="{{ p.hasRating }}" hint-placeholder-val="{{ false }}"><span style="{{ p.ratingStyle }}">{{ p.ratingText }}</span></sc-if>
+                      <sc-if value="{{ p.hasEvent }}" hint-placeholder-val="{{ false }}"><span style="{{ p.evStyle }}">{{ p.eventText }}</span></sc-if>
+                    </div>
+                  </div>
+                  <i class="ph ph-caret-right" style="color:var(--color-neutral-600)"></i>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ noCross }}" hint-placeholder-val="{{ false }}">
+            <p class="text-muted" style="margin:10px 0 0;font-size:12.5px">A könyvekből semmi sincs ilyen közel — válts nagyobb távra, vagy nézd meg, mit tud a környék:</p>
+          </sc-if>
+          <sc-if value="{{ geoOn }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;align-items:center;gap:12px;margin-top:11px">
+              <div role="button" tabindex="0" onClick="{{ stopGeo }}" class="text-muted" style="min-height:36px;display:flex;align-items:center;font-size:12.5px;cursor:pointer"><i class="ph ph-pause-circle" style="margin-right:5px"></i>Követés le</div>
+              <sc-if value="{{ envSupported }}" hint-placeholder-val="{{ false }}">
+                <div role="button" tabindex="0" onClick="{{ fetchEnvirons }}" style="min-height:36px;display:flex;align-items:center;font-size:12.5px;color:var(--color-accent-300);cursor:pointer"><i class="ph ph-sparkle" style="margin-right:5px"></i>Mit ajánl a Google?</div>
+              </sc-if>
+            </div>
+          </sc-if>
+          <sc-if value="{{ envBusy }}" hint-placeholder-val="{{ false }}">
+            <p class="text-muted" style="margin:10px 0 0;font-size:12.5px">Környék keresése…</p>
+          </sc-if>
+          <sc-if value="{{ hasEnv }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:12px;padding-top:10px;border-top:1px dashed var(--color-divider)">
+              <div class="text-muted" style="font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase">A könyveken túl — a Google szerint</div>
+              <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px">
+                <sc-for list="{{ envItems }}" as="e" hint-placeholder-count="4">
+                  <a href="{{ e.rev }}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;min-height:48px;padding:7px 9px;background:transparent;border:1px dashed var(--color-neutral-800);border-radius:var(--radius-md)">
+                    <div style="flex:1;min-width:0">
+                      <div style="font-weight:500;font-size:13px">{{ e.n }}</div>
+                      <div class="text-muted" style="font-size:11.5px;margin-top:2px">{{ e.line }}</div>
+                    </div>
+                    <span style="{{ e.ratingStyle }}">{{ e.ratingText }}</span>
+                  </a>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ envEmpty }}" hint-placeholder-val="{{ false }}">
+            <p class="text-muted" style="margin:10px 0 0;font-size:12.5px">A Google most nem talált ide illőt ezen a távon.</p>
+          </sc-if>
+        </div>
+      </sc-if>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:13px;margin-top:16px;margin-bottom:8px">
       <sc-for list="{{ tripCards }}" as="t" hint-placeholder-count="2">
         <div role="button" tabindex="0" onClick="{{ t.open }}" style="{{ t.cardStyle }}">
           <div style="{{ t.coverStyle }}">
@@ -111,6 +191,9 @@
                 <span style="{{ s.style }}">{{ s.v }}</span>
               </sc-for>
             </div>
+            <sc-if value="{{ t.hasOff }}" hint-placeholder-val="{{ false }}">
+              <div class="text-muted" style="display:flex;align-items:center;gap:6px;margin-top:10px;font-size:11.5px"><i class="{{ t.offIcon }}" style="font-size:14px"></i>{{ t.offLine }}</div>
+            </sc-if>
             <div style="{{ t.ctaStyle }}">{{ t.cta }}<i class="ph ph-arrow-right" style="margin-left:6px"></i></div>
           </div>
         </div>
@@ -145,6 +228,7 @@
         <sc-if value="{{ poi.hasRating }}" hint-placeholder-val="{{ false }}">
           <span style="{{ poi.ratingStyle }}">{{ poi.ratingLong }}</span>
         </sc-if>
+        <sc-if value="{{ poi.hasEvent }}" hint-placeholder-val="{{ false }}"><span style="{{ poi.evStyle }}">{{ poi.eventText }}</span></sc-if>
       </div>
       <sc-if value="{{ poi.flags }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:9px">
@@ -314,6 +398,75 @@
   <sc-if value="{{ tExplore }}" hint-placeholder-val="{{ false }}">
   <div data-screen-label="Felfedezés" style="padding:20px 18px 8px">
     <h1 style="margin:0 0 14px;font-size:27px;line-height:1.1;letter-spacing:-0.02em">Felfedezés</h1>
+
+    <div style="margin-bottom:14px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-lg);overflow:hidden">
+      <div role="button" tabindex="0" onClick="{{ toggleNear }}" style="display:flex;align-items:center;gap:11px;min-height:54px;padding:12px 14px;cursor:pointer">
+        <i class="ph-fill ph-map-pin" style="font-size:20px;color:var(--color-accent)"></i>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:500;font-size:14.5px">Közelben</div>
+          <div class="text-muted" style="font-size:11.5px">{{ nearHint }}</div>
+        </div>
+        <i class="{{ nearCaret }}" style="font-size:17px;color:var(--color-neutral-500)"></i>
+      </div>
+      <sc-if value="{{ nearOpen }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:0 14px 14px">
+          <sc-if value="{{ hasGeoErr }}" hint-placeholder-val="{{ false }}">
+            <p class="text-muted" style="margin:2px 0 10px;font-size:12.5px"><i class="ph ph-warning" style="margin-right:5px"></i>{{ geoErr }}</p>
+          </sc-if>
+          <sc-if value="{{ geoWaiting }}" hint-placeholder-val="{{ false }}">
+            <p class="text-muted" style="margin:2px 0 10px;font-size:12.5px"><i class="ph ph-crosshair" style="margin-right:5px"></i>Pozíció bemérése…</p>
+          </sc-if>
+          <div style="display:flex;flex-direction:column;gap:7px">
+            <sc-for list="{{ nearItems }}" as="p" hint-placeholder-count="4">
+              <div role="button" tabindex="0" onClick="{{ p.open }}" style="display:flex;align-items:center;gap:11px;min-height:58px;padding:7px 9px;background:var(--color-bg);border:1px solid var(--color-divider);border-radius:var(--radius-md);cursor:pointer">
+                <div style="{{ p.thumbStyle }}"></div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-weight:500;font-size:13.5px">{{ p.n }}</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;align-items:center">
+                    <span style="{{ ageChip }}"><i class="ph ph-navigation-arrow" style="margin-right:4px"></i>{{ p.km }}</span>
+                    <sc-if value="{{ p.fit }}" hint-placeholder-val="{{ false }}"><span style="{{ p.fitChip }}">Nektek való</span></sc-if>
+                    <sc-if value="{{ p.hasRating }}" hint-placeholder-val="{{ false }}"><span style="{{ p.ratingStyle }}">{{ p.ratingText }}</span></sc-if>
+                    <sc-if value="{{ p.hasEvent }}" hint-placeholder-val="{{ false }}"><span style="{{ p.evStyle }}">{{ p.eventText }}</span></sc-if>
+                  </div>
+                </div>
+                <i class="ph ph-caret-right" style="color:var(--color-neutral-600)"></i>
+              </div>
+            </sc-for>
+          </div>
+          <sc-if value="{{ geoOn }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;align-items:center;gap:12px;margin-top:11px">
+              <div role="button" tabindex="0" onClick="{{ stopGeo }}" class="text-muted" style="min-height:36px;display:flex;align-items:center;font-size:12.5px;cursor:pointer"><i class="ph ph-pause-circle" style="margin-right:5px"></i>Követés le</div>
+              <sc-if value="{{ envSupported }}" hint-placeholder-val="{{ false }}">
+                <div role="button" tabindex="0" onClick="{{ fetchEnvirons }}" style="min-height:36px;display:flex;align-items:center;font-size:12.5px;color:var(--color-accent-300);cursor:pointer"><i class="ph ph-sparkle" style="margin-right:5px"></i>Mit érdemes még a környéken?</div>
+              </sc-if>
+            </div>
+          </sc-if>
+          <sc-if value="{{ envBusy }}" hint-placeholder-val="{{ false }}">
+            <p class="text-muted" style="margin:10px 0 0;font-size:12.5px">Környék keresése…</p>
+          </sc-if>
+          <sc-if value="{{ hasEnv }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:12px;padding-top:10px;border-top:1px dashed var(--color-divider)">
+              <div class="text-muted" style="font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase">A könyvön túl — a Google szerint (20–60 perc autó)</div>
+              <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px">
+                <sc-for list="{{ envItems }}" as="e" hint-placeholder-count="4">
+                  <a href="{{ e.rev }}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;min-height:48px;padding:7px 9px;background:transparent;border:1px dashed var(--color-neutral-800);border-radius:var(--radius-md)">
+                    <div style="flex:1;min-width:0">
+                      <div style="font-weight:500;font-size:13px">{{ e.n }}</div>
+                      <div class="text-muted" style="font-size:11.5px;margin-top:2px">{{ e.line }}</div>
+                    </div>
+                    <span style="{{ e.ratingStyle }}">{{ e.ratingText }}</span>
+                  </a>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ envEmpty }}" hint-placeholder-val="{{ false }}">
+            <p class="text-muted" style="margin:10px 0 0;font-size:12.5px">A környéken most nincs a könyvön túli találat.</p>
+          </sc-if>
+        </div>
+      </sc-if>
+    </div>
+
     <div style="position:relative">
       <i class="ph ph-magnifying-glass" style="position:absolute;left:12px;top:13px;font-size:17px;color:var(--color-neutral-600)"></i>
       <input value="{{ query }}" onInput="{{ onQuery }}" placeholder="Keresés helyre, túrára, kajáldára…" style="{{ inputStyle }}">
@@ -348,6 +501,7 @@
                     <span style="{{ p.bStyle }}">{{ p.bLabel }}</span>
                     <span style="{{ ageChip }}">{{ p.age }}</span>
                     <sc-if value="{{ p.hasRating }}" hint-placeholder-val="{{ false }}"><span style="{{ p.ratingStyle }}">{{ p.ratingText }}</span></sc-if>
+                    <sc-if value="{{ p.hasEvent }}" hint-placeholder-val="{{ false }}"><span style="{{ p.evStyle }}">{{ p.eventText }}</span></sc-if>
                   </div>
                 </div>
                 <div role="button" tabindex="0" onClick="{{ p.toggle }}" aria-label="Mentés" style="flex:none;width:38px;display:flex;align-items:flex-start;justify-content:center;padding-top:2px;cursor:pointer"><i class="{{ p.saveIcon }}" style="{{ p.saveStyle }}"></i></div>
@@ -480,6 +634,27 @@
       </sc-for>
     </div>
 
+    <h6 style="margin:30px 0 0;color:var(--color-neutral-500)">Beállítások</h6>
+    <div style="margin-top:8px;padding:13px 14px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md)">
+      <div class="text-muted" style="font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase">Kivel utaztok? — a Közelben és az ajánlások ehhez igazodnak</div>
+      <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:10px">
+        <sc-for list="{{ profileChips }}" as="c" hint-placeholder-count="4">
+          <div role="button" tabindex="0" onClick="{{ c.pick }}" style="{{ c.style }}"><i class="{{ c.icon }}" style="font-size:15px"></i>{{ c.label }}</div>
+        </sc-for>
+      </div>
+      <div class="text-muted" style="font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;margin-top:16px">Jelzés, ha látnivaló van ennyin belül</div>
+      <div style="display:flex;gap:7px;margin-top:10px">
+        <sc-for list="{{ radiusChips }}" as="c" hint-placeholder-count="3">
+          <div role="button" tabindex="0" onClick="{{ c.pick }}" style="{{ c.style }}">{{ c.label }}</div>
+        </sc-for>
+      </div>
+      <div role="button" tabindex="0" onClick="{{ toggleAlerts }}" style="display:flex;align-items:center;gap:11px;min-height:44px;margin-top:10px;cursor:pointer">
+        <i class="{{ alertsIcon }}" style="font-size:20px;color:var(--color-accent)"></i>
+        <span style="font-size:13.5px">Közeledés-jelzés a Közelben követés alatt</span>
+      </div>
+      <p class="text-muted" style="margin:6px 0 0;font-size:11.5px">A jelzés csak nyitott app mellett működik — webalkalmazás a háttérből nem tud magától felébredni.</p>
+    </div>
+
     <h6 style="margin:30px 0 0;color:var(--color-neutral-500)">Alkalmazás</h6>
     <div style="{{ updBoxStyle }}">
       <div style="display:flex;align-items:flex-start;gap:11px">
@@ -489,6 +664,9 @@
           <p class="text-muted" style="margin:4px 0 0;font-size:12.5px">{{ updNote }}</p>
         </div>
       </div>
+      <sc-if value="{{ hasDlLine }}" hint-placeholder-val="{{ false }}">
+        <p class="text-muted" style="margin:11px 0 0;padding-top:10px;border-top:1px solid var(--color-divider);font-size:12px"><i class="ph ph-cloud-check" style="margin-right:6px"></i>{{ dlLine }}</p>
+      </sc-if>
       <sc-if value="{{ updHasRepo }}" hint-placeholder-val="{{ false }}">
         <p class="text-muted" style="margin:11px 0 0;padding-top:10px;border-top:1px solid var(--color-divider);font-size:12px"><i class="ph ph-git-commit" style="margin-right:6px"></i>{{ updRepoLine }}</p>
       </sc-if>
@@ -507,6 +685,17 @@
 
   <sc-if value="{{ showTop }}" hint-placeholder-val="{{ false }}">
     <div role="button" tabindex="0" onClick="{{ scrollTop }}" aria-label="Vissza a tetejére" style="{{ topBtnStyle }}"><i class="ph ph-arrow-up" style="font-size:18px"></i></div>
+  </sc-if>
+
+  <sc-if value="{{ hasAlert }}" hint-placeholder-val="{{ false }}">
+    <div style="{{ alertBarStyle }}">
+      <i class="ph-fill ph-map-pin" style="flex:none;font-size:19px"></i>
+      <div role="button" tabindex="0" onClick="{{ alertPoi.open }}" style="flex:1;min-width:0;cursor:pointer">
+        <div style="font-size:13px;font-weight:600">Látnivaló a közelben</div>
+        <div style="font-size:12px;opacity:0.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ alertPoi.n }} · {{ alertPoi.meta }}</div>
+      </div>
+      <div role="button" tabindex="0" onClick="{{ alertPoi.dismiss }}" aria-label="Bezárás" style="flex:none;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer"><i class="ph ph-x" style="font-size:16px"></i></div>
+    </div>
   </sc-if>
 
   <sc-if value="{{ updBanner }}" hint-placeholder-val="{{ false }}">
@@ -566,7 +755,54 @@ function idbSet(key, value) {
 
 // Everything a trip remembers on its own. `scroll` maps a view key
 // ('t:<tab>' / 'p:<poiId>') to the scroll offset it was left at.
-const TRIP_DEFAULTS = { saved: [], checks: {}, tab: 'plan', plan: null, day: 1, today: null, poi: null, poiStack: [], scroll: {} };
+// Fresh guidebooks open on Felfedezés — with small children the plan gets
+// re-planned constantly, so browsing is the primary surface (the same
+// explore-first pattern the big guide apps use).
+const TRIP_DEFAULTS = { saved: [], checks: {}, tab: 'explore', plan: null, day: 1, today: null, poi: null, poiStack: [], scroll: {} };
+
+// Personalization profiles for sorting the nearby list and the enrichment
+// lookup. Scores 2 = made for this crew, 1 = fine, 0 = not for them now.
+const PROFILES = [
+  { id: 'kicsik', label: 'Kisgyerekes (2–6)', icon: 'ph-baby' },
+  { id: 'nagyok', label: 'Nagyobb gyerekek (6+)', icon: 'ph-person-simple-run' },
+  { id: 'paros', label: 'Páros / felnőtt', icon: 'ph-users' },
+  { id: 'mind', label: 'Mindenki', icon: 'ph-smiley' }
+];
+function profileScore(profile, age) {
+  const a = String(age || '');
+  if (profile === 'mind') return 1;
+  if (profile === 'kicsik') {
+    if (/MINDEN KOR|babakocsi|3\+|4\+/i.test(a)) return 2;
+    if (/6\+|7\+|8\+|9\+|SZÜLŐ|NEHÉZ/i.test(a)) return 0;
+    return 1;
+  }
+  if (profile === 'nagyok') {
+    if (/6\+|7\+|8\+|9\+|OSZTOTT|MINDEN KOR/i.test(a)) return 2;
+    if (/SZÜLŐ/i.test(a)) return 1;
+    return 1;
+  }
+  // paros
+  if (/SZÜLŐ/i.test(a)) return 2;
+  if (/MINDEN KOR/i.test(a)) return 1;
+  return 1;
+}
+
+// Range modes for the "what's around us" discovery. Driving is distance-based
+// for now; true driving-time ranges are a later round (needs a routing API).
+const ENV_MODES = [
+  { id: 'seta', label: 'Sétatáv · 2 km', km: 2 },
+  { id: 'auto', label: 'Rövid autóút · 15 km', km: 15 },
+  { id: 'kirandulas', label: 'Kirándulás · 35 km', km: 35 }
+];
+
+// Haversine, km. Coordinates in the trip files are approximate (±100–300 m),
+// which is plenty for sorting and a kilometre-scale proximity alert.
+function distKm(a, b) {
+  const R = 6371, d = Math.PI / 180;
+  const dLat = (b[0] - a[0]) * d, dLng = (b[1] - a[1]) * d;
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(a[0] * d) * Math.cos(b[0] * d) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
 
 // ── Update checking ─────────────────────────────────────────────────────────
 // Two signals, in order of authority:
@@ -588,7 +824,13 @@ class Component extends DCLogic {
             tab: 'today', poi: null, poiStack: [], day: 1, plan: null, cat: 'all', query: '', today: null,
             saved: [], checks: {}, theme: 'dark', wikiImgs: {}, places: {}, essOpen: false,
             showTop: false, updateReady: false,
-            upd: { state: 'idle', live: null, running: null, newer: false, repo: null, when: 0 } };
+            upd: { state: 'idle', live: null, running: null, newer: false, repo: null, when: 0 },
+            // offline download state per trip id: { done, total, ready, failed }
+            dl: {}, tripVers: {},
+            // live location: on/off, fix, error, and the sight we last alerted on
+            geo: { on: false, lat: null, lng: null, acc: null, err: null }, alertId: null, alerted: {},
+            profile: 'kicsik', radius: 5, alerts: true, envMode: 'auto',
+            nearOpen: false, envItems: null, envBusy: false, events: [] };
 
   componentDidMount() {
     this._app = {};          // the shared 'app' blob
@@ -626,6 +868,22 @@ class Component extends DCLogic {
     window.addEventListener('guide-update', this._onUpd);
     if (window.__guideUpdateReady) this.setState({ updateReady: true });
 
+    // Download progress and completion reports from the service worker.
+    this._onSwMsg = e => {
+      const d = e.data || {};
+      if (d.type === 'trip-progress') {
+        this.setState(st => ({ dl: { ...st.dl, [d.id]: { ...(st.dl[d.id] || {}), done: d.done, total: d.total, busy: true } } }));
+      } else if (d.type === 'trip-ready') {
+        this.setState(st => {
+          const ready = d.failed === 0;
+          const tv = ready && d.version ? { ...st.tripVers, [d.id]: d.version } : st.tripVers;
+          if (ready && d.version) idbSet('tripver', tv).catch(() => {});
+          return { dl: { ...st.dl, [d.id]: { done: d.total, total: d.total, busy: false, ready, failed: d.failed } }, tripVers: tv };
+        });
+      }
+    };
+    if (navigator.serviceWorker) navigator.serviceWorker.addEventListener('message', this._onSwMsg);
+
     // Coming back to a backgrounded PWA is exactly when a new deploy is likely,
     // so re-check then — throttled, so switching tabs doesn't spam anything.
     this._onVis = () => { if (document.visibilityState === 'visible') this.checkUpdates(false); };
@@ -636,6 +894,8 @@ class Component extends DCLogic {
   }
 
   componentWillUnmount() {
+    this.stopGeo();
+    if (navigator.serviceWorker && this._onSwMsg) navigator.serviceWorker.removeEventListener('message', this._onSwMsg);
     window.removeEventListener('popstate', this._onPop);
     window.removeEventListener('scroll', this._onScroll);
     window.removeEventListener('guide-update', this._onUpd);
@@ -653,6 +913,16 @@ class Component extends DCLogic {
     if (navigator.serviceWorker) {
       navigator.serviceWorker.getRegistration().then(r => r && r.update()).catch(() => {});
     }
+
+    // The events feed rides along with the check: updatable without any app
+    // release, cached in IDB so the tags work offline too.
+    fetch('./events.json?live=' + Date.now(), { cache: 'no-store' })
+      .then(r => r.ok ? r.json() : null)
+      .then(j => {
+        if (!j || !Array.isArray(j.events)) return;
+        idbSet('events', j).catch(() => {});
+        this.setState({ events: j.events });
+      }).catch(() => {});
 
     // ?live= bypasses the worker entirely → what the server has now.
     const live = fetch('./version.json?live=' + Date.now(), { cache: 'no-store' })
@@ -674,8 +944,18 @@ class Component extends DCLogic {
     Promise.all([live, running, repo]).then(([l, r, g]) => {
       // Equal stamps (or no stamp at all, before the worker has cached one) mean
       // the page already is the live build — not an update.
-      const newer = !!(l && r && l.version && r.version && l.version !== r.version);
-      this.setState({ upd: { state: l ? 'ok' : 'fail', live: l, running: r || l, newer, repo: g, when: Date.now() } });
+      const appNewer = !!(l && r && l.version && r.version && l.version !== r.version);
+      // Guidebooks are versioned separately: compare what is deployed
+      // (version.json .trips) with the content actually running (descriptor
+      // .version baked into each trip file).
+      const tripsNewer = [];
+      if (l && l.trips) {
+        (this.state.trips || []).forEach(t => {
+          if (t.version && l.trips[t.id] && l.trips[t.id] !== t.version) tripsNewer.push(t.name || t.id);
+        });
+      }
+      const newer = appNewer || tripsNewer.length > 0;
+      this.setState({ upd: { state: l ? 'ok' : 'fail', live: l, running: r || l, newer, tripsNewer, repo: g, when: Date.now() } });
     });
   }
 
@@ -754,7 +1034,7 @@ class Component extends DCLogic {
       if (idbVal !== undefined) return idbVal;
       try { return JSON.parse(localStorage.getItem(lsKey) || 'null') || undefined; } catch (e) { return undefined; }
     };
-    Promise.all([idbGet('app'), idbGet('wikimg'), idbGet('state'), idbGet('places')]).then(([appRaw, wikRaw, stRaw, plRaw]) => {
+    Promise.all([idbGet('app'), idbGet('wikimg'), idbGet('state'), idbGet('places'), idbGet('tripver'), idbGet('events')]).then(([appRaw, wikRaw, stRaw, plRaw, tvRaw, evRaw]) => {
       const legacy = orLocal(stRaw, 't2m-state');
       let wik = orLocal(wikRaw, 't2m-wikimg2');
       let app = appRaw;
@@ -789,7 +1069,11 @@ class Component extends DCLogic {
       }
 
       const theme = app.theme === 'light' ? 'light' : 'dark';
-      this._app = { theme, trip: app.trip || null, v: APP_SCHEMA };
+      const profile = PROFILES.some(x => x.id === app.profile) ? app.profile : 'kicsik';
+      const radius = [2, 5, 10].indexOf(app.radius) >= 0 ? app.radius : 5;
+      const alerts = app.alerts !== false;
+      const envMode = ENV_MODES.some(x => x.id === app.envMode) ? app.envMode : 'auto';
+      this._app = { theme, trip: app.trip || null, v: APP_SCHEMA, profile, radius, alerts, envMode };
 
       const openables = trips.filter(t => this.openable(t));
       let id = (app.trip && openables.some(t => t.id === app.trip)) ? app.trip : null;
@@ -799,7 +1083,9 @@ class Component extends DCLogic {
       // `booting` keeps the picker off screen while a remembered trip loads —
       // rendering it first and swapping a moment later reads as the app opening
       // the wrong screen.
-      this.setState({ trips, theme, wikiImgs: wik || {}, places: plRaw || {}, ready: true, booting: !!id }, () => {
+      this.setState({ trips, theme, wikiImgs: wik || {}, places: plRaw || {}, tripVers: tvRaw || {},
+        profile: this._app.profile, radius: this._app.radius, alerts: this._app.alerts, envMode: this._app.envMode,
+        events: (evRaw && evRaw.events) || [], ready: true, booting: !!id }, () => {
         if (id) this.enterTrip(id, true);
         else this.paintBg();
       });
@@ -809,7 +1095,7 @@ class Component extends DCLogic {
   // `resume` is true only for the remembered trip reopened at launch — that one
   // comes back exactly where it was left. Picking a guidebook off the shelf is a
   // fresh start, and starts on the itinerary.
-  enterTrip(id, resume) {
+  enterTrip(id, resume, poiId) {
     const trip = (this.state.trips || []).find(t => t.id === id);
     if (!this.openable(trip)) { this.setState({ booting: false }); return; }
     if (!this.state.trip) this._pickerScroll = window.scrollY;
@@ -825,22 +1111,51 @@ class Component extends DCLogic {
       const plan = its.some(p => p.id === s.plan) ? s.plan : ((its[0] || {}).id || null);
       const days = G.today || [];
       const today = days.some(t => t.id === s.today) ? s.today : ((days[0] || {}).id || null);
-      const poi = resume ? (s.poi || null) : null;
-      const tab = (resume && s.tab) || 'plan';
+      const poi = poiId || (resume ? (s.poi || null) : null);
+      const tab = poiId ? 'explore' : ((resume && s.tab) || 'explore');
       // Come back exactly where we left off — including mid-list.
       this._pending = poi ? (this._scroll['p:' + poi] || 0) : (this._scroll['t:' + tab] || 0);
       this.persistApp({ trip: id });
       this.setState({ trip: id, tab, poi, poiStack: Array.isArray(s.poiStack) ? s.poiStack : [],
         day: s.day || 1, plan, today, saved: Array.isArray(s.saved) ? s.saved : [], checks: s.checks || {},
-        cat: 'all', query: '', essOpen: false, booting: false }, () => { this.fetchWiki(); this.fetchRatings(); });
+        cat: 'all', query: '', essOpen: false, booting: false, nearOpen: false, envItems: null },
+        () => { this.fetchWiki(); this.fetchRatings(); this.ensureTrip(id); });
     }, () => this.setState({ booting: false }));
   }
 
   exitTrip() {
+    this.stopGeo();
     this.saveTrip();
     this._pending = this._pickerScroll || 0;
     this.persistApp({ trip: null });
     this.setState({ trip: null, poi: null, poiStack: [], booting: false });
+  }
+
+  // Everything this guidebook needs offline beyond the app shell: its photos
+  // and sketch maps, the pinned Wikimedia files, and any Wikipedia images
+  // already resolved on this device.
+  tripAssets(T) {
+    const out = [];
+    const files = T.photoFiles || {};
+    Object.keys(files).forEach(k => out.push((T.photoDir || 'photos/') + files[k]));
+    (T.maps || []).forEach(m => out.push(m.f));
+    Object.keys(T.wikiFiles || {}).forEach(k =>
+      out.push('https://commons.wikimedia.org/wiki/Special:FilePath/' + T.wikiFiles[k] + '?width=800'));
+    const wik = this.state.wikiImgs || {};
+    Object.keys(wik).forEach(k => { if (k.indexOf(T.id + ':') === 0) out.push(wik[k]); });
+    return [...new Set(out)];
+  }
+
+  // Ask the worker to complete this guidebook's offline copy. Idempotent and
+  // cheap when everything is already cached; a version change re-downloads.
+  ensureTrip(id) {
+    const sw = navigator.serviceWorker;
+    const T = (this.state.trips || []).find(t => t.id === id);
+    if (!sw || !sw.controller || !T) return;
+    const stamp = this.state.tripVers[id];
+    const type = (stamp && T.version && stamp !== T.version) ? 'refresh-trip' : 'ensure-trip';
+    this.setState(st => ({ dl: { ...st.dl, [id]: { ...(st.dl[id] || {}), busy: true } } }));
+    sw.controller.postMessage({ type, id, version: T.version || 'x', assets: this.tripAssets(T) });
   }
 
   fetchWiki() {
@@ -882,12 +1197,12 @@ class Component extends DCLogic {
     if (!T) return [];
     const G = T.data, out = [];
     (G.modules || []).forEach(m => {
-      (m.pois || []).forEach(x => out.push(x));
-      (m.sleep || []).forEach((x, i) => out.push({ ...x, id: m.id + '-s' + i }));
-      (m.eat || []).forEach((x, i) => out.push({ ...x, id: m.id + '-e' + i }));
+      (m.pois || []).forEach(x => out.push({ ...x, kindGuess: 'poi' }));
+      (m.sleep || []).forEach((x, i) => out.push({ ...x, id: m.id + '-s' + i, kindGuess: 'sleep' }));
+      (m.eat || []).forEach((x, i) => out.push({ ...x, id: m.id + '-e' + i, kindGuess: 'eat' }));
     });
-    (G.hikes || []).forEach(x => out.push(x));
-    (G.plans || []).forEach(x => out.push(x));
+    (G.hikes || []).forEach(x => out.push({ ...x, kindGuess: 'hike' }));
+    (G.plans || []).forEach(x => out.push({ ...x, kindGuess: 'plan' }));
     return out.filter(x => x.id && (x.q || x.n));
   }
 
@@ -932,11 +1247,109 @@ class Component extends DCLogic {
     step(0);
   }
 
+  // ── Location ───────────────────────────────────────────────────────────────
+  startGeo() {
+    if (!navigator.geolocation) { this.setState(st => ({ geo: { ...st.geo, err: 'nincs GPS' } })); return; }
+    if (this._geoWatch != null) return;
+    this.setState(st => ({ geo: { ...st.geo, on: true, err: null }, nearOpen: true }));
+    // One notification permission ask, only when tracking is turned on.
+    if (this.state.alerts && window.Notification && Notification.permission === 'default') {
+      try { Notification.requestPermission().catch(() => {}); } catch (e) {}
+    }
+    this._geoWatch = navigator.geolocation.watchPosition(
+      pos => {
+        this.setState(st => ({ geo: { ...st.geo, on: true, err: null,
+          lat: pos.coords.latitude, lng: pos.coords.longitude, acc: pos.coords.accuracy } }));
+        this.checkProximity(pos.coords.latitude, pos.coords.longitude);
+      },
+      err => this.setState(st => ({ geo: { ...st.geo, on: false,
+        err: err && err.code === 1 ? 'A helymeghatározás le van tiltva ehhez az oldalhoz.' : 'Nem sikerült bemérni a pozíciót.' } })),
+      { enableHighAccuracy: true, maximumAge: 15000, timeout: 20000 }
+    );
+  }
+  stopGeo() {
+    if (this._geoWatch != null && navigator.geolocation) navigator.geolocation.clearWatch(this._geoWatch);
+    this._geoWatch = null;
+    this.setState(st => ({ geo: { ...st.geo, on: false }, alertId: null }));
+  }
+
+  // A preferred sight came within the alert radius: one in-app banner (and a
+  // system notification, if permitted) per sight per session. Only runs while
+  // tracking is on — a web app cannot wake itself in the background.
+  checkProximity(lat, lng) {
+    if (!this.state.alerts) return;
+    const here = [lat, lng];
+    const cand = this.searchables()
+      .filter(x => x.ll && (x.kindGuess === 'poi' || x.kindGuess === 'hike') && !this.state.alerted[x.id]
+        && profileScore(this.state.profile, x.age) > 0 && x.b !== 'opc')
+      .map(x => ({ x, km: distKm(here, x.ll) }))
+      .filter(e => e.km <= this.state.radius)
+      .sort((a, b) => a.km - b.km)[0];
+    if (!cand) return;
+    this.setState(st => ({ alertId: cand.x.id, alerted: { ...st.alerted, [cand.x.id]: true } }));
+    if (window.Notification && Notification.permission === 'granted') {
+      try {
+        new Notification('Látnivaló a közelben — ' + cand.x.n, {
+          body: (cand.km < 1 ? Math.round(cand.km * 1000) + ' m' : cand.km.toFixed(1).replace('.', ',') + ' km')
+            + ' · ' + (cand.x.meta || ''), icon: 'icons/icon-192.png', tag: 'guide-near-' + cand.x.id });
+      } catch (e) {}
+    }
+  }
+
+  // "Mit érdemes még megnézni a környéken?" — live Places lookup around the
+  // current fix, tuned to the family profile. Needs the config.js key and
+  // network; results are session-only on purpose (they are suggestions, not
+  // guidebook content).
+  fetchEnvirons() {
+    const key = window.GUIDE_PLACES_KEY;
+    const g = this.state.geo;
+    if (!key || !g.lat) return;
+    const types = this.state.profile === 'paros'
+      ? ['tourist_attraction', 'museum', 'historical_landmark', 'spa']
+      : this.state.profile === 'nagyok'
+        ? ['tourist_attraction', 'amusement_park', 'zoo', 'hiking_area', 'museum']
+        : ['playground', 'zoo', 'amusement_park', 'aquarium', 'tourist_attraction', 'park'];
+    this.setState({ envBusy: true });
+    fetch('https://places.googleapis.com/v1/places:searchNearby', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Goog-Api-Key': key,
+        'X-Goog-FieldMask': 'places.displayName,places.rating,places.userRatingCount,places.location,places.primaryTypeDisplayName' },
+      body: JSON.stringify({
+        includedTypes: types, maxResultCount: 12, languageCode: 'hu', rankPreference: 'POPULARITY',
+        locationRestriction: { circle: { center: { latitude: g.lat, longitude: g.lng },
+          radius: (ENV_MODES.find(x => x.id === this.state.envMode) || ENV_MODES[1]).km * 1000 } }
+      })
+    })
+      .then(r => r.ok ? r.json() : null)
+      .then(j => {
+        // Filter out places any loaded guidebook already covers, not just the open one.
+        const known = new Set();
+        (this.state.trips || []).forEach(t => {
+          if (!t.data) return;
+          (t.data.modules || []).forEach(m => (m.pois || []).forEach(x => known.add((x.n || '').toLowerCase())));
+        });
+        this.searchables().forEach(x => known.add((x.n || '').toLowerCase()));
+        const items = ((j && j.places) || [])
+          .filter(pl => pl.displayName && !known.has(pl.displayName.text.toLowerCase()))
+          .map(pl => ({
+            n: pl.displayName.text,
+            type: (pl.primaryTypeDisplayName && pl.primaryTypeDisplayName.text) || '',
+            r: pl.rating || null, c: pl.userRatingCount || null,
+            km: pl.location ? distKm([g.lat, g.lng], [pl.location.latitude, pl.location.longitude]) : null
+          }))
+          .sort((a, b) => (b.r || 0) - (a.r || 0));
+        this.setState({ envItems: items, envBusy: false });
+      })
+      .catch(() => this.setState({ envItems: [], envBusy: false }));
+  }
+
   // ── Persistence helpers ────────────────────────────────────────────────────
   persistApp(patch) {
     this._app = { ...this._app, ...patch };
-    idbSet('app', { theme: this._app.theme, trip: this._app.trip, v: APP_SCHEMA }).catch(() => {});
+    const a = this._app;
+    idbSet('app', { theme: a.theme, trip: a.trip, v: APP_SCHEMA, profile: a.profile, radius: a.radius, alerts: a.alerts, envMode: a.envMode }).catch(() => {});
   }
+  setPref(patch) { this.persistApp(patch); this.setState(patch); }
   saveTrip() {
     const s = this.state, id = s.trip;
     if (!id) return;
@@ -1076,7 +1489,9 @@ class Component extends DCLogic {
         note = 'Az új verzió letöltése, aztán újraindul. Ne zárd be.';
       } else if (updNewer) {
         i = icon('ph-fill ph-arrow-circle-down', 'var(--color-accent)');
-        title = 'Új verzió elérhető';
+        const tn = upd.tripsNewer || [];
+        title = tn.length && !(upd.live && upd.running && upd.live.version !== upd.running.version)
+          ? 'Frissült útikönyv: ' + tn.join(', ') : 'Új verzió elérhető';
         note = ((upd.live && upd.live.notes) ? upd.live.notes + ' ' : '') +
           (liveV ? '(v' + liveV + (runV ? ' · most: v' + runV : '') + ')' : '');
       } else if (upd.state === 'checking') {
@@ -1138,6 +1553,12 @@ class Component extends DCLogic {
       pickerOpen: false, tripCards: [], poiOpen: false, poi: null,
       tToday: false, tPlan: false, tExplore: false, tMap: false, tSaved: false,
       savedCount: 0, navItems: [],
+      // Környék defaults (picker + trip branches override what they use)
+      nearOpen: false, nearCaret: 'ph ph-caret-down', geoOn: false, geoErr: '', hasGeoErr: false,
+      geoWaiting: false, nearItems: [], hasNear: false, crossNear: [], hasCross: false, noCross: false,
+      envModeChips: [], envSupported: false, envBusy: false, envItems: [], hasEnv: false, envEmpty: false,
+      toggleNear: () => {}, stopGeo: () => {}, startGeo: () => {}, fetchEnvirons: () => {},
+      nearHint: '', hasAlert: false, alertPoi: null,
       // update block / banner
       ...updVals,
       // overlays
@@ -1157,6 +1578,45 @@ class Component extends DCLogic {
     // ── Trip picker ──────────────────────────────────────────────────────────
     if (!T) {
       const statStyle = css(chipBase + 'background:var(--color-neutral-900);color:var(--color-neutral-400);border:1px solid transparent;letter-spacing:0.05em');
+      const ratingStylePk = css(chipBase + 'background:transparent;letter-spacing:0.04em;color:' + (light ? '#8a6516' : '#d8ad55') + ';border:1px solid ' + (light ? '#e3d3a8' : '#4d3d18'));
+      const dec2 = n => String(n).replace('.', ',');
+      const compact2 = n => n >= 10000 ? Math.round(n / 1000) + ' E' : n >= 1000 ? (Math.round(n / 100) / 10).toFixed(1).replace('.', ',') + ' E' : String(n);
+      const geo = st.geo;
+      const kmTxt = km => km < 1 ? Math.round(km * 1000) + ' m' : km.toFixed(1).replace('.', ',') + ' km';
+      const mode = ENV_MODES.find(x => x.id === st.envMode) || ENV_MODES[1];
+      // Nearest in-book sights across EVERY loaded guidebook, weighted by the
+      // family profile — tapping one opens that book on that place.
+      const crossNear = (geo.on && geo.lat) ? trips.filter(t => this.openable(t)).flatMap(t => {
+        const out = [];
+        (t.data.modules || []).forEach(m => (m.pois || []).forEach(x => out.push(x)));
+        (t.data.hikes || []).forEach(x => out.push(x));
+        return out.filter(x => x.ll).map(x => ({ x, t,
+          km: distKm([geo.lat, geo.lng], x.ll), sc: profileScore(st.profile, x.age) }));
+      }).filter(e => e.sc > 0 && e.km <= mode.km)
+        .sort((a, b) => (a.km / a.sc) - (b.km / b.sc)).slice(0, 6)
+        .map(e => ({ n: e.x.n, meta: e.x.meta || '', kmT: kmTxt(e.km), book: e.t.name || e.t.title,
+          ...(function (ss, x, t) {
+            const now = new Date(); now.setHours(0, 0, 0, 0);
+            const evd = (ss.events || []).find(ee => {
+              const from = new Date(ee.from + 'T00:00:00'), to = new Date((ee.to || ee.from) + 'T23:59:59');
+              if (now > to || (from - now) > 7 * 86400000) return false;
+              if (ee.trip && ee.poi) return ee.trip === t.id && ee.poi === x.id;
+              if (ee.ll && x.ll) return distKm(ee.ll, x.ll) <= (ee.km || 3);
+              return false;
+            });
+            return evd ? { hasEvent: true, eventText: '🎪 ' + evd.n,
+              evStyle: css('display:inline-block;font-size:10px;line-height:1.6;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:3px 8px;border-radius:4px;background:' + (light ? '#f3e8fb' : '#2c1b3a') + ';color:' + (light ? '#7a2ea8' : '#d9a8f5') + ';border:1px solid ' + (light ? '#dcc0ee' : '#5b3a78')) } : { hasEvent: false, eventText: '', evStyle: {} };
+          })(st, e.x, e.t),
+          hasRating: !!e.x.rating, ratingText: e.x.rating ? '★ ' + dec2(e.x.rating) + (e.x.reviews ? ' (' + compact2(e.x.reviews) + ')' : '') : '', ratingStyle: ratingStylePk,
+          open: () => this.enterTrip(e.t.id, false, e.x.id) })) : [];
+      const envModeChips = ENV_MODES.map(x => ({ label: x.label,
+        pick: () => { this.setPref({ envMode: x.id }); if (st.envItems) this.fetchEnvirons(); },
+        style: css('flex:none;padding:7px 11px;min-height:36px;display:flex;align-items:center;font-size:12px;font-weight:500;border-radius:999px;cursor:pointer;white-space:nowrap;' +
+          (st.envMode === x.id ? 'background:var(--color-accent);color:#fff;border:1px solid var(--color-accent)' : 'background:var(--color-bg);color:var(--color-neutral-400);border:1px solid var(--color-divider)')) }));
+      const envItemsPk = (st.envItems || []).map(e => ({ ...e,
+        line: [e.type, e.km != null ? kmTxt(e.km) : null].filter(Boolean).join(' · '),
+        ratingText: e.r ? '★ ' + dec2(e.r) + (e.c ? ' (' + compact2(e.c) + ')' : '') : '', ratingStyle: ratingStylePk,
+        rev: 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(e.n) }));
       const tripCards = trips.map(t => {
         const G = t.data || {};
         const ok = this.openable(t);
@@ -1167,10 +1627,15 @@ class Component extends DCLogic {
         if ((G.modules || []).length) stats.push({ v: (G.modules || []).length + ' modul' });
         if (pois) stats.push({ v: pois + ' helyszín' });
         if (!ok) stats.length = 0;
+        const stamp = (this.state.tripVers || {})[t.id];
+        const off = !ok ? '' : stamp === t.version ? 'Offline elérhető'
+          : stamp ? 'Offline frissül megnyitáskor' : 'Megnyitáskor letöltődik offline-ra';
         return {
           title: t.title || t.name || t.id,
           kicker: t.kicker || t.period || '',
           tagline: ok ? (t.tagline || '') : (t.draftNote || t.tagline || ''),
+          offLine: off, hasOff: !!off,
+          offIcon: stamp === t.version ? 'ph-fill ph-cloud-check' : 'ph ph-cloud-arrow-down',
           draft: !ok, noCover: !t.cover,
           stats: stats.map(s => ({ v: s.v, style: statStyle })),
           cta: ok ? 'Megnyitás' : 'Hamarosan',
@@ -1185,7 +1650,18 @@ class Component extends DCLogic {
           ctaStyle: css('display:inline-flex;align-items:center;margin-top:13px;font-size:13px;font-weight:500;color:' + (ok ? 'var(--color-accent-300)' : 'var(--color-neutral-600)'))
         };
       });
-      return { ...base, pickerOpen: true, tripCards, showTop: st.showTop };
+      return { ...base, pickerOpen: true, tripCards, showTop: st.showTop,
+        nearOpen: st.nearOpen, nearCaret: st.nearOpen ? 'ph ph-caret-up' : 'ph ph-caret-down',
+        geoOn: geo.on, geoErr: geo.err || '', hasGeoErr: !!geo.err, geoWaiting: geo.on && !geo.lat,
+        toggleNear: () => this.setState(s2 => { const open = !s2.nearOpen; if (open && !s2.geo.on) this.startGeo(); return { nearOpen: open }; }),
+        stopGeo: () => this.stopGeo(),
+        nearHint: mode.label + ' · profil: ' + (PROFILES.find(x => x.id === st.profile) || PROFILES[0]).label,
+        envModeChips, crossNear, hasCross: crossNear.length > 0,
+        noCross: geo.on && !!geo.lat && crossNear.length === 0,
+        envSupported: !!window.GUIDE_PLACES_KEY, envBusy: st.envBusy,
+        envItems: envItemsPk, hasEnv: !!st.envItems && envItemsPk.length > 0,
+        envEmpty: !!st.envItems && envItemsPk.length === 0,
+        fetchEnvirons: () => this.fetchEnvirons() };
     }
 
     // ── Active trip ──────────────────────────────────────────────────────────
@@ -1224,15 +1700,39 @@ class Component extends DCLogic {
     const ratingStyle = css(chipBase + 'background:transparent;letter-spacing:0.04em;color:'
       + (light ? '#8a6516' : '#d8ad55') + ';border:1px solid ' + (light ? '#e3d3a8' : '#4d3d18'));
     const dec = n => String(n).replace('.', ',');
-    const thou = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '\u202f');
+    // 5432 → "5,4 E" (ezer); the count matters as much as the stars.
+    const compact = n => n >= 10000 ? Math.round(n / 1000) + ' E'
+      : n >= 1000 ? (Math.round(n / 100) / 10).toFixed(1).replace('.', ',') + ' E'
+      : String(n);
     const ratingOf = a => {
       const live = st.places[T.id + ':' + a.id];
       const r = (live && live.r) || a.rating || null;
       const n = (live && live.n) || a.reviews || null;
       if (!r) return { hasRating: false, ratingText: '', ratingLong: '', ratingStyle };
       return { hasRating: true, ratingStyle,
-        ratingText: '★ ' + dec(r) + (n ? ' (' + thou(n) + ')' : ''),
-        ratingLong: '★ ' + dec(r) + (n ? ' · ' + thou(n) + ' értékelés' : ' · Google') };
+        ratingText: '★ ' + dec(r) + (n ? ' (' + compact(n) + ')' : ''),
+        ratingLong: '★ ' + dec(r) + ' / 5' + (n ? ' · ' + compact(n) + ' értékelés' : ' · Google') };
+    };
+
+    // Event/festival tag for a place: matched by trip+poi id, or by proximity
+    // for events pinned to a coordinate. Shown from a week before through the
+    // last day; "MA" when it is on right now.
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const evStyle = css(chipBase + 'background:' + (light ? '#f3e8fb' : '#2c1b3a') + ';color:' + (light ? '#7a2ea8' : '#d9a8f5') + ';border:1px solid ' + (light ? '#dcc0ee' : '#5b3a78'));
+    const fmtD = iso => { const d = new Date(iso + 'T00:00:00'); const M = ['jan', 'febr', 'márc', 'ápr', 'máj', 'jún', 'júl', 'aug', 'szept', 'okt', 'nov', 'dec']; return M[d.getMonth()] + ' ' + d.getDate() + '.'; };
+    const eventFor = a => {
+      const ev = (st.events || []).find(e => {
+        const from = new Date(e.from + 'T00:00:00'), to = new Date((e.to || e.from) + 'T23:59:59');
+        if (today > to || (from - today) > 7 * 86400000) return false;
+        if (e.trip && e.poi) return e.trip === T.id && e.poi === a.id;
+        if (e.ll && a.ll) return distKm(e.ll, a.ll) <= (e.km || 3);
+        return false;
+      });
+      if (!ev) return { hasEvent: false, eventText: '', evStyle };
+      const from = new Date(ev.from + 'T00:00:00'), to = new Date((ev.to || ev.from) + 'T23:59:59');
+      const now = today >= from && today <= to;
+      const when = now ? 'MA' : ev.to && ev.to !== ev.from ? fmtD(ev.from) + '–' + fmtD(ev.to) : fmtD(ev.from);
+      return { hasEvent: true, evStyle, eventText: '🎪 ' + when + ' · ' + ev.n };
     };
 
     const saveBits = id => {
@@ -1260,7 +1760,7 @@ class Component extends DCLogic {
     const decorate = a => ({ ...a, bStyle: badge(a.b).s, bLabel: badge(a.b).l, flags: !!(a.cash || a.mon),
       dir: dir(a.q || a.n), rev: rev(a.q || a.n), img: imgOf(a.id), thumbStyle: thumb(a.id, a.kind),
       cardThumb: cardThumb(a.id, a.kind), cardThumbTap: { ...cardThumb(a.id, a.kind), cursor: 'pointer' },
-      open: () => this.openPoi(a.id), ...ratingOf(a), ...saveBits(a.id) });
+      open: () => this.openPoi(a.id), ...ratingOf(a), ...eventFor(a), ...saveBits(a.id) });
 
     // ---- POI detail ----
     const rawPoi = st.poi ? byId[st.poi] : null;
@@ -1367,6 +1867,46 @@ class Component extends DCLogic {
     });
     const checkDone = checklist.filter(k => st.checks[k.id]).length;
 
+    // ---- Közelben (live GPS) ----
+    const geo = st.geo;
+    const kmTxt = km => km < 1 ? Math.round(km * 1000) + ' m' : km.toFixed(1).replace('.', ',') + ' km';
+    const nearItems = (geo.on && geo.lat) ? all
+      .filter(a => a.ll && a.kind !== 'sleep' && a.kind !== 'eat' && profileScore(st.profile, a.age) > 0)
+      .map(a => ({ a, km: distKm([geo.lat, geo.lng], a.ll), sc: profileScore(st.profile, a.age) }))
+      // Distance-first, but a "made for this crew" place (score 2) counts as
+      // half the distance of a merely-fine one — profile shapes the order
+      // without hiding anything.
+      .sort((x, y) => (x.km / x.sc) - (y.km / y.sc))
+      .slice(0, 8)
+      .map(e => ({ ...decorate(e.a), km: kmTxt(e.km),
+        fit: e.sc === 2, fitChip: css(chipBase + 'background:var(--color-accent-900);color:var(--color-accent-200);border:1px solid var(--color-accent-800)') })) : [];
+    const profileDef = PROFILES.find(x => x.id === st.profile) || PROFILES[0];
+    const alertRaw = st.alertId ? byId[st.alertId] : null;
+    const alertPoi = alertRaw ? { n: alertRaw.n, meta: alertRaw.meta,
+      open: () => { this.setState({ alertId: null }); this.openPoi(alertRaw.id); },
+      dismiss: () => this.setState({ alertId: null }) } : null;
+    const envSupported = !!window.GUIDE_PLACES_KEY;
+    const envItems = (st.envItems || []).map(e => ({ ...e,
+      line: [e.type, e.km != null ? kmTxt(e.km) : null].filter(Boolean).join(' · '),
+      ratingText: e.r ? '★ ' + dec(e.r) + (e.c ? ' (' + compact(e.c) + ')' : '') : '',
+      rev: rev(e.n), ratingStyle }));
+
+    // ---- settings ----
+    const prefChip = on => css('flex:none;display:flex;align-items:center;gap:6px;padding:8px 12px;min-height:38px;font-size:12.5px;font-weight:500;border-radius:999px;cursor:pointer;white-space:nowrap;' +
+      (on ? 'background:var(--color-accent);color:#fff;border:1px solid var(--color-accent)' : 'background:var(--color-surface);color:var(--color-neutral-400);border:1px solid var(--color-divider)'));
+    const profileChips = PROFILES.map(x => ({ label: x.label, icon: 'ph ' + x.icon,
+      pick: () => this.setPref({ profile: x.id }), style: prefChip(st.profile === x.id) }));
+    const radiusChips = [2, 5, 10].map(r => ({ label: r + ' km',
+      pick: () => this.setPref({ radius: r }), style: prefChip(st.radius === r) }));
+
+    // ---- offline copy of this guidebook ----
+    const dl = st.dl[T.id] || {};
+    const stamp = st.tripVers[T.id];
+    const dlLine = dl.busy && dl.total ? 'Letöltés offline használatra: ' + (dl.done || 0) + ' / ' + dl.total
+      : dl.busy ? 'Offline másolat ellenőrzése…'
+      : (dl.failed ? (dl.failed + ' fájl nem jött le — újra próbálkozik, ha lesz net.')
+      : (stamp ? 'Offline elérhető (' + stamp + ')' : ''));
+
     const tabs = [
       { id: 'plan', label: 'Útiterv', icon: 'ph-path' },
       { id: 'today', label: 'Ma', icon: 'ph-sun-horizon' },
@@ -1424,6 +1964,25 @@ class Component extends DCLogic {
       resetChecks: () => this.persist({ checks: {} }),
       savedItems, savedEmpty: savedItems.length === 0,
       verified: T.verified || '',
+      // Közelben
+      nearOpen: st.nearOpen, nearCaret: st.nearOpen ? 'ph ph-caret-up' : 'ph ph-caret-down',
+      geoOn: geo.on, geoErr: geo.err || '', hasGeoErr: !!geo.err,
+      geoWaiting: geo.on && !geo.lat, nearItems, hasNear: nearItems.length > 0,
+      startGeo: () => this.startGeo(), stopGeo: () => this.stopGeo(),
+      toggleNear: () => this.setState(s2 => { const open = !s2.nearOpen; if (open && !s2.geo.on) this.startGeo(); return { nearOpen: open }; }),
+      nearHint: 'A(z) „' + profileDef.label + '" profilra szűrve · jelzés ' + st.radius + ' km-en belül',
+      alertPoi, hasAlert: !!alertPoi,
+      alertBarStyle: css('position:fixed;left:50%;transform:translateX(-50%);bottom:calc(74px + env(safe-area-inset-bottom));z-index:47;width:calc(100% - 32px);max-width:488px;display:flex;align-items:center;gap:10px;padding:11px 12px 11px 14px;border-radius:var(--radius-md);background:#134a5a;color:#eef9fd;box-shadow:0 8px 24px rgba(0,0,0,0.28)'),
+      // environs
+      envSupported, envBusy: st.envBusy, envItems, hasEnv: !!st.envItems && envItems.length > 0,
+      envEmpty: !!st.envItems && envItems.length === 0,
+      fetchEnvirons: () => this.fetchEnvirons(),
+      // settings
+      profileChips, radiusChips,
+      alertsOn: st.alerts, toggleAlerts: () => this.setPref({ alerts: !st.alerts }),
+      alertsIcon: st.alerts ? 'ph-fill ph-check-square' : 'ph ph-square',
+      // offline
+      dlLine, hasDlLine: !!dlLine,
       navItems, showTop: st.showTop
     };
   }

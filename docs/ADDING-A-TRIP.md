@@ -76,6 +76,8 @@ betűvel szedi a hosszabbat, hogy beférjen.
   cash:true,     // „Csak készpénz" figyelmeztető chip
   rating:4.7,    // Google-értékelés, ha kézzel írod be
   reviews:1234,  // értékelések száma (opcionális)
+  ll:[48.57,20.47], // hozzávetőleges koordináta — a Közelben lista és a
+                    // közeledés-jelzés ebből számol távolságot (±200 m elég)
   wk:'hu:Cikk' } // fotó-fallback
 ```
 
@@ -111,12 +113,14 @@ Két helyre kell felvenni a fájlt:
    ```
    A sorrend nem számít — a registry `date` szerint rendez.
 
-2. `sw.js`, az `APP_SHELL` listában: a trip fájl és a fotói, hogy offline is
-   meglegyenek. **És emeld a `VERSION`-t** (`v3` → `v4`), különben a régi cache
-   marad érvényben.
+2. `sw.js`, a `CORE_ASSETS` listába csak a trip **JS-fájlja** kerül (a fotók
+   nem!) — azokat az app tölti le a trip saját offline gyorsítótárába
+   (`trip-<id>`) megnyitáskor, fájlonként, megszakítás-tűrően. App-váz
+   változásnál emeld az `APP_VERSION`-t.
 
-3. `version.json`: emeld a `version` mezőt, és írd át a `notes`-t egy mondatra.
-   Erről tudja az app, hogy van új kiadás — lásd lentebb.
+3. A trip descriptorban emeld a `version` mezőt, és a `version.json`
+   `trips.<id>` bejegyzését ugyanarra — ebből tudja az app, hogy a könyv
+   frissült (az app és a könyvek verziója külön követett).
 
 ## 3. Fotók
 

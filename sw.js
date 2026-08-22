@@ -1,12 +1,26 @@
-// T2 Mobil Útikönyv — service worker: full offline caching.
-// App-shell files are precached on install; everything else (including
-// cross-origin CDN/font/Wikimedia requests) is cached the first time it's
-// fetched, then served stale-while-revalidate.
-const VERSION = 'v6';
-const PRECACHE = 'precache-' + VERSION;
-const RUNTIME = 'runtime-' + VERSION;
+// Mobil Útikönyv — service worker.
+//
+// Two-tier offline model:
+//   core-<APP_VERSION>  the app shell: html, css, js, icons, vendor, trip data
+//                       files. Small (~1.5 MB) and installed ATOMICALLY — if it
+//                       is present, the app opens with full content offline.
+//   trip-<id>           that guidebook's photos/maps (plus its Wikimedia
+//                       images). Filled ONE FILE AT A TIME on request from the
+//                       page, so a single failed download never blocks offline
+//                       readiness — it is just re-tried later. Survives app
+//                       updates; refreshed only when the guidebook's own
+//                       version changes.
+//   runtime             everything cached opportunistically (fonts, wiki
+//                       images seen before a trip download finished).
+//
+// Data policy: cache-first with NO background revalidation. Updates happen only
+// through the explicit version check (version.json) and the refresh messages
+// below — so a day of heavy use in the mountains costs zero data.
+const APP_VERSION = 'v7';
+const CORE = 'core-' + APP_VERSION;
+const RUNTIME = 'runtime';
 
-const APP_SHELL = [
+const CORE_ASSETS = [
   './',
   './index.html',
   './T2%20Mobil%20Utikonyv.dc.html',
@@ -29,56 +43,12 @@ const APP_SHELL = [
   './vendor/phosphor/regular/style.css',
   './vendor/phosphor/regular/Phosphor.woff2',
   './vendor/phosphor/fill/style.css',
-  './vendor/phosphor/fill/Phosphor-Fill.woff2',
-  './photos/hero.webp',
-  './photos/a3.webp',
-  './photos/b4.webp',
-  './photos/b6.webp',
-  './photos/d4.webp',
-  './photos/e4.webp',
-  './photos/e5.webp',
-  './photos/cp1.webp',
-  './photos/cp2.webp',
-  './photos/cp3.webp',
-  './photos/cp4.webp',
-  './photos/p5.webp',
-  './photos/gombaszog/aggtelek.webp',
-  './photos/gombaszog/baradla-a.webp',
-  './photos/gombaszog/baradla-c.webp',
-  './photos/gombaszog/betliar-a.webp',
-  './photos/gombaszog/cover.webp',
-  './photos/gombaszog/dedinky.webp',
-  './photos/gombaszog/derenk-a.webp',
-  './photos/gombaszog/gombasecka.webp',
-  './photos/gombaszog/haj.webp',
-  './photos/gombaszog/karszt.webp',
-  './photos/gombaszog/krasnohorska.webp',
-  './photos/gombaszog/mauzoleum.webp',
-  './photos/gombaszog/medzev.webp',
-  './photos/gombaszog/ochtina.webp',
-  './photos/gombaszog/potok.webp',
-  './photos/gombaszog/roznava.webp',
-  './photos/gombaszog/rudabanya.webp',
-  './photos/gombaszog/silica.webp',
-  './photos/gombaszog/straw.webp',
-  './photos/gombaszog/szadvar-b.webp',
-  './photos/gombaszog/torna.webp',
-  './photos/gombaszog/zadiel-b.webp',
-  './maps/01-map.png',
-  './maps/02-map.png',
-  './maps/03-map.png',
-  './maps/04-map.png',
-  './maps/05-map.png'
+  './vendor/phosphor/fill/Phosphor-Fill.woff2'
 ];
 
-// Cross-origin hosts this app still depends on at runtime: Inter from Google
-// Fonts (cosmetic — falls back to a system font if unreachable) and POI
-// photos from Wikimedia (falls back to the "photo hamarosan" placeholder).
-// React/ReactDOM/Phosphor icons are vendored locally, so they're already
-// covered by APP_SHELL above and don't need a CDN at all.
-// Not listed here on purpose: places.googleapis.com. Rating lookups must not be
-// cached by the worker — the app caches the *numbers* in IndexedDB instead, so a
-// cached HTTP response would only ever hide a refresh.
+// Cross-origin hosts served from cache once seen. places.googleapis.com is
+// deliberately absent: rating lookups must not be cached as HTTP — the app
+// caches the numbers themselves in IndexedDB.
 const RUNTIME_HOSTS = new Set([
   'fonts.googleapis.com',
   'fonts.gstatic.com',
@@ -88,8 +58,8 @@ const RUNTIME_HOSTS = new Set([
 
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(PRECACHE)
-      .then(cache => cache.addAll(APP_SHELL))
+    caches.open(CORE)
+      .then(cache => cache.addAll(CORE_ASSETS))
       .then(() => self.skipWaiting())
   );
 });
@@ -97,25 +67,13 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys()
-      .then(keys => Promise.all(keys.filter(k => k !== PRECACHE && k !== RUNTIME).map(k => caches.delete(k))))
+      // Old core versions go; trip-* and runtime survive app updates.
+      .then(keys => Promise.all(keys
+        .filter(k => k.indexOf('core-') === 0 && k !== CORE)
+        // Pre-split builds used precache-*/runtime-* names — clear those too.
+        .concat(keys.filter(k => /^(precache|runtime)-/.test(k)))
+        .map(k => caches.delete(k))))
       .then(() => self.clients.claim())
-  );
-});
-
-// The app asks for this when it finds a newer version.json but sw.js itself did
-// not change (a content-only deploy), so no install event would run. Re-fetching
-// the shell *over* the existing precache keeps every entry available throughout:
-// deleting the cache first would leave a window where a reload finds nothing to
-// serve and the page comes up without its stylesheet.
-self.addEventListener('message', event => {
-  const data = event.data || {};
-  if (data.type !== 'refresh') return;
-  const reply = msg => { if (event.source) event.source.postMessage(msg); };
-  event.waitUntil(
-    caches.open(PRECACHE)
-      .then(cache => cache.addAll(APP_SHELL.map(u => new Request(u, { cache: 'reload' }))))
-      .then(() => reply({ type: 'refreshed' }))
-      .catch(err => reply({ type: 'refresh-failed', error: String(err) }))
   );
 });
 
@@ -126,12 +84,61 @@ function withTimeout(promise, ms) {
   });
 }
 
-function isCacheable(url) {
-  if (url.origin === self.location.origin) return true;
-  if (RUNTIME_HOSTS.has(url.hostname)) return true;
-  if (/(^|\.)wikipedia\.org$/.test(url.hostname)) return true; // page-summary API (image lookups)
-  return false;
+const ok = res => res && (res.status === 200 || res.type === 'opaque');
+
+// Fetch one asset into a cache, tolerating failure. Same-origin requests are
+// plain; cross-origin falls back to no-cors so Wikimedia images can still be
+// stored as opaque responses if CORS ever fails.
+function fill(cache, url, reload) {
+  const req = new Request(url, reload ? { cache: 'reload' } : {});
+  return fetch(req)
+    .catch(() => fetch(new Request(url, { mode: 'no-cors', cache: reload ? 'reload' : 'default' })))
+    .then(res => { if (!ok(res)) throw new Error('bad response'); return cache.put(url, res); })
+    .then(() => true)
+    .catch(() => false);
 }
+
+self.addEventListener('message', event => {
+  const data = event.data || {};
+  const reply = msg => { if (event.source) event.source.postMessage(msg); };
+
+  // Refetch the app shell over the existing core cache (content-only update:
+  // sw.js unchanged so no install event runs). Never delete-then-fill — that
+  // leaves a window where a reload finds nothing and comes up unstyled.
+  if (data.type === 'refresh') {
+    event.waitUntil(
+      caches.open(CORE)
+        .then(cache => cache.addAll(CORE_ASSETS.map(u => new Request(u, { cache: 'reload' }))))
+        .then(() => reply({ type: 'refreshed' }))
+        .catch(err => reply({ type: 'refresh-failed', error: String(err) }))
+    );
+    return;
+  }
+
+  // Download (or update) one guidebook's assets. Tolerant and resumable:
+  // already-cached files are skipped unless `reload`, failures are counted and
+  // reported, progress is streamed so the page can show "12/22".
+  if (data.type === 'ensure-trip' || data.type === 'refresh-trip') {
+    const id = data.id, assets = data.assets || [];
+    const reload = data.type === 'refresh-trip';
+    event.waitUntil(caches.open('trip-' + id).then(async cache => {
+      let done = 0, failed = 0;
+      for (const url of assets) {
+        const have = reload ? undefined : await cache.match(url).catch(() => undefined);
+        if (!have) {
+          const got = await fill(cache, url, reload);
+          if (!got) failed++;
+        }
+        done++;
+        if (done % 3 === 0 || done === assets.length) {
+          reply({ type: 'trip-progress', id, done, total: assets.length });
+        }
+      }
+      reply({ type: 'trip-ready', id, version: data.version, failed, total: assets.length });
+    }));
+    return;
+  }
+});
 
 self.addEventListener('fetch', event => {
   const req = event.request;
@@ -139,50 +146,40 @@ self.addEventListener('fetch', event => {
 
   const url = new URL(req.url);
 
-  // version.json drives the app's update check and needs two different answers:
-  //   ?live=…  → straight to the network: what the server serves right now.
-  //   plain    → cache-first and never revalidated, so it keeps stamping the
-  //              build this worker actually serves. On a miss it refills from
-  //              the network, which is what makes the app's "clear the cache and
-  //              reload" recovery self-healing.
-  // Everything else same-origin stays stale-while-revalidate, which would
-  // overwrite the stamp on the first read and break the comparison.
+  // Any same-origin request marked ?live= is a deliberate freshness probe
+  // (version.json, events.json): never answer or pollute the cache with it —
+  // each call carries a unique timestamp and would pile up as dead entries.
+  if (url.origin === self.location.origin && url.searchParams.has('live')) return;
+
+  // version.json: ?live= goes straight to the network (what is deployed right
+  // now); the plain path is cache-first and never revalidated, so it keeps
+  // stamping the running build. On a miss it refills from network — that makes
+  // "clear the cache" recovery self-healing.
   if (url.origin === self.location.origin && url.pathname.endsWith('/version.json')) {
     if (url.searchParams.has('live')) return;
     event.respondWith(caches.match(req).catch(() => undefined).then(cached => cached || fetch(req).then(res => {
       if (res && res.status === 200) {
         const copy = res.clone();
-        caches.open(PRECACHE).then(cache => cache.put(req, copy)).catch(() => {});
+        caches.open(CORE).then(cache => cache.put(req, copy)).catch(() => {});
       }
       return res;
     })).catch(() => fetch(req)));
     return;
   }
 
-  if (!isCacheable(url)) return;
-
   const sameOrigin = url.origin === self.location.origin;
+  if (!sameOrigin && !RUNTIME_HOSTS.has(url.hostname) && !/(^|\.)wikipedia\.org$/.test(url.hostname)) return;
 
-  const store = res => {
-    // Cross-origin no-cors responses come back "opaque" (status 0) — still
-    // cacheable and servable, just not inspectable.
-    if (res && (res.status === 200 || res.type === 'opaque')) {
-      const copy = res.clone();
-      caches.open(sameOrigin ? PRECACHE : RUNTIME)
-        .then(cache => cache.put(req, copy)).catch(() => {});
-    }
-    return res;
-  };
-
-  // The Inter stylesheet is the app's only remaining external dependency, and it
-  // arrives as a render-blocking @import inside the design-system stylesheet. A
-  // dead or captive network can leave that request hanging rather than failing,
-  // and the page then never paints at all. Cap the wait and fall back to empty
-  // CSS so the app comes up in the system font instead of not coming up.
+  // The Inter stylesheet arrives as a render-blocking @import; on a dead or
+  // captive network the request can hang rather than fail and the page never
+  // paints. Cap it and fall back to empty CSS (system font).
   if (url.hostname === 'fonts.googleapis.com') {
     event.respondWith(
       caches.match(req).catch(() => undefined)
-        .then(cached => cached || withTimeout(fetch(req), 3000).then(store))
+        .then(cached => cached || withTimeout(fetch(req), 3000).then(res => {
+          if (ok(res)) { const copy = res.clone(); caches.open(RUNTIME).then(c => c.put(req, copy)).catch(() => {}); }
+          return res;
+        }))
         .catch(() => new Response('/* Inter unavailable — system font */', {
           headers: { 'Content-Type': 'text/css' }
         }))
@@ -190,19 +187,22 @@ self.addEventListener('fetch', event => {
     return;
   }
 
+  // Cache-first, no revalidation. caches.match searches core, trip-* and
+  // runtime alike. Uncached requests pass the network result (or its failure)
+  // straight through, as if the worker weren't here.
   event.respondWith(
     caches.match(req).catch(() => undefined).then(cached => {
-      if (cached) {
-        // Stale-while-revalidate: hand over the cached copy and refresh behind
-        // it, swallowing any failure so it can't affect this response.
-        fetch(req).then(store).catch(() => {});
-        return cached;
-      }
-      // Nothing cached: pass the network response (or its failure) straight
-      // through, exactly as if the worker weren't here. Resolving respondWith
-      // with undefined — which the previous shape did whenever an uncached
-      // request failed — turns into a hard error for the page instead.
-      return fetch(req).then(store);
+      if (cached) return cached;
+      return fetch(req).then(res => {
+        if (ok(res)) {
+          const copy = res.clone();
+          // Opportunistic fills go to RUNTIME, never CORE: CORE dies with the
+          // next app version, and these (photos viewed before a trip download
+          // finished) deserve to survive it.
+          caches.open(RUNTIME).then(c => c.put(req, copy)).catch(() => {});
+        }
+        return res;
+      });
     }).catch(() => fetch(req))
   );
 });

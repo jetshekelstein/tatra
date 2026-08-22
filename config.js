@@ -13,6 +13,9 @@
 //     that — a full refresh of both guidebooks is well under a cent at current
 //     Text Search pricing, but the billing account has to exist.
 //
+// The same key also powers the "Mit ajánl a Google?" discovery in the Közelben
+// panels (Places Nearby Search around the current GPS fix).
+//
 // Left empty, the app simply shows whatever ratings are written into the trip
-// files and no network calls are made.
+// files, the discovery button stays hidden, and no network calls are made.
 window.GUIDE_PLACES_KEY = '';

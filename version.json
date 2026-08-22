@@ -1,6 +1,10 @@
 {
-  "version": "2026-08-19.4",
-  "sw": "v6",
-  "date": "2026-08-19",
-  "notes": "A világos mód végre világos: az Android saját sötétítése nem üti át többé, és a felső sávot is követi a téma."
+  "version": "2026-08-20.1",
+  "sw": "v7",
+  "date": "2026-08-20",
+  "notes": "Megbízható offline: a könyvek letöltődnek és net nélkül is nyílnak · Felfedezés nyílik elsőként · Közelben: GPS-alapú ajánlások és jelzés · családi profil beállítás · értékelésszámok",
+  "trips": {
+    "tatra": "2026-07-19.1",
+    "gombaszog": "2026-08-19.1"
+  }
 }
