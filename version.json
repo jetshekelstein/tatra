@@ -1,10 +1,11 @@
 {
-  "version": "2026-08-20.2",
-  "sw": "v7",
-  "date": "2026-08-20",
-  "notes": "Google-kulcs mostantól az appban, a Beállításokban illeszthető be (értékelések minden helyre + appon belüli ajánlások); kulcs nélkül is: élő Google Térkép-ajánlások a pozíciódnál.",
+  "version": "2026-08-28.1",
+  "sw": "v8",
+  "date": "2026-08-28",
+  "notes": "Új útikönyv: Bükkalja — a házi terep. Noszvaj, Bogács, Cserépfalu és Bükkzsérc 6 modulban, 31 helyszínnel, 8 túrával és 22 étteremmel; a fürdőárak, a kastély nyitvatartása és a várkúti szállás állapota 2026. 08. 28-án ellenőrizve.",
   "trips": {
     "tatra": "2026-07-19.1",
-    "gombaszog": "2026-08-19.1"
+    "gombaszog": "2026-08-19.1",
+    "bukkalja": "2026-08-28.1"
   }
 }
