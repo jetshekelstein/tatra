@@ -124,7 +124,7 @@
                   <div style="flex:1;min-width:0">
                     <div style="font-weight:500;font-size:13.5px">{{ p.n }}</div>
                     <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;align-items:center">
-                      <span style="{{ ageChip }}"><i class="ph ph-navigation-arrow" style="margin-right:4px"></i>{{ p.kmT }}</span>
+                      <span style="{{ ageChip }}"><svg viewBox="0 0 24 24" width="10" height="10" aria-hidden="true" style="{{ p.arrowStyle }}"><path d="M12 2.5 19 20.5 12 16.4 5 20.5 Z" fill="currentColor"/></svg>{{ p.kmT }}</span>
                       <span class="text-muted" style="font-size:11px">{{ p.book }}</span>
                       <sc-if value="{{ p.hasRating }}" hint-placeholder-val="{{ false }}"><span style="{{ p.ratingStyle }}">{{ p.ratingText }}</span></sc-if>
                       <sc-if value="{{ p.hasEvent }}" hint-placeholder-val="{{ false }}"><span style="{{ p.evStyle }}">{{ p.eventText }}</span></sc-if>
@@ -249,6 +249,29 @@
         <span style="{{ mikorLabel }}">Mikor, mennyiért</span>
         <p class="text-muted" style="margin:5px 0 0;font-size:13px">{{ poi.w }}</p>
       </div>
+
+      <sc-if value="{{ poi.hasCal }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:12px;padding:12px 14px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md)">
+          <span style="{{ mikorLabel }}">Programnaptár</span>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+            <sc-for list="{{ poi.cal }}" as="c" hint-placeholder-count="2">
+              <div style="display:flex;gap:10px;align-items:baseline">
+                <span style="{{ c.dateStyle }}">{{ c.when }}</span>
+                <div style="flex:1;min-width:0">
+                  <sc-if value="{{ c.hasUrl }}" hint-placeholder-val="{{ false }}">
+                    <a href="{{ c.url }}" target="_blank" rel="noopener" style="font-size:13.5px;color:var(--color-accent-300)">{{ c.n }}</a>
+                  </sc-if>
+                  <sc-if value="{{ c.noUrl }}" hint-placeholder-val="{{ false }}">
+                    <span style="font-size:13.5px">{{ c.n }}</span>
+                  </sc-if>
+                  <div class="text-muted" style="font-size:11.5px">{{ c.sub }}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <p class="text-muted" style="margin:9px 0 0;font-size:11px">A dátumokat indulás előtt ellenőrizzétek — a falusi programok csúsznak.</p>
+        </div>
+      </sc-if>
 
       <h6 style="margin:24px 0 10px;color:var(--color-neutral-500)">Ugyanebben a modulban</h6>
       <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px">
@@ -425,7 +448,7 @@
                 <div style="flex:1;min-width:0">
                   <div style="font-weight:500;font-size:13.5px">{{ p.n }}</div>
                   <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;align-items:center">
-                    <span style="{{ ageChip }}"><i class="ph ph-navigation-arrow" style="margin-right:4px"></i>{{ p.km }}</span>
+                    <span style="{{ ageChip }}"><svg viewBox="0 0 24 24" width="10" height="10" aria-hidden="true" style="{{ p.arrowStyle }}"><path d="M12 2.5 19 20.5 12 16.4 5 20.5 Z" fill="currentColor"/></svg>{{ p.km }}</span>
                     <sc-if value="{{ p.fit }}" hint-placeholder-val="{{ false }}"><span style="{{ p.fitChip }}">Nektek való</span></sc-if>
                     <sc-if value="{{ p.hasRating }}" hint-placeholder-val="{{ false }}"><span style="{{ p.ratingStyle }}">{{ p.ratingText }}</span></sc-if>
                     <sc-if value="{{ p.hasEvent }}" hint-placeholder-val="{{ false }}"><span style="{{ p.evStyle }}">{{ p.eventText }}</span></sc-if>
@@ -825,6 +848,17 @@ function distKm(a, b) {
   return 2 * R * Math.asin(Math.sqrt(h));
 }
 
+// Initial great-circle bearing a -> b, degrees clockwise from true north.
+// Paired with the device compass this is what lets the nearby list point at a
+// place rather than show a decorative arrow.
+function bearingDeg(a, b) {
+  const d = Math.PI / 180;
+  const y = Math.sin((b[1] - a[1]) * d) * Math.cos(b[0] * d);
+  const x = Math.cos(a[0] * d) * Math.sin(b[0] * d)
+          - Math.sin(a[0] * d) * Math.cos(b[0] * d) * Math.cos((b[1] - a[1]) * d);
+  return (Math.atan2(y, x) / d + 360) % 360;
+}
+
 // ── Update checking ─────────────────────────────────────────────────────────
 // Two signals, in order of authority:
 //  1. version.json. The copy in the service worker's precache was fetched at
@@ -851,7 +885,7 @@ class Component extends DCLogic {
             // live location: on/off, fix, error, and the sight we last alerted on
             geo: { on: false, lat: null, lng: null, acc: null, err: null }, alertId: null, alerted: {},
             profile: 'kicsik', radius: 5, alerts: true, envMode: 'auto', placesKey: '', keyDraft: '',
-            nearOpen: false, envItems: null, envBusy: false, events: [] };
+            nearOpen: false, envItems: null, envBusy: false, events: [], heading: null };
 
   componentDidMount() {
     this._app = {};          // the shared 'app' blob
@@ -1033,7 +1067,13 @@ class Component extends DCLogic {
     // Tell the browser which scheme we are actually painting. Beyond keeping
     // scrollbars and form controls in step, this is what stops Android from
     // applying its own darkening on top of our light theme.
-    document.documentElement.style.colorScheme = light ? 'light' : 'dark';
+    // "only light" (not plain "light") is the documented opt-out from Chrome's
+    // Auto Dark Theme and Samsung Internet's site darkening: plain "light" only
+    // says which scheme we paint, and the browser is still free to invert it on
+    // top. Keep the meta in step for the pre-JS paint.
+    document.documentElement.style.colorScheme = light ? 'only light' : 'dark';
+    const cs = document.querySelector('meta[name="color-scheme"]');
+    if (cs) cs.setAttribute('content', light ? 'only light' : 'dark');
     // And move the system bars with it — the meta tag is a fixed dark value, so
     // in light mode the status bar used to stay dark.
     const m = document.querySelector('meta[name="theme-color"]');
@@ -1289,6 +1329,7 @@ class Component extends DCLogic {
     if (this.state.alerts && window.Notification && Notification.permission === 'default') {
       try { Notification.requestPermission().catch(() => {}); } catch (e) {}
     }
+    this.startHeading();
     this._geoWatch = navigator.geolocation.watchPosition(
       pos => {
         this.setState(st => ({ geo: { ...st.geo, on: true, err: null,
@@ -1303,7 +1344,43 @@ class Component extends DCLogic {
   stopGeo() {
     if (this._geoWatch != null && navigator.geolocation) navigator.geolocation.clearWatch(this._geoWatch);
     this._geoWatch = null;
-    this.setState(st => ({ geo: { ...st.geo, on: false }, alertId: null }));
+    this.stopHeading();
+    this.setState(st => ({ geo: { ...st.geo, on: false }, alertId: null, heading: null }));
+  }
+
+  // Device compass. With it the nearby arrows point where the place actually is
+  // as you turn; without it they fall back to a north-up bearing, which is still
+  // a direction rather than a decoration. iOS needs an explicit grant, and it
+  // must be asked for from a user gesture — startGeo() is one.
+  startHeading() {
+    if (this._headOff) return;
+    const apply = e => {
+      let h = null;
+      if (e.webkitCompassHeading != null) h = e.webkitCompassHeading;   // iOS: true north, clockwise
+      else if (e.absolute && e.alpha != null) h = 360 - e.alpha;        // spec: alpha runs anticlockwise
+      if (h == null || isNaN(h)) return;
+      const v = (h + 360) % 360;
+      // Ignore sub-3° jitter so the compass does not re-render the list constantly.
+      if (this._lastHead != null && Math.abs(((v - this._lastHead + 540) % 360) - 180) < 3) return;
+      this._lastHead = v;
+      this.setState({ heading: v });
+    };
+    const attach = () => {
+      window.addEventListener('deviceorientationabsolute', apply, true);
+      window.addEventListener('deviceorientation', apply, true);
+      this._headOff = () => {
+        window.removeEventListener('deviceorientationabsolute', apply, true);
+        window.removeEventListener('deviceorientation', apply, true);
+      };
+    };
+    const DOE = window.DeviceOrientationEvent;
+    if (DOE && typeof DOE.requestPermission === 'function') {
+      DOE.requestPermission().then(r => { if (r === 'granted') attach(); }).catch(() => {});
+    } else if (DOE) attach();
+  }
+  stopHeading() {
+    if (this._headOff) this._headOff();
+    this._headOff = null; this._lastHead = null;
   }
 
   // A preferred sight came within the alert radius: one in-app banner (and a
@@ -1633,6 +1710,9 @@ class Component extends DCLogic {
       }).filter(e => e.sc > 0 && e.km <= mode.km)
         .sort((a, b) => (a.km / a.sc) - (b.km / b.sc)).slice(0, 6)
         .map(e => ({ n: e.x.n, meta: e.x.meta || '', kmT: kmTxt(e.km), book: e.t.name || e.t.title,
+          arrowStyle: { display: 'inline-block', marginRight: '4px', verticalAlign: '-1px',
+            transform: 'rotate(' + ((bearingDeg([geo.lat, geo.lng], e.x.ll) - (st.heading || 0) + 360) % 360).toFixed(0) + 'deg)',
+            transition: 'transform 180ms linear' },
           ...(function (ss, x, t) {
             const now = new Date(); now.setHours(0, 0, 0, 0);
             const evd = (ss.events || []).find(ee => {
@@ -1758,20 +1838,54 @@ class Component extends DCLogic {
     const today = new Date(); today.setHours(0, 0, 0, 0);
     const evStyle = css(chipBase + 'background:' + (light ? '#f3e8fb' : '#2c1b3a') + ';color:' + (light ? '#7a2ea8' : '#d9a8f5') + ';border:1px solid ' + (light ? '#dcc0ee' : '#5b3a78'));
     const fmtD = iso => { const d = new Date(iso + 'T00:00:00'); const M = ['jan', 'febr', 'márc', 'ápr', 'máj', 'jún', 'júl', 'aug', 'szept', 'okt', 'nov', 'dec']; return M[d.getMonth()] + ' ' + d.getDate() + '.'; };
-    const eventFor = a => {
-      const ev = (st.events || []).find(e => {
-        const from = new Date(e.from + 'T00:00:00'), to = new Date((e.to || e.from) + 'T23:59:59');
-        if (today > to || (from - today) > 7 * 86400000) return false;
-        if (e.trip && e.poi) return e.trip === T.id && e.poi === a.id;
-        if (e.ll && a.ll) return distKm(e.ll, a.ll) <= (e.km || 3);
-        return false;
-      });
-      if (!ev) return { hasEvent: false, eventText: '', evStyle };
-      const from = new Date(ev.from + 'T00:00:00'), to = new Date((ev.to || ev.from) + 'T23:59:59');
-      const now = today >= from && today <= to;
-      const when = now ? 'MA' : ev.to && ev.to !== ev.from ? fmtD(ev.from) + '–' + fmtD(ev.to) : fmtD(ev.from);
-      return { hasEvent: true, evStyle, eventText: '🎪 ' + when + ' · ' + ev.n };
+    // An event belongs to a place by trip+poi id, or by proximity when it is
+    // pinned to a coordinate (a village festival tags every place in the
+    // village). `dow` marks a weekly fixture — then from/to bound the season
+    // and the thing happens every week on that weekday inside it.
+    const DAY = 86400000;
+    const evMatch = (e, a) => {
+      if (e.trip && e.poi) return e.trip === T.id && e.poi === a.id;
+      if (e.ll && a.ll) return distKm(e.ll, a.ll) <= (e.km || 3);
+      return false;
     };
+    // When does this event next happen, counting from today? null once it is over.
+    const evNext = e => {
+      const from = new Date(e.from + 'T00:00:00'), to = new Date((e.to || e.from) + 'T00:00:00');
+      if (e.dow == null) return today > to ? null : { start: from < today ? today : from, end: to, live: today >= from && today <= to };
+      if (today > to) return null;
+      const scan = new Date(Math.max(from.getTime(), today.getTime()));
+      for (let i = 0; i < 7; i++) {
+        if (scan.getDay() === e.dow) return { start: new Date(scan), end: new Date(scan), live: scan.getTime() === today.getTime() };
+        scan.setDate(scan.getDate() + 1);
+      }
+      return null;
+    };
+    const evLabel = (e, nx) => nx.live ? 'MA'
+      : e.dow == null && e.to && e.to !== e.from ? fmtD(e.from) + '–' + fmtD(e.to)
+      : fmtD(nx.start.toISOString().slice(0, 10));
+    // Tag on listings: anything happening within the next month, or on right now.
+    const TAG_DAYS = 30;
+    const eventFor = a => {
+      let best = null, bestNx = null;
+      (st.events || []).forEach(e => {
+        if (!evMatch(e, a)) return;
+        const nx = evNext(e);
+        if (!nx || (nx.start - today) > TAG_DAYS * DAY) return;
+        if (!bestNx || nx.start < bestNx.start) { best = e; bestNx = nx; }
+      });
+      if (!best) return { hasEvent: false, eventText: '', evStyle };
+      return { hasEvent: true, evStyle, eventText: '🎪 ' + evLabel(best, bestNx) + ' · ' + best.n };
+    };
+    // Full forward calendar for one place — everything still to come, soonest first.
+    const dateStyle = css('flex:none;min-width:64px;font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:' + (light ? '#7a2ea8' : '#d9a8f5'));
+    const eventsFor = a => (st.events || [])
+      .map(e => ({ e, nx: evNext(e) }))
+      .filter(x => x.nx && evMatch(x.e, a))
+      .sort((x, y) => x.nx.start - y.nx.start)
+      .slice(0, 8)
+      .map(x => ({ n: x.e.n, when: evLabel(x.e, x.nx),
+        sub: x.e.dow != null ? 'minden héten' : (x.e.note || ''),
+        url: x.e.url || '', hasUrl: !!x.e.url, noUrl: !x.e.url, dateStyle }));
 
     const saveBits = id => {
       const on = st.saved.includes(id);
@@ -1802,9 +1916,11 @@ class Component extends DCLogic {
 
     // ---- POI detail ----
     const rawPoi = st.poi ? byId[st.poi] : null;
+    const poiCal = rawPoi ? eventsFor(rawPoi) : [];
     const poi = rawPoi ? { ...decorate(rawPoi),
       heroStyle: bgImg(rawPoi.id, 'width:100%;height:230px', rawPoi.kind),
       noImg: !imgOf(rawPoi.id),
+      cal: poiCal, hasCal: poiCal.length > 0,
       openModule: () => this.goExplore(),
       siblings: all.filter(x => x.modId === rawPoi.modId && x.kind === rawPoi.kind && x.id !== rawPoi.id).slice(0, 4)
         .map(x => ({ n: x.n, meta: x.meta, thumbStyle: thumb(x.id, x.kind), open: () => this.openPoi(x.id), ...ratingOf(x) })) } : null;
@@ -1915,6 +2031,15 @@ class Component extends DCLogic {
       ? 'https://www.google.com/maps/search/' + encodeURIComponent(liveQuery) + '/@' + geo.lat + ',' + geo.lng + ',12z'
       : 'https://www.google.com/maps/search/' + encodeURIComponent(liveQuery);
     const kmTxt = km => km < 1 ? Math.round(km * 1000) + ' m' : km.toFixed(1).replace('.', ',') + ' km';
+    // Rotate the arrow to the real bearing. With a compass fix we subtract the
+    // heading, so the arrow points at the place as you turn the phone; without
+    // one it stays north-up, which is still a bearing and not a decoration.
+    const arrowStyle = ll => {
+      const deg = (geo.on && geo.lat && ll)
+        ? (bearingDeg([geo.lat, geo.lng], ll) - (st.heading || 0) + 360) % 360 : 0;
+      return { display: 'inline-block', marginRight: '4px', verticalAlign: '-1px',
+        transform: 'rotate(' + deg.toFixed(0) + 'deg)', transition: 'transform 180ms linear' };
+    };
     const nearItems = (geo.on && geo.lat) ? all
       .filter(a => a.ll && a.kind !== 'sleep' && a.kind !== 'eat' && profileScore(st.profile, a.age) > 0)
       .map(a => ({ a, km: distKm([geo.lat, geo.lng], a.ll), sc: profileScore(st.profile, a.age) }))
@@ -1923,7 +2048,7 @@ class Component extends DCLogic {
       // without hiding anything.
       .sort((x, y) => (x.km / x.sc) - (y.km / y.sc))
       .slice(0, 8)
-      .map(e => ({ ...decorate(e.a), km: kmTxt(e.km),
+      .map(e => ({ ...decorate(e.a), km: kmTxt(e.km), arrowStyle: arrowStyle(e.a.ll),
         fit: e.sc === 2, fitChip: css(chipBase + 'background:var(--color-accent-900);color:var(--color-accent-200);border:1px solid var(--color-accent-800)') })) : [];
     const profileDef = PROFILES.find(x => x.id === st.profile) || PROFILES[0];
     const alertRaw = st.alertId ? byId[st.alertId] : null;

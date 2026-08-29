@@ -167,6 +167,48 @@ semmit, és az app stílus nélkül jön fel.
 Ha elfelejtetted emelni a `version.json`-t, a `Gyorsítótár törlése` link
 ugyanezt kézzel elvégzi.
 
+## Rendezvények (`events.json`)
+
+Az események **nem** a trip fájlban laknak, hanem a gyökér `events.json`-ben. Ez
+külön verziózódik, és az app a frissítés-ellenőrzéskor tölti le — tehát
+**appkiadás nélkül, bármikor bővíthető**, csak a fájl `version` mezőjét kell
+emelni.
+
+```jsonc
+{ "n": "Bogácsi Szüreti Fesztivál",
+  "ll": [47.9053, 20.5333], "km": 2.5,     // falusi rendezvény: a körön belül MINDEN helyszínt megjelöl
+  "from": "2026-09-19", "to": "2026-09-19",
+  "note": "Rendezvénypark · felvonulás, borkóstoló",
+  "url": "https://…" }                      // opcionális
+
+{ "n": "Patakparti Piac",
+  "trip": "bukkalja", "poi": "n3",          // pontos kötés egy helyszínhez
+  "dow": 5,                                  // HETI ismétlődés: 0=vasárnap … 6=szombat
+  "from": "2026-01-02", "to": "2027-12-31" } // dow mellett a from/to a SZEZON
+```
+
+Hol jelenik meg:
+
+| Felület | Mit mutat |
+| --- | --- |
+| Listák, Közelben, helyszínkártyák | 🎪 jelvény, ha az esemény **30 napon belül** esedékes; „MA", ha éppen tart |
+| Helyszín lapja | **Programnaptár** doboz: az összes hátralévő esemény, legközelebbi elöl |
+
+Lejárt esemény magától eltűnik mindenhonnan — a régieket nyugodtan bent lehet
+hagyni a jövő évi tervezéshez. Ha egy dátum még nem hivatalos, írd a nevébe,
+hogy `(várható)`: a jelvény csak a nevet és a dátumot mutatja, a `note`-ot nem.
+
+## Képek, ha nincs saját fotó
+
+A sorrend: helyi fotó (`photos`) → rögzített Wikimedia-fájl (`wikiFiles`) →
+Wikipédia-vezérkép (`wk`) → szürke ikon. Hogy sehol ne maradjon ikon, a
+bükkaljai és a gombaszögi kötet a `data.itineraries` előtt egy rövid ciklussal
+minden helyszínre ráteszi a **települése** `wk`-ját, ha nincs sajátja — az
+egyedi `wk` mindig erősebb. Új kötetnél érdemes ugyanezt megtenni.
+
+Figyelem: a `plans` bejegyzésekre a váz **nem** tölt le Wikipédia-képet, azoknak
+helyi fotó (vagy `wikiFiles` pin) kell.
+
 ## Amit a váz automatikusan hoz
 
 Nem kell trip-enként megírni: badge-ek és korjelzések, készpénz/hétfő

@@ -271,7 +271,7 @@ window.registerTrip({
   id: 'tatra',
   // Sort key for the picker — newest trip first.
   // Content version — bump on every content change; version.json mirrors it.
-  version: '2026-07-19.1',
+  version: '2026-08-29.1',
   date: '2026-07-19',
   // Header line inside the app, and the picker card.
   name: 'T2 · Eger → Tátra',

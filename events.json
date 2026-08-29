@@ -1,5 +1,29 @@
 {
-  "_doc": "Esemény-feed: fesztiválok, programok a könyvek helyszínein. Az app frissítés-ellenőrzéskor tölti le és IndexedDB-be teszi, tehát appfrissítés nélkül, bármikor bővíthető — offline a legutóbb letöltött állapot él. Mező-séma: trip = útikönyv id; poi = helyszín id (VAGY ll:[lat,lng] + km hatókör, ha nem könyvbeli helyhez kötődik); n = az esemény neve; from/to = ISO dátumok (to napja még érvényes); url = opcionális link. A jelvény csak a from−7. naptól látszik, és to után magától eltűnik.",
-  "version": "2026-08-20.1",
-  "events": []
+  "_doc": "Esemény-feed: fesztiválok, piacok, programok a könyvek helyszínein. Az app frissítés-ellenőrzéskor tölti le és IndexedDB-be teszi, tehát APPFRISSÍTÉS NÉLKÜL, bármikor bővíthető — offline a legutóbb letöltött állapot él. Mező-séma: trip = útikönyv id + poi = helyszín id (pontos kötés egy helyhez), VAGY ll:[lat,lng] + km hatókör (falusi rendezvény: a körön belüli MINDEN helyszínt megjelöli). n = az esemény neve; from/to = ISO dátumok, a to napja még érvényes; dow = OPCIONÁLIS heti ismétlődés (0=vasárnap … 6=szombat) — ilyenkor a from/to a SZEZONT jelöli, és az esemény azon belül minden héten megvan azon a napon; note = egy sor a naptárba; url = opcionális link. A listákon a jelvény a következő 30 napban esedékes eseményt mutatja (és MA-t, ha éppen tart); a helyszín lapján a Programnaptár az összes hátralévőt kilistázza. Lejárt esemény magától eltűnik — a régieket meghagyjuk emlékeztetőnek a jövő évi tervezéshez.",
+  "_checked": "2026-08-29 — a dátumok a szervezők akkori közlései; a falusi programok csúsznak, indulás előtt ellenőrizni",
+  "version": "2026-08-29.1",
+  "events": [
+    { "n": "Noszvaji Szilvanap", "ll": [47.9333, 20.4667], "km": 2.5, "from": "2026-08-29", "to": "2026-08-29",
+      "note": "Szilvás ételek, hagyományőrző délután a Gazdaházban, bortúra az Emődi pincesoron" },
+    { "n": "Patakparti Piac", "trip": "bukkalja", "poi": "n3", "dow": 5, "from": "2026-01-02", "to": "2027-12-31",
+      "note": "7:00–18:00 · lekvár, sajt, méz, termelői zöldség" },
+
+    { "n": "Bogácsi Szüreti Fesztivál", "ll": [47.9053, 20.5333], "km": 2.5, "from": "2026-09-19", "to": "2026-09-19",
+      "note": "Rendezvénypark · felvonulás, borkóstoló" },
+    { "n": "Szent Mihály-napi közös csurdítás", "trip": "bukkalja", "poi": "b2", "from": "2026-09-26", "to": "2026-09-26",
+      "note": "A pincesor közös szüreti záróünnepe" },
+    { "n": "Tárcsás Ételek Fesztiválja", "ll": [47.9053, 20.5333], "km": 2.5, "from": "2026-10-24", "to": "2026-10-24",
+      "note": "Bogács, Rendezvénypark" },
+    { "n": "Márton-napi Vigasságok és Búcsú", "ll": [47.9053, 20.5333], "km": 2.5, "from": "2026-11-06", "to": "2026-11-08",
+      "note": "Bogács · libator, újbor, búcsú" },
+    { "n": "Advent Bogácson", "ll": [47.9053, 20.5333], "km": 2.5, "from": "2026-12-01", "to": "2026-12-24",
+      "note": "Adventi programsorozat a faluban" },
+
+    { "n": "Bogácsi Fürdőfesztivál (várható)", "trip": "bukkalja", "poi": "b1", "from": "2027-07-17", "to": "2027-07-17",
+      "note": "VÁRHATÓ dátum a 2026-os (júl. 18.) alapján — a fürdő hirdeti ki" },
+    { "n": "Szomolyai Cseresznyefesztivál (várható)", "trip": "bukkalja", "poi": "k1", "from": "2027-06-05", "to": "2027-06-06",
+      "note": "VÁRHATÓ dátum a 2026-os XXIII. (jún. 6–7.) alapján · rövidszárú fekete cseresznye" },
+    { "n": "Matyóföldi Folklórfesztivál (várható)", "ll": [47.8130, 20.5820], "km": 4, "from": "2027-07-31", "to": "2027-08-01",
+      "note": "VÁRHATÓ dátum — jellemzően augusztus első hétvégéje, Mezőkövesd" }
+  ]
 }

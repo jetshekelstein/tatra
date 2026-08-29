@@ -188,6 +188,19 @@ checklist:[
 {id:'g10', t:'Telefonos foglalás — Krásnohorská (+421 905 412 048) és mindhárom kemping'}]
 };
 
+// Kép-tartalék, ugyanaz a logika, mint a bükkaljai kötetben: aminek nincs saját
+// fotója (jellemzően a kajáldák), az a helyszíne Wikipédia-vezérképét kapja
+// szürke ikon helyett. Az egyedi wk erősebb ennél.
+const WK_DEFAULT = { CS: 'sk:Slavec', FIX: 'hu:Betlér', B: 'sk:Zádiel',
+                     A: 'hu:Aggtelek', C: 'hu:Szögliget', H: 'hu:Rudabánya' };
+data.modules.forEach(m => {
+  const def = WK_DEFAULT[m.id];
+  if (!def) return;
+  (m.pois || []).forEach(x => { if (!x.wk) x.wk = def; });
+  (m.sleep || []).forEach(x => { if (!x.wk) x.wk = def; });
+  (m.eat || []).forEach(x => { if (!x.wk) x.wk = def; });
+});
+
 data.itineraries = [
 {id:'bazis', name:'Marad a bázis', tag:'3 éj · Gombaszög', note:'Nem költözöl: minden nap a Gombaszögi kempingből indul és oda tér vissza. A programok kettőig tartanak, utána a patak a program.',
  days:[
@@ -219,7 +232,7 @@ window.registerTrip({
   id: 'gombaszog',
   // Sort key for the picker — newest trip first.
   // Content version — bump on every content change; version.json mirrors it.
-  version: '2026-08-19.1',
+  version: '2026-08-29.1',
   date: '2026-08-19',
   name: 'Gombaszög',
   period: '2026. aug.',

@@ -1,11 +1,11 @@
 {
-  "version": "2026-08-28.1",
-  "sw": "v8",
-  "date": "2026-08-28",
-  "notes": "Új útikönyv: Bükkalja — a házi terep. Noszvaj, Bogács, Cserépfalu és Bükkzsérc 6 modulban, 31 helyszínnel, 8 túrával és 22 étteremmel; a fürdőárak, a kastély nyitvatartása és a várkúti szállás állapota 2026. 08. 28-án ellenőrizve.",
+  "version": "2026-08-29.1",
+  "sw": "v9",
+  "date": "2026-08-29",
+  "notes": "Programnaptár: a helyszínek lapján kilistázzuk a hátralévő rendezvényeket, a listákon pedig jelvény szól a 30 napon belüliekről (ma: Noszvaji Szilvanap). A Közelben-nyilak mostantól a helyszín felé mutatnak, iránytűvel együtt fordulnak. Minden helyszínhez jár kép. A világos téma nem sötétedik vissza Androidon. Fotók ~13%-kal kisebbek.",
   "trips": {
-    "tatra": "2026-07-19.1",
-    "gombaszog": "2026-08-19.1",
-    "bukkalja": "2026-08-28.1"
+    "tatra": "2026-08-29.1",
+    "gombaszog": "2026-08-29.1",
+    "bukkalja": "2026-08-29.1"
   }
 }
