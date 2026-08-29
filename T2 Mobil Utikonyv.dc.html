@@ -793,6 +793,27 @@
 // The pre-multi-trip build kept everything in one 'state' key (and before that
 // in localStorage); both are migrated into 'trip:tatra' on first run.
 const IDB_NAME = 't2-utikonyv', IDB_STORE = 'kv';
+
+// id → Wikipedia article for every entry in a trip, using the same synthetic ids
+// the rest of the shell gives sleep/eat rows. Defined once so the fetch side and
+// the render side can never disagree about a cache key.
+function wkMap(G) {
+  const out = {};
+  (G.modules || []).forEach(m => {
+    (m.pois || []).forEach(x => { if (x.wk) out[x.id] = x.wk; });
+    (m.sleep || []).forEach((x, i) => { if (x.wk) out[m.id + '-s' + i] = x.wk; });
+    (m.eat || []).forEach((x, i) => { if (x.wk) out[m.id + '-e' + i] = x.wk; });
+  });
+  (G.hikes || []).forEach(x => { if (x.wk) out[x.id] = x.wk; });
+  return out;
+}
+// The resolved image is cached under the ARTICLE it came from, not just the
+// place. Keying on the place alone meant a downloaded picture outlived the wk
+// that produced it: when a place's article changed — or was removed, as when we
+// stopped falling back to village photos — the phone kept rendering the old
+// image out of IndexedDB forever, because nothing ever invalidated it. With the
+// article in the key, a changed or deleted wk simply stops matching.
+const wikiKey = (tripId, id, wk) => tripId + ':' + id + ':' + wk;
 function idbOpen() {
   return new Promise((resolve, reject) => {
     const req = indexedDB.open(IDB_NAME, 1);
@@ -1251,7 +1272,25 @@ class Component extends DCLogic {
       (m.eat || []).forEach((s, i) => items.push({ ...s, id: m.id + '-e' + i }));
     });
     (G.hikes || []).forEach(h => items.push(h));
-    const todo = items.filter(i => i.wk && !this.state.wikiImgs[T.id + ':' + i.id] && !local[i.id] && !pinned[i.id]);
+    // Drop cached images whose article is no longer the one this place uses —
+    // otherwise a phone that resolved a picture under the old rules keeps
+    // showing it after an update. This is what made the wrong village photos
+    // survive the fix that removed them.
+    const wkm = wkMap(G);
+    const valid = new Set(Object.keys(wkm).map(id => wikiKey(T.id, id, wkm[id])));
+    const orphans = Object.keys(this.state.wikiImgs || {})
+      .filter(k => k.indexOf(T.id + ':') === 0 && !valid.has(k));
+    if (orphans.length) {
+      this.setState(st2 => {
+        const w = { ...st2.wikiImgs };
+        orphans.forEach(k => delete w[k]);
+        idbSet('wikimg', w).catch(() => {});
+        return { wikiImgs: w };
+      });
+    }
+    const cached = this.state.wikiImgs || {};
+    const todo = items.filter(i => i.wk && !cached[wikiKey(T.id, i.id, i.wk)]
+      && !local[i.id] && !pinned[i.id]);
     todo.forEach(i => {
       const parts = i.wk.split(':');
       fetch('https://' + parts[0] + '.wikipedia.org/api/rest_v1/page/summary/' + parts[1])
@@ -1268,7 +1307,7 @@ class Component extends DCLogic {
           // segment of the thumbnail keeps the host and always resolves.
           const big = th && /\/\d+px-/.test(th) ? th.replace(/\/\d+px-/, '/800px-') : (orig || th);
           this.setState(s => {
-            const w = { ...s.wikiImgs, [T.id + ':' + i.id]: big };
+            const w = { ...s.wikiImgs, [wikiKey(T.id, i.id, i.wk)]: big };
             idbSet('wikimg', w).catch(() => {});
             return { wikiImgs: w };
           });
@@ -1832,9 +1871,11 @@ class Component extends DCLogic {
     const photoDir = T.photoDir || 'photos/';
     const local = T.photoFiles || {}, pinned = T.wikiFiles || {};
     const wikiFile = f => 'https://commons.wikimedia.org/wiki/Special:FilePath/' + f + '?width=800';
+    // No wk on the entry -> no Wikipedia image, even if one was cached earlier.
+    const wkm = wkMap(G);
     const imgOf = id => local[id] ? photoDir + local[id]
       : pinned[id] ? wikiFile(pinned[id])
-      : st.wikiImgs[T.id + ':' + id] || null;
+      : (wkm[id] ? st.wikiImgs[wikiKey(T.id, id, wkm[id])] : null) || null;
     const GLYPH = {
       sleep: 'M3 17V9a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v8M3 17h18M3 17v2M21 17v2M7 9h4v3H7z',
       eat: 'M7 3v8m0 0v10M4 3v5a3 3 0 0 0 3 3M10 3v5a3 3 0 0 1-3 3M17 3c-1.5 2-2 4-2 6s.5 3 2 3 2-1 2-3-.5-4-2-6zm0 9v9',

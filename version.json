@@ -1,8 +1,8 @@
 {
-  "version": "2026-08-29.2",
-  "sw": "v10",
+  "version": "2026-08-29.3",
+  "sw": "v11",
   "date": "2026-08-29",
-  "notes": "Képjavítás: a látnivalók többé nem a falujuk fotóját kapják — akinek van saját szócikke, az a sajátját, a többi tiszta kategória-ikont. Javítva a Wikipédia-képek letöltése is (a helyi feltöltésű képek eddig némán elvesztek). A közelség-értesítés mostantól Androidon is megjelenik, és rákoppintva megnyílik az app. Megosztott link előnézettel jelenik meg Messengerben.",
+  "notes": "A rossz képek végre tényleg eltűnnek: a korábban letöltött falufotók bent ragadtak a telefon gyorsítótárában, mert a kép a helyszínhez volt kötve, nem a szócikkhez. Mostantól a szócikk is a kulcs része, és a régi bejegyzések megnyitáskor törlődnek. Egyszeri újratöltés jár vele — utána marad offline.",
   "trips": {
     "tatra": "2026-08-29.1",
     "gombaszog": "2026-08-29.2",
