@@ -12,6 +12,26 @@
      (Dark mode) re-darken the page themselves, so the app's own light theme came
      out dark. Declaring support for both schemes opts out of that. -->
 <meta name="color-scheme" content="light dark">
+<!-- Link-előnézet (Messenger, WhatsApp, Signal, Slack, Discord, iMessage).
+     A képnek ABSZOLÚT URL kell — a scraperek nem oldják fel a relatívat —, és
+     jpg/png, mert a webp-et több scraper nem eszi meg. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Mobil Útikönyv">
+<meta property="og:locale" content="hu_HU">
+<meta property="og:url" content="https://jetshekelstein.github.io/tatra/">
+<meta property="og:title" content="Tátra · Gombaszög · Bükkalja — Mobil Útikönyv">
+<meta property="og:description" content="Három családi útikönyv egy appban: modulok, túrák, kempingek, döntéstábla és programnaptár. Telefonra telepíthető, térerő nélkül is működik.">
+<meta property="og:image" content="https://jetshekelstein.github.io/tatra/icons/social-card.jpg">
+<meta property="og:image:secure_url" content="https://jetshekelstein.github.io/tatra/icons/social-card.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Kék VW T2 lakóbusz felnyitott tetővel a várkúti turistaház előtt">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Tátra · Gombaszög · Bükkalja — Mobil Útikönyv">
+<meta name="twitter:description" content="Három családi útikönyv egy appban: modulok, túrák, kempingek, döntéstábla és programnaptár. Telefonra telepíthető, térerő nélkül is működik.">
+<meta name="twitter:image" content="https://jetshekelstein.github.io/tatra/icons/social-card.jpg">
+<meta name="description" content="Három családi útikönyv egy appban: modulok, túrák, kempingek, döntéstábla és programnaptár. Telefonra telepíthető, térerő nélkül is működik.">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
 
@@ -1237,12 +1257,16 @@ class Component extends DCLogic {
       fetch('https://' + parts[0] + '.wikipedia.org/api/rest_v1/page/summary/' + parts[1])
         .then(r => r.ok ? r.json() : null)
         .then(j => {
-          const src = (j && j.originalimage && j.originalimage.source) || (j && j.thumbnail && j.thumbnail.source);
-          if (!src) return;
-          const file = src.indexOf('/thumb/') >= 0
-            ? src.split('/thumb/')[1].split('/')[2]
-            : src.split('/').pop();
-          const big = 'https://commons.wikimedia.org/wiki/Special:FilePath/' + file + '?width=800';
+          const th = j && j.thumbnail && j.thumbnail.source;
+          const orig = j && j.originalimage && j.originalimage.source;
+          if (!th && !orig) return;
+          // Resize on the SAME host the summary handed us. The old code rebuilt a
+          // commons.wikimedia.org/Special:FilePath URL from the file name, which
+          // 404s whenever the picture is a local upload on that language wiki
+          // (upload.wikimedia.org/wikipedia/hu/...) rather than on Commons — a
+          // silent miss that left the placeholder in place. Rewriting the width
+          // segment of the thumbnail keeps the host and always resolves.
+          const big = th && /\/\d+px-/.test(th) ? th.replace(/\/\d+px-/, '/800px-') : (orig || th);
           this.setState(s => {
             const w = { ...s.wikiImgs, [T.id + ':' + i.id]: big };
             idbSet('wikimg', w).catch(() => {});
@@ -1383,9 +1407,33 @@ class Component extends DCLogic {
     this._headOff = null; this._lastHead = null;
   }
 
-  // A preferred sight came within the alert radius: one in-app banner (and a
-  // system notification, if permitted) per sight per session. Only runs while
-  // tracking is on — a web app cannot wake itself in the background.
+  // Fire a system notification. MUST go through the service worker registration:
+  // on Android Chrome the `new Notification()` constructor throws "Illegal
+  // constructor", so every proximity alert on a phone was silently swallowed by
+  // the catch below. showNotification() is the supported path there, and it is
+  // also what lets the notification outlive a backgrounded page.
+  notify(title, body, tag) {
+    if (!window.Notification || Notification.permission !== 'granted') return;
+    const opts = { body, tag, icon: 'icons/icon-192.png', badge: 'icons/favicon-32.png',
+      lang: 'hu', renotify: false, requireInteraction: false };
+    const sw = navigator.serviceWorker;
+    if (sw && sw.ready) {
+      sw.ready.then(reg => reg.showNotification(title, opts))
+        .catch(() => { try { new Notification(title, opts); } catch (e) {} });
+      return;
+    }
+    try { new Notification(title, opts); } catch (e) {}
+  }
+
+  // A preferred sight came within the alert radius: one in-app banner and one
+  // system notification per sight per session.
+  //
+  // Scope, honestly: this runs off the geolocation watch, so it works while the
+  // app is open — including backgrounded, where the OS keeps delivering fixes to
+  // a visible-but-hidden page for a while, which is exactly the "in my pocket on
+  // the drive" case. A web app CANNOT be woken once it is fully closed or evicted:
+  // there is no geofencing API on the web, and Periodic Background Sync has a
+  // ~12-hour floor, which is useless for proximity. Closing the app stops alerts.
   checkProximity(lat, lng) {
     if (!this.state.alerts) return;
     const here = [lat, lng];
@@ -1397,13 +1445,10 @@ class Component extends DCLogic {
       .sort((a, b) => a.km - b.km)[0];
     if (!cand) return;
     this.setState(st => ({ alertId: cand.x.id, alerted: { ...st.alerted, [cand.x.id]: true } }));
-    if (window.Notification && Notification.permission === 'granted') {
-      try {
-        new Notification('Látnivaló a közelben — ' + cand.x.n, {
-          body: (cand.km < 1 ? Math.round(cand.km * 1000) + ' m' : cand.km.toFixed(1).replace('.', ',') + ' km')
-            + ' · ' + (cand.x.meta || ''), icon: 'icons/icon-192.png', tag: 'guide-near-' + cand.x.id });
-      } catch (e) {}
-    }
+    this.notify('Látnivaló a közelben — ' + cand.x.n,
+      (cand.km < 1 ? Math.round(cand.km * 1000) + ' m' : cand.km.toFixed(1).replace('.', ',') + ' km')
+        + ' · ' + (cand.x.meta || ''),
+      'guide-near-' + cand.x.id);
   }
 
   // "Mit érdemes még megnézni a környéken?" — live Places lookup around the

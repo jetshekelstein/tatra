@@ -1,11 +1,11 @@
 {
-  "version": "2026-08-29.1",
-  "sw": "v9",
+  "version": "2026-08-29.2",
+  "sw": "v10",
   "date": "2026-08-29",
-  "notes": "Programnaptár: a helyszínek lapján kilistázzuk a hátralévő rendezvényeket, a listákon pedig jelvény szól a 30 napon belüliekről (ma: Noszvaji Szilvanap). A Közelben-nyilak mostantól a helyszín felé mutatnak, iránytűvel együtt fordulnak. Minden helyszínhez jár kép. A világos téma nem sötétedik vissza Androidon. Fotók ~13%-kal kisebbek.",
+  "notes": "Képjavítás: a látnivalók többé nem a falujuk fotóját kapják — akinek van saját szócikke, az a sajátját, a többi tiszta kategória-ikont. Javítva a Wikipédia-képek letöltése is (a helyi feltöltésű képek eddig némán elvesztek). A közelség-értesítés mostantól Androidon is megjelenik, és rákoppintva megnyílik az app. Megosztott link előnézettel jelenik meg Messengerben.",
   "trips": {
     "tatra": "2026-08-29.1",
-    "gombaszog": "2026-08-29.1",
-    "bukkalja": "2026-08-29.1"
+    "gombaszog": "2026-08-29.2",
+    "bukkalja": "2026-08-29.2"
   }
 }

@@ -30,7 +30,7 @@ modules: [
 
 {id:'B', letter:'B', title:'Bogács', full:'Bogács — a fürdős bázistábor', kicker:'A bevált bázis · ✔ kipipálva', sub:'Kénes gyógyvíz, csúszdapark és egy kemping, ami a fürdő kerítésén belül van', transit:'Egerből ≈ 30 perc · Cserépfalu 8 perc · Bükkzsérc 12 perc · Noszvaj 15 perc · Szomolya 10 perc',
  pois:[
- {id:'b1', ll:[47.9048,20.5308], wk:'hu:Bogács', n:'Bogácsi Gyógy- és Strandfürdő ✔', q:'Bogácsi Gyógy- és Strandfürdő', b:'fo', age:'MINDEN KOR', meta:'egész évben · a bázis · 4 év alatt ingyen',
+ {id:'b1', ll:[47.9048,20.5308], n:'Bogácsi Gyógy- és Strandfürdő ✔', q:'Bogácsi Gyógy- és Strandfürdő', b:'fo', age:'MINDEN KOR', meta:'egész évben · a bázis · 4 év alatt ingyen',
   d:'A bázis, amit nem kell újra felfedezni. Kénes gyógyvíz, csúszdapark, vízi játszótér, fedett élménymedence — a kettő- és a hároméves ingyen megy be, a hatévesnek a csúszdák a nap. Szombatonként éjszakai fürdőzés: az egyik szülő marad a sátorban, a másik megy, félidőben csere. ÁLLAPOT 2026 nyarán: az úszó- és a gyermekmedence rekonstrukció alatt (a Labdás gyerekmedence aug. 15-től újra megy), a SZAUNAVILÁG átmenetileg zárva, és új termálkutat fúrnak — időnként zaj. A csúszdapark és a vízi játszótér ettől függetlenül üzemel.',
   w:'Nyáron jellemzően 9–20; a medencéket zárás előtt fél órával el kell hagyni. ÁRAK: a fürdő nyáron levitte a listát — kültéri felnőtt 3 500 Ft, és hétköznap ebben BENNE VAN a fedett élménymedence is; a fedett résszel is érvényes jegy 4 100 Ft; ifjúsági/nyugdíjas 3 200 Ft-tól. Az év végéig ez él. 4 ÉV ALATT INGYEN. Kártya és SZÉP-kártya megy. Ha valahol még a 4 600 Ft-os listát látjátok, az a 2026 eleji ár.'},
  {id:'b2', ll:[47.9062,20.5401], n:'Cserépi úti pincesor', q:'Cserépi úti pincesor Bogács', b:'megeri', age:'kora este MINDEN KOR · kóstolóval SZÜLŐPROGRAM', meta:'5 perc a fürdőtől · séta ingyen', cash:true,
@@ -62,7 +62,7 @@ modules: [
 
 {id:'N', letter:'N', title:'Noszvaj', full:'Noszvaj — kastély és kőbe vájt világ', kicker:'A falu-nap · eső ellen is jó', sub:'Barlanglakások, barokk kastély, Tündérösvény és a piac', transit:'Bogácsról 15 perc · Egerből 20 perc · Síkfőkút a falu fölött 5 perc',
  pois:[
- {id:'n1', ll:[47.9294,20.4631], wk:'hu:Noszvaj', n:'Noszvaji barlanglakások (Farkaskő / Pocem)', q:'Noszvaji barlanglakások', b:'fo', age:'MINDEN KOR · hordozós terep', meta:'1–1,5 óra · Honvéd utca · CSAK KÉSZPÉNZ', cash:true,
+ {id:'n1', ll:[47.9294,20.4631], n:'Noszvaji barlanglakások (Farkaskő / Pocem)', q:'Noszvaji barlanglakások', b:'fo', age:'MINDEN KOR · hordozós terep', meta:'1–1,5 óra · Honvéd utca · CSAK KÉSZPÉNZ', cash:true,
   d:'Riolittufába vájt egykori lakások a falu szélén, ma szobrász-alkotótelep: kőbe faragott szobák, udvarok, visszhangos hanggömb-szoba. Nem múzeum, hanem bejárható kőfalu — a gyerekek fejében ez a „hobbit-falu", és a hanggömb visszhangja az, amit este is emlegetni fognak. Csoportos helytörténeti vezetés kérhető: +36 31 781 2855.',
   w:'Minden nap: nyáron 10–18, télen 10–16. Felnőtt 1 000 Ft · gyerek (6–18) 500 Ft · 6 ÉV ALATT INGYEN. CSAK KÉSZPÉNZ, kártyát nem fogadnak el. Autóval nyáron a Deák Ferenc utcai temető felőli parkolóból, télen a Honvéd utca felől; gyalog a Honvéd utcai alsó bejárat egész évben él. Babakocsival nem járható — hordozó.'},
  {id:'n2', ll:[47.9330,20.4665], n:'De la Motte-kastély + Tündérösvény', q:'De la Motte kastély Noszvaj', b:'megeri', age:'park MINDEN KOR · belső 6+/SZÜLŐPROGRAM', meta:'1,5–2 óra · sze–vas · hétfő-kedd zárva', mon:true,
@@ -120,10 +120,10 @@ modules: [
 
 {id:'C', letter:'C', title:'Cserépfalu', full:'Cserépfalu és a Hór-völgy — ősember és patak', kicker:'A patakos nap · árnyékban', sub:'Neandervölgyi barlang, a Bükk leghosszabb völgye és egy kaptárkő-kilátó', transit:'Bogácsról 8 perc · Bükkzsérc 6 perc · a Hór-völgy bejárata a falu fölött',
  pois:[
- {id:'c1', ll:[47.9553,20.5307], wk:'hu:Cserépfalu', n:'Suba-lyuk Múzeum és Látogatóközpont', q:'Suba-lyuk Múzeum és Látogatóközpont Cserépfalu', b:'fo', age:'MINDEN KOR · babakocsival', meta:'a Bükk déli kapuja · BNPI pecsételőpont',
+ {id:'c1', ll:[47.9553,20.5307], n:'Suba-lyuk Múzeum és Látogatóközpont', q:'Suba-lyuk Múzeum és Látogatóközpont Cserépfalu', b:'fo', age:'MINDEN KOR · babakocsival', meta:'a Bükk déli kapuja · BNPI pecsételőpont',
   d:'A Hór-völgy bejáratánál álló bázispont: parkoló, mosdó, játszótér, grillezők, ajándékbolt, kerékpárkölcsönzés és a Hórvölgyi Remete Étterem — plusz a kiállítás, benne a Suba-lyuk neandervölgyi leleteinek első számú másolataival. Az első terem a bükkaljai kőkultúra geológiája, a második a leleteké: ⚠️ a második teremben koponya is van, érzékeny gyereknek előre szóljatok. BNPI PECSÉTELŐPONT a Bükki Nemzeti Park 50. évfordulós, 2026 júliusában indult „7+1 pecsétes kaland" gyűjtőjátékához — hozzátok a pecsétfüzetet.',
   w:'A nyitvatartás forrásonként eltér: jellemzően H–Cs 10–16, P–V 9–17 (más listákon P–Szo 10–17, V 10–16) — INDULÁS ELŐTT egy hívás: +36 30 958 9970, vagy bnpi.hu. Múzeumjegy a helyszínen. A parkoló, a játszótér és a tanösvény ettől függetlenül szabadon használható.'},
- {id:'c2', ll:[47.9610,20.5315], wk:'hu:Suba-lyuk', n:'Suba-lyuk tanösvény és barlang', q:'Suba-lyuk barlang Cserépfalu', b:'fo', age:'MINDEN KOR / 4+ · a kicsik kézen', meta:'12 állomás · kék T · ingyen · 2024-ben megújult',
+ {id:'c2', ll:[47.9610,20.5315], n:'Suba-lyuk tanösvény és barlang', q:'Suba-lyuk barlang Cserépfalu', b:'fo', age:'MINDEN KOR / 4+ · a kicsik kézen', meta:'12 állomás · kék T · ingyen · 2024-ben megújult',
   d:'A könyv legjobb sztorija: 1932-ben itt találták meg egy neandervölgyi nő és egy KB. HÁROMÉVES GYEREK csontjait — plusz barlangi medve, oroszlán, hiéna. A hároméveseteknek ez pontosan a megfelelő méretű borzongás: „pont akkora volt, mint te." A látogatóközponttól tíz perc árnyas séta a völgyben, aztán a 2024-ben felújított, korlátos sziklalépcső a barlanghoz, félúton pihenő-kilátóval a Hór-völgyre. A bejárat 279 méteren, a völgy fölött vagy negyven méterrel.',
   w:'Ingyen, szabadon látogatható, bármikor. ⚠️ A lépcsősor felújítva, de meredek marad, és eső után csúszós — a 2–3 éves fogott kézzel vagy hordozóban. Zárt cipő mindenkinek.'},
  {id:'c3', ll:[47.9700,20.5250], n:'Hór-völgy — a patakos fél nap', q:'Hór-völgy Cserépfalu', b:'fo', age:'MINDEN KOR · alsó szakasz babakocsival', meta:'K+ jelzés · árnyas szekérút · ingyen',
@@ -138,7 +138,7 @@ modules: [
  {id:'c6', ll:[47.9360,20.5400], n:'Cserépfalui Millenniumi-kilátó + Berezdaljai pincesor + Kisamerika', b:'megeri', age:'MINDEN KOR', meta:'autóból rövid sétával · egy csomagban', q:'Millenniumi kilátó Cserépfalu',
   d:'Csete György (Kossuth-díjas) 2000-ben épült kilátója a Berezdi sétány fölött: a formája kaptárkövet formáz, az ablakai a fülkéket. Zárt kőtorony, belső lépcsővel — a bejáratot a régi kerekes kútnál induló, borostyános kőlépcsőn találjátok meg. Alatta a háromsoros Berezdaljai pincesor és a Kisamerika barlanglakások: a nevet gúnyból kapta, mert amíg a tehetősebbek Amerikába mentek, a szegények a tufába vájták a házukat, és csak „Kisamerikáig" jutottak. Autóból rövid sétával az egész csomag bejárható. FIGYELEM: ez a Millenniumi-kilátó, nem a bogácsi (B modul).',
   w:'Ingyen, szabadon. A feljutás rövid, de meredek. Fél délutánra pont elég — és ez a legjobb „csak két óránk van" program a keleti oldalon.'},
- {id:'c7', ll:[47.9450,20.5450], wk:'hu:Kaptárkő', n:'Ördögtorony kaptárkő és tanösvény', q:'Ördögtorony kaptárkő Cserépfalu', b:'megeri', age:'4+', meta:'teljes kör 10 km · 20 állomás · 4,5 óra',
+ {id:'c7', ll:[47.9450,20.5450], n:'Ördögtorony kaptárkő és tanösvény', q:'Ördögtorony kaptárkő Cserépfalu', b:'megeri', age:'4+', meta:'teljes kör 10 km · 20 állomás · 4,5 óra',
   d:'A Mész-tető oldalában álló, hat méternél magasabb kaptárkő három fülkével — ezt is Ördögtoronynak hívják, mint a cserépváraljai Nagykúpot. A róla elnevezett tanösvény Cserépfalu központjából indul és oda tér vissza: 10 km, 20 állomás, 4,5 óra, és összefűzi a Suba-lyukat, Kisamerikát, a Berezdaljai pincesort és a Millenniumi-kilátót. Gyerekekkel KÉT RÉSZLETBEN érdemes: a déli fele (pincesor–Kisamerika–kilátó–Ördögtorony) önmagában egy jó délután.',
   w:'Ingyen, bármikor. A teljes kör a ti 5 km-es keretetek duplája — ne a hatévesen próbáljátok ki egyben.'},
  {id:'c8', ll:[47.9480,20.5390], n:'Mész-tető és a Fűzér-kő', q:'Mész-tető Cserépfalu', b:'opc', age:'6+', meta:'őskori erődítés nyomai · sziklák a völgyben',
@@ -157,7 +157,7 @@ modules: [
 
 {id:'Z', letter:'Z', title:'Bükkzsérc', full:'Bükkzsérc — a csendes kapu', kicker:'A kevés emberes irány', sub:'Kőív a falu fölött, rablóvár a sziklán, tufapincék', transit:'Cserépfaluból 6 perc · Bogácsról 12 perc · gyalog Várkútig 5,5 km / 361 m',
  pois:[
- {id:'z1', ll:[47.9530,20.4920], wk:'hu:Bükkzsérc', n:'Patkó-sziklák és a Hódos-tető (530 m)', q:'Patkó-sziklák Bükkzsérc', b:'fo', age:'4+ · a kicsik hordozóban', meta:'falusi körtúra · ingyen · távcsővel',
+ {id:'z1', ll:[47.9530,20.4920], n:'Patkó-sziklák és a Hódos-tető (530 m)', q:'Patkó-sziklák Bükkzsérc', b:'fo', age:'4+ · a kicsik hordozóban', meta:'falusi körtúra · ingyen · távcsővel',
   d:'Patkó alakú, mintegy száz méter átmérőjű természetes kőív a falu fölötti Hódos-tető déli oldalán — jura mészkőrétegek eróziója, a Bükkalja egyik legszebb panorámájával (tiszta időben Mezőkövesdig). A tetőn a Bükk egyik rejtélyes őskori földvára áll, ahol a friss kutatás kincsleletet is előhozott: ez a sztori a hatévesnek. Falusi körtúraként gyerekekkel is járható: Kis-Patkó (a régi kőfejtő) → Nagy-Patkó → vissza a falun át. Térképen és listákon néha „Pató-sziklák"-ként szerepel elgépelve — a helyes név Patkó.',
   w:'Ingyen, bármikor. Távcső ajánlott. A peremeknél kézfogás, a kicsik hordozóban; a kőív alatti kőfejtő laposabb, ott lehet leülni enni.'},
  {id:'z2', ll:[47.9720,20.5050], n:'Ódor-vár — a rablóvár a sziklán', q:'Ódorvár Bükkzsérc', b:'fo', age:'6+ · a kicsik hordozóban', meta:'Bükkzsércről ~5,5 km · ingyen',
@@ -187,16 +187,16 @@ modules: [
 
 {id:'K', letter:'K', title:'Kitérők', full:'Kitérők és esőnap — kővadászat és fedett víz', kicker:'Wildcard modul', sub:'Kaptárkövek totyogó-léptékben, óriáskúpok, és a B-terv, ha esik', transit:'Szomolya 10 perc Bogácsról · Cserépváralja 12 perc · Mezőkövesd/Zsóry 15 perc',
  pois:[
- {id:'k1', ll:[47.8923,20.4786], wk:'hu:Szomolya', n:'Szomolyai kaptárkövek tanösvény', q:'Szomolyai kaptárkövek', b:'fo', age:'MINDEN KOR · babakocsi nem, de totyogó igen', meta:'30–40 perces kör · ingyen · korlátos lépcsők',
+ {id:'k1', ll:[47.8923,20.4786], n:'Szomolyai kaptárkövek tanösvény', q:'Szomolyai kaptárkövek', b:'fo', age:'MINDEN KOR · babakocsi nem, de totyogó igen', meta:'30–40 perces kör · ingyen · korlátos lépcsők',
   d:'Az ország leggazdagabb kaptárkő-csoportja a Vén-hegy oldalában, a Kaptár-völgyben: kúp alakú tufatornyok, beléjük faragott rejtélyes fülkékkel — a legszebb a Királyszéke, ami egy nagy boltozatos kemencére hasonlít, és önmagában 48 fülkét visel. Hogy mire szolgáltak, máig vitatott: sziklaméhészet, urnás temetkezés vagy kultikus szerep. 2019 óta acél járdákkal és korlátos lépcsőkkel kiépítve — ez pont bölcsis-ovis lábhossz, és a legjobb „mindenki fáradt" program a könyvben. Szomolya mellesleg a rövidszárú fekete cseresznye faluja: júniusban külön ok visszajönni.',
   w:'Ingyen, egész évben szabadon. A Rákóczi út végi murvás parkolóból ~150 m a tanösvény kezdete, a kör 30–40 perc kényelmesen. Esőben a parkoló sáros. A parkolónál kilátópont: Bükk, Mátra, Alföld.'},
- {id:'k2', ll:[47.9250,20.5787], wk:'hu:Cserépváralja', n:'Cserépváralja: Nagykúp, Kiskúp és Cserépvár', q:'Nagykúp Cserépváralja', b:'megeri', age:'4+', meta:'a Mangó-tetőn · fokozottan védett terület',
+ {id:'k2', ll:[47.9250,20.5787], n:'Cserépváralja: Nagykúp, Kiskúp és Cserépvár', q:'Nagykúp Cserépváralja', b:'megeri', age:'4+', meta:'a Mangó-tetőn · fokozottan védett terület',
   d:'A Nagykúp hazánk legmonumentálisabb kaptárköve: tizenhat méter, huszonöt fülke — a helyiek ezt is Ördögtoronynak hívják (a cserépfalui után a második). Mellette a filigrán Kiskúp, a Mangó-tetőn; a Nagykúp tetejéről a Csordás-völgyre látni. Fölötte a középkori Cserépvár romjai. A faluból indul a Kő-völgy digitális tanösvény: offline GPS-es mobilapp és QR-kódok — rokonlélek ezzel a könyvvel.',
   w:'Ingyen. ⚠️ FOKOZOTTAN VÉDETT TERÜLET: a jelzett útról letérni tilos. Infopont szezonálisan az Alkotmány úton, a Cserépvár étteremnél.'},
- {id:'k3', ll:[47.8330,20.6060], wk:'hu:Mezőkövesd', n:'ESŐNAP — Zsóry Gyógy- és Strandfürdő', q:'Zsóry Gyógy- és Strandfürdő Mezőkövesd', b:'megeri', age:'MINDEN KOR', meta:'~15 perc Bogácstól · nagy fedett rész',
+ {id:'k3', ll:[47.8330,20.6060], n:'ESŐNAP — Zsóry Gyógy- és Strandfürdő', q:'Zsóry Gyógy- és Strandfürdő Mezőkövesd', b:'megeri', age:'MINDEN KOR', meta:'~15 perc Bogácstól · nagy fedett rész',
   d:'A nagy testvér: jóval nagyobb fürdő, komoly fedett résszel, negyed órára Bogácstól. Akkor jön elő, ha esik, vagy ha a bogácsi felújítások miatt kevés a medence — vagy ha egyszerűen egy egész napot akartok vízben tölteni.',
   w:'Aktuális árak és nyitvatartás: zsoryfurdo.hu. A fürdő melletti Zsóry Kemping a tartalék alvóhely, ha a bogácsi telt.'},
- {id:'k4', ll:[47.8130,20.5820], wk:'hu:Mezőkövesd', n:'Matyó örökség, Mezőkövesd', q:'Matyó Múzeum Mezőkövesd', b:'opc', age:'6+ · SZÜLŐPROGRAM', meta:'esőnap-kiegészítés · fél óra–egy óra',
+ {id:'k4', ll:[47.8130,20.5820], n:'Matyó örökség, Mezőkövesd', q:'Matyó Múzeum Mezőkövesd', b:'opc', age:'6+ · SZÜLŐPROGRAM', meta:'esőnap-kiegészítés · fél óra–egy óra',
   d:'Hímzés, viselet, matyó ház — rövid, fedett, és pont belefér a Zsóry-nap elé vagy után. A kicsiknek nem program, a hatévesnek fél óra erejéig érdekes.',
   w:'Nyitvatartás a helyszín honlapján. Csak esős napra tervezzétek.'}],
  sleep:[
@@ -287,22 +287,34 @@ checklist:[
 {id:'cl13', t:'Két hívás elintézve: kastély (+36 30 147 0492) és a várkúti alvás (+36 30 955 5060)'}]
 };
 
-// Kép-tartalék. Amelyik helyszínhez nincs saját fotó, az a településének
-// Wikipédia-vezérképét kapja szürke ikon helyett — a vázban a sorrend: helyi
-// fotó → rögzített Wikimedia-fájl → Wikipédia-kép → ikon. Az egyedi wk mindig
-// erősebb, mint az itteni alapértelmezés (pl. c2 = Suba-lyuk).
-const WK_DEFAULT = { B: 'hu:Bogács', N: 'hu:Noszvaj', V: 'hu:Noszvaj',
-                     C: 'hu:Cserépfalu', Z: 'hu:Bükkzsérc', K: 'hu:Szomolya' };
-// A K modul három falura terül szét, ezért az étkezőhelyei külön kapnak képet.
-const WK_EAT = { K: ['hu:Cserépváralja', 'hu:Mezőkövesd', 'hu:Mezőkövesd', 'hu:Mezőkövesd', 'hu:Szomolya'] };
+// Kép-tartalék. A vázban a sorrend: helyi fotó → rögzített Wikimedia-fájl →
+// Wikipédia-kép (wk) → kategória-ikon.
+//
+// FONTOS, és ezt egyszer már elrontottuk: NINCS település-szintű tartalék. Ha
+// egy látnivalónak nincs saját szócikke, akkor a semleges kategória-ikont kapja,
+// NEM a falu fényképét — a Bükkalja apró falvaiban ugyanaz a falukép jelent meg
+// tizenhét helyszínen, ami rosszabb, mint a tiszta ikon. Csak az alábbi, konkrét
+// helyszínhez tartozó szócikkek maradnak; ha egy cím mégis hibás, a váz az
+// ikonra esik vissza, tehát rossz kép nem kerülhet ki.
+const WK = {
+  n1: 'hu:Noszvaji_barlanglakások',   // a barlanglakások saját szócikke
+  c1: 'hu:Suba-lyuk',                 // a látogatóközpont a barlangnál — ugyanaz a helyszín
+  c2: 'hu:Suba-lyuk',
+  c3: 'hu:Hór-patak',
+  z2: 'hu:Odorvár',
+  k2: 'hu:Cserépvár',
+  k3: 'hu:Zsóry_Gyógy-_és_Strandfürdő',
+  k4: 'hu:Matyó_hímzés',
+  t2: 'hu:Suba-lyuk',
+  t3: 'hu:Hór-patak',
+  t7: 'hu:Odorvár'
+};
 data.modules.forEach(m => {
-  const def = WK_DEFAULT[m.id];
-  if (!def) return;
-  (m.pois || []).forEach(x => { if (!x.wk) x.wk = def; });
-  (m.sleep || []).forEach(x => { if (!x.wk) x.wk = def; });
-  (m.eat || []).forEach((x, i) => { if (!x.wk) x.wk = (WK_EAT[m.id] || [])[i] || def; });
+  (m.pois || []).forEach(x => { x.wk = WK[x.id] || undefined; });
+  (m.sleep || []).forEach(x => { delete x.wk; });
+  (m.eat || []).forEach(x => { delete x.wk; });   // kajálda sosem kap falufotót
 });
-data.hikes.forEach(h => { if (!h.wk) h.wk = 'hu:Bükk-vidék'; });
+data.hikes.forEach(h => { h.wk = WK[h.id] || undefined; });
 
 data.itineraries = [
 {id:'egynap', name:'Egy szabad nap', tag:'0 éj · hazaalvás', note:'A leggyakoribb eset: van egy napotok, és estére otthon akartok lenni. Egy fő program, egy étterem, egy levezetés — semmi több.',
@@ -329,7 +341,7 @@ data.itineraries = [
 window.registerTrip({
   id: 'bukkalja',
   // Content version — bump on every content change; version.json mirrors it.
-  version: '2026-08-29.1',
+  version: '2026-08-29.2',
   date: '2026-08-28',
   name: 'Bükkalja',
   period: 'a házi terep',

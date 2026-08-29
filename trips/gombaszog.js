@@ -188,17 +188,14 @@ checklist:[
 {id:'g10', t:'Telefonos foglalás — Krásnohorská (+421 905 412 048) és mindhárom kemping'}]
 };
 
-// Kép-tartalék, ugyanaz a logika, mint a bükkaljai kötetben: aminek nincs saját
-// fotója (jellemzően a kajáldák), az a helyszíne Wikipédia-vezérképét kapja
-// szürke ikon helyett. Az egyedi wk erősebb ennél.
-const WK_DEFAULT = { CS: 'sk:Slavec', FIX: 'hu:Betlér', B: 'sk:Zádiel',
-                     A: 'hu:Aggtelek', C: 'hu:Szögliget', H: 'hu:Rudabánya' };
+// Kép-tartalék: NINCS település-szintű alapértelmezés. Aminek nincs saját
+// szócikke — jellemzően a kajáldák —, az a semleges kategória-ikont kapja, nem a
+// falu fényképét. (Egy korábbi próbálkozás falufotót tett minden helyszínre; a
+// bükkaljai kötetben ez tizenhét helyszínen ugyanazt a képet jelentette.) Az
+// egyedi, helyszínhez kötött wk-k a POI-kon maradnak, ott ahol tényleg vannak.
 data.modules.forEach(m => {
-  const def = WK_DEFAULT[m.id];
-  if (!def) return;
-  (m.pois || []).forEach(x => { if (!x.wk) x.wk = def; });
-  (m.sleep || []).forEach(x => { if (!x.wk) x.wk = def; });
-  (m.eat || []).forEach(x => { if (!x.wk) x.wk = def; });
+  (m.eat || []).forEach(x => { delete x.wk; });
+  (m.sleep || []).forEach(x => { delete x.wk; });
 });
 
 data.itineraries = [
@@ -232,7 +229,7 @@ window.registerTrip({
   id: 'gombaszog',
   // Sort key for the picker — newest trip first.
   // Content version — bump on every content change; version.json mirrors it.
-  version: '2026-08-29.1',
+  version: '2026-08-29.2',
   date: '2026-08-19',
   name: 'Gombaszög',
   period: '2026. aug.',

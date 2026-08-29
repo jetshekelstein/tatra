@@ -16,7 +16,7 @@
 // Data policy: cache-first with NO background revalidation. Updates happen only
 // through the explicit version check (version.json) and the refresh messages
 // below — so a day of heavy use in the mountains costs zero data.
-const APP_VERSION = 'v9';
+const APP_VERSION = 'v10';
 const CORE = 'core-' + APP_VERSION;
 const RUNTIME = 'runtime';
 
@@ -39,6 +39,7 @@ const CORE_ASSETS = [
   './icons/icon-maskable-512.png',
   './icons/apple-touch-icon.png',
   './icons/favicon-32.png',
+  './icons/social-card.jpg',
   './vendor/react/react.production.min.js',
   './vendor/react/react-dom.production.min.js',
   './vendor/phosphor/regular/style.css',
@@ -139,6 +140,19 @@ self.addEventListener('message', event => {
     }));
     return;
   }
+});
+
+// Tapping a proximity notification should land you in the app, not open a second
+// copy of it. Focus an existing window if one is around, otherwise open one.
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  event.waitUntil((async () => {
+    const all = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    for (const c of all) {
+      if ('focus' in c) { await c.focus(); return; }
+    }
+    if (self.clients.openWindow) await self.clients.openWindow('./');
+  })());
 });
 
 self.addEventListener('fetch', event => {
