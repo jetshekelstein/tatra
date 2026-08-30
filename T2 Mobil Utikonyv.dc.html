@@ -270,6 +270,11 @@
         <p class="text-muted" style="margin:5px 0 0;font-size:13px">{{ poi.w }}</p>
       </div>
 
+      <sc-if value="{{ poi.hasCredit }}" hint-placeholder-val="{{ false }}">
+        <a href="{{ poi.creditUrl }}" target="_blank" rel="noopener" class="text-muted"
+           style="display:block;margin-top:8px;font-size:10.5px;letter-spacing:0.02em">{{ poi.creditText }}</a>
+      </sc-if>
+
       <sc-if value="{{ poi.hasCal }}" hint-placeholder-val="{{ false }}">
         <div style="margin-top:12px;padding:12px 14px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md)">
           <span style="{{ mikorLabel }}">Programnaptár</span>
@@ -814,6 +819,19 @@ function wkMap(G) {
 // image out of IndexedDB forever, because nothing ever invalidated it. With the
 // article in the key, a changed or deleted wk simply stops matching.
 const wikiKey = (tripId, id, wk) => tripId + ':' + id + ':' + wk;
+// Second source: geotagged photographs on Wikimedia Commons, found by the
+// coordinate the guidebook already stores. This reaches the things that have no
+// Wikipedia article of their own — rock formations, gorges, lookouts, cellar
+// rows — which is most of what a hiking guidebook is made of. Keyed on the
+// coordinate so moving a pin re-resolves.
+const commonsKey = (tripId, id, ll) => tripId + ':' + id + ':geo@' + ll[0].toFixed(3) + ',' + ll[1].toFixed(3);
+// Stored values are {u,by,lic,page} now; older installs hold a bare URL string.
+const imgUrl = v => (typeof v === 'string' ? v : (v && v.u)) || null;
+const imgCred = v => (v && typeof v === 'object' && v.by) ? v : null;
+// Accent-insensitive tokens of 4+ chars, for matching a file name to a sight.
+const nameTokens = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  .toLowerCase().split(/[^a-z0-9]+/).filter(w => w.length >= 4);
+const stripTags = h => String(h || '').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
 function idbOpen() {
   return new Promise((resolve, reject) => {
     const req = indexedDB.open(IDB_NAME, 1);
@@ -1222,7 +1240,7 @@ class Component extends DCLogic {
       this.setState({ trip: id, tab, poi, poiStack: Array.isArray(s.poiStack) ? s.poiStack : [],
         day: s.day || 1, plan, today, saved: Array.isArray(s.saved) ? s.saved : [], checks: s.checks || {},
         cat: 'all', query: '', essOpen: false, booting: false, nearOpen: false, envItems: null },
-        () => { this.fetchWiki(); this.fetchRatings(); this.ensureTrip(id); });
+        () => { this.fetchWiki(); this.fetchCommons(); this.fetchRatings(); this.ensureTrip(id); });
     }, () => this.setState({ booting: false }));
   }
 
@@ -1245,7 +1263,7 @@ class Component extends DCLogic {
     Object.keys(T.wikiFiles || {}).forEach(k =>
       out.push('https://commons.wikimedia.org/wiki/Special:FilePath/' + T.wikiFiles[k] + '?width=800'));
     const wik = this.state.wikiImgs || {};
-    Object.keys(wik).forEach(k => { if (k.indexOf(T.id + ':') === 0) out.push(wik[k]); });
+    Object.keys(wik).forEach(k => { if (k.indexOf(T.id + ':') === 0) { const u = imgUrl(wik[k]); if (u) out.push(u); } });
     return [...new Set(out)];
   }
 
@@ -1278,6 +1296,12 @@ class Component extends DCLogic {
     // survive the fix that removed them.
     const wkm = wkMap(G);
     const valid = new Set(Object.keys(wkm).map(id => wikiKey(T.id, id, wkm[id])));
+    // Geotagged Commons hits are keyed on the coordinate, not the article, and
+    // are resolved by fetchCommons() — they are just as valid, so the prune must
+    // not sweep them away the moment they land.
+    (G.modules || []).forEach(m => (m.pois || []).forEach(x => {
+      if (x.ll) valid.add(commonsKey(T.id, x.id, x.ll)); }));
+    (G.hikes || []).forEach(x => { if (x.ll) valid.add(commonsKey(T.id, x.id, x.ll)); });
     const orphans = Object.keys(this.state.wikiImgs || {})
       .filter(k => k.indexOf(T.id + ':') === 0 && !valid.has(k));
     if (orphans.length) {
@@ -1307,7 +1331,69 @@ class Component extends DCLogic {
           // segment of the thumbnail keeps the host and always resolves.
           const big = th && /\/\d+px-/.test(th) ? th.replace(/\/\d+px-/, '/800px-') : (orig || th);
           this.setState(s => {
-            const w = { ...s.wikiImgs, [wikiKey(T.id, i.id, i.wk)]: big };
+            const w = { ...s.wikiImgs, [wikiKey(T.id, i.id, i.wk)]:
+              { u: big, by: '', lic: '', page: 'https://' + parts[0] + '.wikipedia.org/wiki/' + parts[1] } };
+            idbSet('wikimg', w).catch(() => {});
+            return { wikiImgs: w };
+          });
+        }).catch(() => {});
+    });
+  }
+
+  // Geotagged Commons photographs for sights that have no article of their own.
+  // Deliberately limited to pois and hikes: a random geotagged frame near a
+  // restaurant or a campsite is exactly the "not the sight's picture" problem we
+  // just spent a release removing, whereas near a rock formation or a gorge the
+  // nearest geotagged photo IS the thing. Fails closed to the category icon.
+  fetchCommons() {
+    const T = this.trip();
+    if (!T) return;
+    const G = T.data, local = T.photoFiles || {}, pinned = T.wikiFiles || {};
+    const items = [];
+    (G.modules || []).forEach(m => (m.pois || []).forEach(x => items.push(x)));
+    (G.hikes || []).forEach(x => items.push(x));
+    const cache = this.state.wikiImgs || {};
+    const todo = items.filter(x => x.ll && !local[x.id] && !pinned[x.id]
+      && !cache[commonsKey(T.id, x.id, x.ll)]);
+    const RADIUS = 700;
+    todo.slice(0, 40).forEach(x => {
+      const u = 'https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*'
+        + '&generator=geosearch&ggscoord=' + x.ll[0] + '%7C' + x.ll[1]
+        + '&ggsradius=' + RADIUS + '&ggsnamespace=6&ggslimit=20'
+        + '&prop=imageinfo&iiprop=url%7Cmime%7Cextmetadata&iiurlwidth=800';
+      fetch(u)
+        .then(r => r.ok ? r.json() : null)
+        .then(j => {
+          const pages = j && j.query && j.query.pages;
+          if (!pages) return;
+          // generator=geosearch hands pages back nearest-first via `index`.
+          const cands = Object.keys(pages).map(k => pages[k])
+            .sort((a, b) => (a.index || 0) - (b.index || 0))
+            .filter(pg => {
+              const ii = pg.imageinfo && pg.imageinfo[0];
+              if (!ii || !ii.thumburl) return false;
+              if (!/^image\/(jpeg|png|webp)$/.test(ii.mime || '')) return false;   // no svg maps, no pdf
+              return !/\b(map|terkep|térkép|cimer|címer|coat[ _]of[ _]arms|logo|flag|zaszlo|zászló|diagram|plan)\b/i
+                .test(pg.title || '');
+            });
+          if (!cands.length) return;
+          // Prefer a file whose name echoes the sight; otherwise take the nearest.
+          const want = nameTokens(x.n + ' ' + (x.q || ''));
+          const named = cands.find(pg => {
+            const t = nameTokens(pg.title);
+            return want.some(w => t.indexOf(w) >= 0);
+          });
+          const pick = named || cands[0];
+          const ii = pick.imageinfo[0];
+          const md = ii.extmetadata || {};
+          const val = {
+            u: ii.thumburl,
+            by: stripTags((md.Artist && md.Artist.value) || '').slice(0, 80),
+            lic: stripTags((md.LicenseShortName && md.LicenseShortName.value) || ''),
+            page: ii.descriptionurl || ''
+          };
+          this.setState(st => {
+            const w = { ...st.wikiImgs, [commonsKey(T.id, x.id, x.ll)]: val };
             idbSet('wikimg', w).catch(() => {});
             return { wikiImgs: w };
           });
@@ -1873,9 +1959,17 @@ class Component extends DCLogic {
     const wikiFile = f => 'https://commons.wikimedia.org/wiki/Special:FilePath/' + f + '?width=800';
     // No wk on the entry -> no Wikipedia image, even if one was cached earlier.
     const wkm = wkMap(G);
+    const llm = {};
+    (G.modules || []).forEach(m => (m.pois || []).forEach(x => { if (x.ll) llm[x.id] = x.ll; }));
+    (G.hikes || []).forEach(x => { if (x.ll) llm[x.id] = x.ll; });
+    const imgRec = id => {
+      if (wkm[id]) { const v = st.wikiImgs[wikiKey(T.id, id, wkm[id])]; if (imgUrl(v)) return v; }
+      if (llm[id]) { const v = st.wikiImgs[commonsKey(T.id, id, llm[id])]; if (imgUrl(v)) return v; }
+      return null;
+    };
     const imgOf = id => local[id] ? photoDir + local[id]
       : pinned[id] ? wikiFile(pinned[id])
-      : (wkm[id] ? st.wikiImgs[wikiKey(T.id, id, wkm[id])] : null) || null;
+      : imgUrl(imgRec(id));
     const GLYPH = {
       sleep: 'M3 17V9a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v8M3 17h18M3 17v2M21 17v2M7 9h4v3H7z',
       eat: 'M7 3v8m0 0v10M4 3v5a3 3 0 0 0 3 3M10 3v5a3 3 0 0 1-3 3M17 3c-1.5 2-2 4-2 6s.5 3 2 3 2-1 2-3-.5-4-2-6zm0 9v9',
@@ -2002,11 +2096,15 @@ class Component extends DCLogic {
 
     // ---- POI detail ----
     const rawPoi = st.poi ? byId[st.poi] : null;
+    const poiCred = rawPoi && !local[rawPoi.id] ? imgCred(imgRec(rawPoi.id)) : null;
     const poiCal = rawPoi ? eventsFor(rawPoi) : [];
     const poi = rawPoi ? { ...decorate(rawPoi),
       heroStyle: bgImg(rawPoi.id, 'width:100%;height:230px', rawPoi.kind),
       noImg: !imgOf(rawPoi.id),
       cal: poiCal, hasCal: poiCal.length > 0,
+      hasCredit: !!poiCred,
+      creditText: poiCred ? ('Fotó: ' + poiCred.by + (poiCred.lic ? ' · ' + poiCred.lic : '') + ' · Wikimedia Commons') : '',
+      creditUrl: poiCred ? (poiCred.page || '') : '',
       openModule: () => this.goExplore(),
       siblings: all.filter(x => x.modId === rawPoi.modId && x.kind === rawPoi.kind && x.id !== rawPoi.id).slice(0, 4)
         .map(x => ({ n: x.n, meta: x.meta, thumbStyle: thumb(x.id, x.kind), open: () => this.openPoi(x.id), ...ratingOf(x) })) } : null;

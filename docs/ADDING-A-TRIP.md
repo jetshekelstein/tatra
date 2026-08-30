@@ -200,6 +200,27 @@ hogy `(várható)`: a jelvény csak a nevet és a dátumot mutatja, a `note`-ot 
 
 ## Képek, ha nincs saját fotó
 
+A sorrend, ahogy a váz keresi:
+
+1. **helyi fotó** — `photos` a trip descriptorban
+2. **rögzített Wikimedia-fájl** — `wikiFiles`, ha tudod a pontos fájlnevet
+3. **Wikipédia-vezérkép** — a `wk` mező (`hu:Cikk_neve`) szócikkének nyitóképe
+4. **Commons geokeresés** — a POI/túra `ll` koordinátája körül 700 m-en belül
+   készült, geokódolt szabad fénykép. Kulcs nem kell hozzá. Ez éri el azt a
+   rengeteg látnivalót, aminek nincs saját szócikke.
+5. **kategória-ikon** — ha semmi nem jött össze
+
+A 4. lépés csak `pois` és `hikes` bejegyzésekre fut: egy étterem vagy egy kemping
+mellett a legközelebbi geokódolt fotó jellemzően nem a helyet ábrázolja, és az
+rosszabb, mint az ikon. A találatok közül előnyt élvez az, aminek a **fájlneve
+egyezik a helyszín nevével**; ha nincs ilyen, a legközelebbi jön. Az `image/svg`,
+`pdf`, valamint a térkép/címer/logó nevű fájlok ki vannak szűrve.
+
+A Commons képei CC-licencesek, ezért a helyszín lapján megjelenik a **fotós neve
+és a licenc**, a fájl Commons-oldalára mutató linkkel. Ezt ne vedd ki.
+
+
+
 A sorrend: helyi fotó (`photos`) → rögzített Wikimedia-fájl (`wikiFiles`) →
 Wikipédia-vezérkép (`wk`) → szürke ikon. Hogy sehol ne maradjon ikon, a
 bükkaljai és a gombaszögi kötet a `data.itineraries` előtt egy rövid ciklussal
