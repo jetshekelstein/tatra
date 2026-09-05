@@ -86,6 +86,9 @@ chipben. Ha a `config.js`-ben van Places API-kulcs, az app minden helyszínre
 letölti ezeket, és a letöltött érték felülírja a fájlba írtat — kulcs nélkül
 csak az látszik, amit ide beírsz. Lásd `config.js` a részletekért; a számokat az
 app IndexedDB-be gyorsítótárazza, tehát helyszínenként egy lekérés az egész.
+Ugyanez a lekérés hozná a hely első Google-fotóját is — európai projekt viszont
+az EEA-feltételek (2025. július 8. óta) miatt nem kap vissza fotót, ezért a
+Google-kép a gyakorlatban a Street View (lásd lent).
 
 ### Napi terv (`itineraries[].days[]`)
 
@@ -205,27 +208,35 @@ A sorrend, ahogy a váz keresi:
 1. **helyi fotó** — `photos` a trip descriptorban
 2. **rögzített Wikimedia-fájl** — `wikiFiles`, ha tudod a pontos fájlnevet
 3. **Wikipédia-vezérkép** — a `wk` mező (`hu:Cikk_neve`) szócikkének nyitóképe
-4. **Commons geokeresés** — a POI/túra `ll` koordinátája körül 700 m-en belül
-   készült, geokódolt szabad fénykép. Kulcs nem kell hozzá. Ez éri el azt a
-   rengeteg látnivalót, aminek nincs saját szócikke.
-5. **kategória-ikon** — ha semmi nem jött össze
+4. **Commons geokeresés** — az `ll` koordináta körül 700 m-en belül készült,
+   geokódolt szabad fénykép. Kulcs nem kell hozzá. Ez éri el azt a rengeteg
+   látnivalót, aminek nincs saját szócikke.
+5. **Google** — csak `config.js`-beli kulccsal: a hely első Google-fotója, ha a
+   projekt kap ilyet (európai projekt nem, lásd fent), különben a koordinátához
+   60 m-en belül talált **Street View**-panoráma, ha a kulcson a Street View
+   Static API engedélyezve van. Futásidejű forrás: a kép URL-je a kulcsot viszi,
+   ezért soha nem kerül az offline gyorsítótárba — hálózat nélkül ezek a helyek
+   ikont mutatnak.
+6. **kategória-ikon** — ha semmi nem jött össze
 
-A 4. lépés csak `pois` és `hikes` bejegyzésekre fut: egy étterem vagy egy kemping
-mellett a legközelebbi geokódolt fotó jellemzően nem a helyet ábrázolja, és az
-rosszabb, mint az ikon. A találatok közül előnyt élvez az, aminek a **fájlneve
-egyezik a helyszín nevével**; ha nincs ilyen, a legközelebbi jön. Az `image/svg`,
-`pdf`, valamint a térkép/címer/logó nevű fájlok ki vannak szűrve.
+A 4. lépés `pois` és `hikes` bejegyzésekre a legközelebbi találatot is elfogadja,
+előnyben azzal, aminek a **fájlneve egyezik a helyszín nevével**. A `sleep` és
+`eat` bejegyzésekre SZIGORÚ szabály fut: csak névre egyező fájl jöhet, a pusztán
+közeli nem — egy étterem mellett a legközelebbi geokódolt fotó jellemzően az
+utca, nem az étterem, és az rosszabb, mint az ikon. Ehhez a kajáldának is kell
+`ll`. Az `image/svg`, `pdf`, valamint a térkép/címer/logó nevű fájlok ki vannak
+szűrve. Az 5. lépésben Google-fotó csak ÉRTÉKELÉSSEL rendelkező találatról jön:
+értékelés nélküli találat általában maga a falu, és a falukép rossz kép.
 
 A Commons képei CC-licencesek, ezért a helyszín lapján megjelenik a **fotós neve
-és a licenc**, a fájl Commons-oldalára mutató linkkel. Ezt ne vedd ki.
+és a licenc**, a fájl Commons-oldalára mutató linkkel; a Google-képek alatt a
+forrás (Google Maps / Google Street View) és a szerző. Ezt ne vedd ki.
 
-
-
-A sorrend: helyi fotó (`photos`) → rögzített Wikimedia-fájl (`wikiFiles`) →
-Wikipédia-vezérkép (`wk`) → szürke ikon. Hogy sehol ne maradjon ikon, a
-bükkaljai és a gombaszögi kötet a `data.itineraries` előtt egy rövid ciklussal
-minden helyszínre ráteszi a **települése** `wk`-ját, ha nincs sajátja — az
-egyedi `wk` mindig erősebb. Új kötetnél érdemes ugyanezt megtenni.
+**Nincs település-szintű tartalék.** Korábban a kötetek a falu `wk`-ját tették
+minden árva helyszínre — ettől ugyanaz a falukép jelent meg tizenhét helyen, ami
+rosszabb, mint a tiszta ikon, és ezt kivettük. `wk` csak oda, ahol a szócikk
+MAGÁT a helyszínt írja le; a többit a koordináta és a Google-források hozzák, vagy
+marad az ikon. Szálláshely és kajálda `wk`-t elvből nem kap.
 
 Figyelem: a `plans` bejegyzésekre a váz **nem** tölt le Wikipédia-képet, azoknak
 helyi fotó (vagy `wikiFiles` pin) kell.

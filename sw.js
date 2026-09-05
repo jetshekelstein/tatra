@@ -16,7 +16,7 @@
 // Data policy: cache-first with NO background revalidation. Updates happen only
 // through the explicit version check (version.json) and the refresh messages
 // below — so a day of heavy use in the mountains costs zero data.
-const APP_VERSION = 'v14';
+const APP_VERSION = 'v15';
 const CORE = 'core-' + APP_VERSION;
 const RUNTIME = 'runtime';
 
@@ -31,6 +31,8 @@ const CORE_ASSETS = [
   './trips/registry.js',
   './trips/tatra.js',
   './trips/aggtelek.js',
+  './trips/nograd.js',
+  './trips/tisza.js',
   './trips/gombaszog.js',
   './trips/bukkalja.js',
   './_ds/nocturne-ac2cafb2-92d5-4812-bf7e-e1f1372013a8/styles.css',

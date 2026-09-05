@@ -1,34 +1,212 @@
 {
   "_doc": "Esemény-feed: fesztiválok, piacok, programok a könyvek helyszínein. Az app frissítés-ellenőrzéskor tölti le és IndexedDB-be teszi, tehát APPFRISSÍTÉS NÉLKÜL, bármikor bővíthető — offline a legutóbb letöltött állapot él. Mező-séma: trip = útikönyv id + poi = helyszín id (pontos kötés egy helyhez), VAGY ll:[lat,lng] + km hatókör (falusi rendezvény: a körön belüli MINDEN helyszínt megjelöli). n = az esemény neve; from/to = ISO dátumok, a to napja még érvényes; dow = OPCIONÁLIS heti ismétlődés (0=vasárnap … 6=szombat) — ilyenkor a from/to a SZEZONT jelöli, és az esemény azon belül minden héten megvan azon a napon; note = egy sor a naptárba; url = opcionális link. A listákon a jelvény a következő 30 napban esedékes eseményt mutatja (és MA-t, ha éppen tart); a helyszín lapján a Programnaptár az összes hátralévőt kilistázza. Lejárt esemény magától eltűnik — a régieket meghagyjuk emlékeztetőnek a jövő évi tervezéshez.",
-  "_checked": "2026-09-05 (aggteleki tételek), 2026-08-29 (a többi) — a dátumok a szervezők akkori közlései; a falusi programok csúsznak, indulás előtt ellenőrizni",
-  "version": "2026-09-05.1",
+  "_checked": "2026-09-05 (aggteleki, nógrádi és tiszai tételek), 2026-08-29 (a többi) — a dátumok a szervezők akkori közlései; a falusi programok csúsznak, indulás előtt ellenőrizni",
+  "version": "2026-09-05.2",
   "events": [
-    { "n": "Kórusműsor a Hangversenyteremben", "trip": "aggtelek", "poi": "a2", "from": "2026-09-05", "to": "2026-09-05",
-      "note": "A 15:00-s aggteleki rövidtúrán, 20–25 perc · a jegy ára a sima túrajegy" },
-    { "n": "Barlangi futóverseny — módosult indulások", "trip": "aggtelek", "poi": "a1", "from": "2026-09-05", "to": "2026-09-05",
-      "note": "A Vörös-tói középtúra kivételesen 12:00 és 14:00; a jósvafői rövidtúra nem indul" },
-
-    { "n": "Noszvaji Szilvanap", "ll": [47.9333, 20.4667], "km": 2.5, "from": "2026-08-29", "to": "2026-08-29",
-      "note": "Szilvás ételek, hagyományőrző délután a Gazdaházban, bortúra az Emődi pincesoron" },
-    { "n": "Patakparti Piac", "trip": "bukkalja", "poi": "n3", "dow": 5, "from": "2026-01-02", "to": "2027-12-31",
-      "note": "7:00–18:00 · lekvár, sajt, méz, termelői zöldség" },
-
-    { "n": "Bogácsi Szüreti Fesztivál", "ll": [47.9053, 20.5333], "km": 2.5, "from": "2026-09-19", "to": "2026-09-19",
-      "note": "Rendezvénypark · felvonulás, borkóstoló" },
-    { "n": "Szent Mihály-napi közös csurdítás", "trip": "bukkalja", "poi": "b2", "from": "2026-09-26", "to": "2026-09-26",
-      "note": "A pincesor közös szüreti záróünnepe" },
-    { "n": "Tárcsás Ételek Fesztiválja", "ll": [47.9053, 20.5333], "km": 2.5, "from": "2026-10-24", "to": "2026-10-24",
-      "note": "Bogács, Rendezvénypark" },
-    { "n": "Márton-napi Vigasságok és Búcsú", "ll": [47.9053, 20.5333], "km": 2.5, "from": "2026-11-06", "to": "2026-11-08",
-      "note": "Bogács · libator, újbor, búcsú" },
-    { "n": "Advent Bogácson", "ll": [47.9053, 20.5333], "km": 2.5, "from": "2026-12-01", "to": "2026-12-24",
-      "note": "Adventi programsorozat a faluban" },
-
-    { "n": "Bogácsi Fürdőfesztivál (várható)", "trip": "bukkalja", "poi": "b1", "from": "2027-07-17", "to": "2027-07-17",
-      "note": "VÁRHATÓ dátum a 2026-os (júl. 18.) alapján — a fürdő hirdeti ki" },
-    { "n": "Szomolyai Cseresznyefesztivál (várható)", "trip": "bukkalja", "poi": "k1", "from": "2027-06-05", "to": "2027-06-06",
-      "note": "VÁRHATÓ dátum a 2026-os XXIII. (jún. 6–7.) alapján · rövidszárú fekete cseresznye" },
-    { "n": "Matyóföldi Folklórfesztivál (várható)", "ll": [47.8130, 20.5820], "km": 4, "from": "2027-07-31", "to": "2027-08-01",
-      "note": "VÁRHATÓ dátum — jellemzően augusztus első hétvégéje, Mezőkövesd" }
+    {
+      "n": "Kórusműsor a Hangversenyteremben",
+      "trip": "aggtelek",
+      "poi": "a2",
+      "from": "2026-09-05",
+      "to": "2026-09-05",
+      "note": "A 15:00-s aggteleki rövidtúrán, 20–25 perc · a jegy ára a sima túrajegy"
+    },
+    {
+      "n": "Barlangi futóverseny — módosult indulások",
+      "trip": "aggtelek",
+      "poi": "a1",
+      "from": "2026-09-05",
+      "to": "2026-09-05",
+      "note": "A Vörös-tói középtúra kivételesen 12:00 és 14:00; a jósvafői rövidtúra nem indul"
+    },
+    {
+      "n": "Utolsó strandhétvégék — 1 600 Ft-os napijegy",
+      "trip": "tisza",
+      "poi": "l1",
+      "from": "2026-09-05",
+      "to": "2026-09-06",
+      "note": "A Facebook-oldal szerint ezen a hétvégén 1 600 Ft a felnőtt napijegy (listaár 2 400) · 3 év alatt ingyen · nyitva 8–20"
+    },
+    {
+      "n": "Amikor Tokaj fénnyel mesél — esti fényfestés",
+      "trip": "tisza",
+      "poi": "t5",
+      "from": "2026-09-05",
+      "to": "2026-09-30",
+      "note": "Kossuth tér, 21:00 · ingyen · a város szerint szeptemberben is folytatják — indulás előtt tokaj.hu"
+    },
+    {
+      "n": "IX. Tokaji Utcazene Fesztivál",
+      "ll": [
+        48.1256,
+        21.4082
+      ],
+      "km": 2,
+      "from": "2026-09-11",
+      "to": "2026-09-13",
+      "note": "99 zenekar az utcákon és teraszokon, ingyen · p–szo este fényfestés · vas 18:30 eredményhirdetés · parkolás a híd alatt",
+      "url": "https://www.tokaj-turizmus.hu/ix-tokaji-utcazene-fesztival"
+    },
+    {
+      "n": "Tirpák Fesztivál, Nyíregyháza",
+      "ll": [
+        47.9554,
+        21.7167
+      ],
+      "km": 7,
+      "from": "2026-09-12",
+      "to": "2026-09-13",
+      "note": "Kossuth tér, belváros — 10 perc Sóstótól · savanyú-sós tirpák ételek, gasztrofesztivál"
+    },
+    {
+      "n": "Kulturális Örökség Napjai a Múzeumfaluban (várható)",
+      "trip": "tisza",
+      "poi": "n2",
+      "from": "2026-09-19",
+      "to": "2026-09-20",
+      "note": "VÁRHATÓ dátum a 2025-ös alapján (szept. 3. hétvégéje) — a Múzeumfalu hirdeti ki"
+    },
+    {
+      "n": "A Magyar Népmese Napja",
+      "trip": "tisza",
+      "poi": "n2",
+      "from": "2026-09-30",
+      "to": "2026-09-30",
+      "note": "Sóstói Múzeumfalu, 10:00-tól · mesemondás, játszóudvar"
+    },
+    {
+      "n": "Tokaj-hegyaljai Szüreti Napok",
+      "ll": [
+        48.1256,
+        21.4082
+      ],
+      "km": 2,
+      "from": "2026-10-02",
+      "to": "2026-10-04",
+      "note": "Tokaj belvárosa · felvonulás, borkóstoló, gyerekprogramok"
+    },
+    {
+      "n": "Feketeszakáll strand — szezonnyitás (várható)",
+      "trip": "tisza",
+      "poi": "l1",
+      "from": "2027-06-01",
+      "to": "2027-06-01",
+      "note": "VÁRHATÓ — a 2026-os bérletek 09.15-ig éltek, a nyitást a Facebook-oldal hirdeti ki"
+    },
+    {
+      "n": "Kulturális Örökség Napjai Ipolytarnócon",
+      "trip": "nograd",
+      "poi": "c1",
+      "from": "2026-09-19",
+      "to": "2026-09-20",
+      "note": "Az Ősfenyő Belépő látogatóközpont külön programokkal csatlakozik · bnpi.hu"
+    },
+    {
+      "n": "Szentkúti búcsú — Mária neve (várható)",
+      "trip": "nograd",
+      "poi": "c2",
+      "from": "2026-09-12",
+      "to": "2026-09-13",
+      "note": "VÁRHATÓ — a Mária neve (szept. 12.) körüli hétvége; tömeg és parkolási káosz, aznap kerülni · szentkut.hu"
+    },
+    {
+      "n": "Noszvaji Szilvanap",
+      "ll": [
+        47.9333,
+        20.4667
+      ],
+      "km": 2.5,
+      "from": "2026-08-29",
+      "to": "2026-08-29",
+      "note": "Szilvás ételek, hagyományőrző délután a Gazdaházban, bortúra az Emődi pincesoron"
+    },
+    {
+      "n": "Patakparti Piac",
+      "trip": "bukkalja",
+      "poi": "n3",
+      "dow": 5,
+      "from": "2026-01-02",
+      "to": "2027-12-31",
+      "note": "7:00–18:00 · lekvár, sajt, méz, termelői zöldség"
+    },
+    {
+      "n": "Bogácsi Szüreti Fesztivál",
+      "ll": [
+        47.9053,
+        20.5333
+      ],
+      "km": 2.5,
+      "from": "2026-09-19",
+      "to": "2026-09-19",
+      "note": "Rendezvénypark · felvonulás, borkóstoló"
+    },
+    {
+      "n": "Szent Mihály-napi közös csurdítás",
+      "trip": "bukkalja",
+      "poi": "b2",
+      "from": "2026-09-26",
+      "to": "2026-09-26",
+      "note": "A pincesor közös szüreti záróünnepe"
+    },
+    {
+      "n": "Tárcsás Ételek Fesztiválja",
+      "ll": [
+        47.9053,
+        20.5333
+      ],
+      "km": 2.5,
+      "from": "2026-10-24",
+      "to": "2026-10-24",
+      "note": "Bogács, Rendezvénypark"
+    },
+    {
+      "n": "Márton-napi Vigasságok és Búcsú",
+      "ll": [
+        47.9053,
+        20.5333
+      ],
+      "km": 2.5,
+      "from": "2026-11-06",
+      "to": "2026-11-08",
+      "note": "Bogács · libator, újbor, búcsú"
+    },
+    {
+      "n": "Advent Bogácson",
+      "ll": [
+        47.9053,
+        20.5333
+      ],
+      "km": 2.5,
+      "from": "2026-12-01",
+      "to": "2026-12-24",
+      "note": "Adventi programsorozat a faluban"
+    },
+    {
+      "n": "Bogácsi Fürdőfesztivál (várható)",
+      "trip": "bukkalja",
+      "poi": "b1",
+      "from": "2027-07-17",
+      "to": "2027-07-17",
+      "note": "VÁRHATÓ dátum a 2026-os (júl. 18.) alapján — a fürdő hirdeti ki"
+    },
+    {
+      "n": "Szomolyai Cseresznyefesztivál (várható)",
+      "trip": "bukkalja",
+      "poi": "k1",
+      "from": "2027-06-05",
+      "to": "2027-06-06",
+      "note": "VÁRHATÓ dátum a 2026-os XXIII. (jún. 6–7.) alapján · rövidszárú fekete cseresznye"
+    },
+    {
+      "n": "Matyóföldi Folklórfesztivál (várható)",
+      "ll": [
+        47.813,
+        20.582
+      ],
+      "km": 4,
+      "from": "2027-07-31",
+      "to": "2027-08-01",
+      "note": "VÁRHATÓ dátum — jellemzően augusztus első hétvégéje, Mezőkövesd"
+    }
   ]
 }

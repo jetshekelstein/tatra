@@ -40,11 +40,11 @@ modules: [
  {n:'★ NOMÁD Baradla Kemping és Turistaszálló, Aggtelek', ll:[48.4680,20.5080], q:'Baradla Kemping Aggtelek', tel:'+36 48 503 005',
   d:'Baradla oldal 1., közvetlenül a barlangbejárat mellett. Sátorhelyek, egyszerű faházak, 6–7 fős téliesített, padlófűtéses rönkházak saját fürdővel és konyhával; a turistaszállóban 2–4 ágyas szobák, közös konyha. Játszótér és nagy füves tér a területen, a Baradla Étterem az épületben. Vasárnap hajnalra 9 °C — ezen a hétvégén a rönkház vagy a faház a családi jolly joker, nem a sátor. Friss árlista: szallas-aggtelek.hu/arlista (a nyilvános lista nem teljes — telefonos megerősítés ajánlott), és a késői érkezést előre jelezni kell.'}],
  eat:[
- {n:'Baradla Étterem — a bejáratnál', q:'Baradla Étterem Aggtelek',
+ {n:'Baradla Étterem — a bejáratnál', ll:[48.4682,20.5078], q:'Baradla Étterem Aggtelek',
   d:'A turistaszálló épületében, a barlangbejáratnál: túra után kézenfekvő, mert nulla méter. Péntek estére viszont NE erre építsetek — késői érkezésnél nem garantált, hogy nyitva van; akkor a hideg vacsora a terv.'},
- {n:'Fehér Ház Büfé, Aggtelek', q:'Fehér Ház Büfé Aggtelek',
+ {n:'Fehér Ház Büfé, Aggtelek', ll:[48.4700,20.5010], q:'Fehér Ház Büfé Aggtelek',
   d:'Gyors, gyerekálló, a faluban. A „nem akarunk leülni egy órára" megoldás a barlang és a következő program közé. Készpénz legyen.'},
- {n:'Gyroskert Falatozó, Aggtelek', q:'Gyroskert Aggtelek',
+ {n:'Gyroskert Falatozó, Aggtelek', ll:[48.4695,20.5020], q:'Gyroskert Aggtelek',
   d:'A másik gyors megoldás Aggteleken. Ugyanaz a szerep: enni kell, de nem most akarunk vacsorázni. Készpénz legyen.'}]},
 
 {id:'A', letter:'A', title:'Baradla', full:'Baradla-barlang — a hétvége gerince', kicker:'A tesztelt mag · ✔ kipipálva', sub:'A világ leghosszabb kiépített barlangi túraútvonala, három bejárattal és három hosszúsággal', transit:'Aggtelek ↔ Vörös-tó 4 km · Aggtelek ↔ Jósvafő 7 km gyalog a tanösvényen vagy 10 perc autóval',
@@ -94,9 +94,9 @@ modules: [
  {n:'Tengerszem Hotel és Étterem, Jósvafő', ll:[48.4900,20.5525], q:'Tengerszem Hotel Jósvafő',
   d:'A barlang jósvafői kijáratánál, közvetlenül a tó mellett. Ha „hotelesebb" hétvégét akartok — falak, fűtés, reggeli, és nulla méter a Fürkész-ösvényig —, ez az. tengerszemhotel.com. Egyben ez a B-terv, ha a vasárnap hajnali 9 fok a kempingben nem jött be.'}],
  eat:[
- {n:'Tengerszem Hotel étterme, Jósvafő', q:'Tengerszem Hotel Jósvafő',
+ {n:'Tengerszem Hotel étterme, Jósvafő', ll:[48.4900,20.5525], q:'Tengerszem Hotel Jósvafő',
   d:'A tanösvény és a lovak után a legkézenfekvőbb meleg ebéd — ugyanott, ahol a barlang kijön és a Fürkész-ösvény indul.'},
- {n:'Fagyi és büfé a Tengerszemnél', q:'Tengerszem-tó Jósvafő',
+ {n:'Fagyi és büfé a Tengerszemnél', ll:[48.4900,20.5530], q:'Tengerszem-tó Jósvafő',
   d:'A gyaloglás hivatalos jutalma. A tesztelt forgatókönyv vége: Aggtelekről gyalog ide, fagyi, aztán a 14:48-as busz.'}]},
 
 {id:'SZ', letter:'SZ', title:'Szögliget', full:'Szögliget és a Bódva-völgy — a vasárnapi irány', kicker:'Vasárnap · hazaútba is jól esik', sub:'Az ország egyik legnagyobb várromja, a világ legnagyobb könyve és egy papírmalom', transit:'Aggtelek → Szinpetri ≈ 10 perc → Szögliget további ≈ 15 perc · Bódvarákó további 20 perc',
@@ -276,7 +276,7 @@ data.itineraries = [
 window.registerTrip({
   id: 'aggtelek',
   // Content version — bump on every content change; version.json mirrors it.
-  version: '2026-09-05.1',
+  version: '2026-09-05.2',
   date: '2026-09-04',
   name: 'Aggteleki-karszt',
   period: '2026. szept.',
