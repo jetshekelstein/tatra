@@ -1,8 +1,8 @@
 {
-  "version": "2026-09-05.1",
-  "sw": "v13",
+  "version": "2026-09-05.2",
+  "sw": "v14",
   "date": "2026-09-05",
-  "notes": "Új kötet: Aggteleki-karszt — Aggtelek, Jósvafő, Szögliget, útközben a Bükkön át. A szept. 4–6-i hétvégére: Vörös-tói középtúra és a Baradla tanösvény (mindkettő tesztelt), hucul ménes, Szádvár, Szinpetri papírmalma — plusz a Galyaság Trizsi Meseerdővel, mezítlábas ösvénnyel, Kelemér lápi tavaival és Szuhafő két kilátójával. FIGYELEM: szept. 1-től téli menetrend (pénztárak 8:00–16:00), szept. 5-én a barlangi futóverseny miatt a Vörös-tói középtúra 12:00 és 14:00, a jósvafői rövidtúra nem indul, a 15:00-s aggteleki túrán pedig kórusműsor szól a Hangversenyteremben.",
+  "notes": "Új kötet: Aggteleki-karszt — Aggtelek, Jósvafő, Szögliget, útközben a Bükkön át. A szept. 4–6-i hétvégére: Vörös-tói középtúra és a Baradla tanösvény (mindkettő tesztelt), hucul ménes, Szádvár, Szinpetri papírmalma — plusz a Galyaság Trizsi Meseerdővel, mezítlábas ösvénnyel, Kelemér lápi tavaival és Szuhafő két kilátójával. FIGYELEM: szept. 1-től téli menetrend (pénztárak 8:00–16:00), szept. 5-én a barlangi futóverseny miatt a Vörös-tói középtúra 12:00 és 14:00, a jósvafői rövidtúra nem indul, a 15:00-s aggteleki túrán pedig kórusműsor szól a Hangversenyteremben. A megosztott link előnézete is frissült: négy útikönyv, Aggtelekkel az élen.",
   "trips": {
     "aggtelek": "2026-09-05.1",
     "tatra": "2026-08-29.1",

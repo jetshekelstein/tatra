@@ -16,7 +16,7 @@
 // Data policy: cache-first with NO background revalidation. Updates happen only
 // through the explicit version check (version.json) and the refresh messages
 // below — so a day of heavy use in the mountains costs zero data.
-const APP_VERSION = 'v13';
+const APP_VERSION = 'v14';
 const CORE = 'core-' + APP_VERSION;
 const RUNTIME = 'runtime';
 
