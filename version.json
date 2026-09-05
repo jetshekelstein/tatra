@@ -1,9 +1,10 @@
 {
-  "version": "2026-08-29.4",
-  "sw": "v12",
-  "date": "2026-08-29",
-  "notes": "Új képforrás: a Wikimedia Commons geokódolt fotói. A helyszín koordinátája alapján keres a környéken készült szabad fényképet, tehát azok a látnivalók is kapnak képet, amiknek nincs saját Wikipédia-szócikkük — sziklák, szurdokok, kilátók, pincesorok. A név szerint egyező fotó előnyt élvez a pusztán közelivel szemben, térképek és címerek kiszűrve, és a fotós neve + licenc kiírva a helyszín lapján.",
+  "version": "2026-09-05.1",
+  "sw": "v13",
+  "date": "2026-09-05",
+  "notes": "Új kötet: Aggteleki-karszt — Aggtelek, Jósvafő, Szögliget, útközben a Bükkön át. A szept. 4–6-i hétvégére: Vörös-tói középtúra és a Baradla tanösvény (mindkettő tesztelt), hucul ménes, Szádvár, Szinpetri papírmalma — plusz a Galyaság Trizsi Meseerdővel, mezítlábas ösvénnyel, Kelemér lápi tavaival és Szuhafő két kilátójával. FIGYELEM: szept. 1-től téli menetrend (pénztárak 8:00–16:00), szept. 5-én a barlangi futóverseny miatt a Vörös-tói középtúra 12:00 és 14:00, a jósvafői rövidtúra nem indul, a 15:00-s aggteleki túrán pedig kórusműsor szól a Hangversenyteremben.",
   "trips": {
+    "aggtelek": "2026-09-05.1",
     "tatra": "2026-08-29.1",
     "gombaszog": "2026-08-29.2",
     "bukkalja": "2026-08-29.2"

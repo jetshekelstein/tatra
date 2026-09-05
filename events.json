@@ -1,8 +1,13 @@
 {
   "_doc": "Esemény-feed: fesztiválok, piacok, programok a könyvek helyszínein. Az app frissítés-ellenőrzéskor tölti le és IndexedDB-be teszi, tehát APPFRISSÍTÉS NÉLKÜL, bármikor bővíthető — offline a legutóbb letöltött állapot él. Mező-séma: trip = útikönyv id + poi = helyszín id (pontos kötés egy helyhez), VAGY ll:[lat,lng] + km hatókör (falusi rendezvény: a körön belüli MINDEN helyszínt megjelöli). n = az esemény neve; from/to = ISO dátumok, a to napja még érvényes; dow = OPCIONÁLIS heti ismétlődés (0=vasárnap … 6=szombat) — ilyenkor a from/to a SZEZONT jelöli, és az esemény azon belül minden héten megvan azon a napon; note = egy sor a naptárba; url = opcionális link. A listákon a jelvény a következő 30 napban esedékes eseményt mutatja (és MA-t, ha éppen tart); a helyszín lapján a Programnaptár az összes hátralévőt kilistázza. Lejárt esemény magától eltűnik — a régieket meghagyjuk emlékeztetőnek a jövő évi tervezéshez.",
-  "_checked": "2026-08-29 — a dátumok a szervezők akkori közlései; a falusi programok csúsznak, indulás előtt ellenőrizni",
-  "version": "2026-08-29.1",
+  "_checked": "2026-09-05 (aggteleki tételek), 2026-08-29 (a többi) — a dátumok a szervezők akkori közlései; a falusi programok csúsznak, indulás előtt ellenőrizni",
+  "version": "2026-09-05.1",
   "events": [
+    { "n": "Kórusműsor a Hangversenyteremben", "trip": "aggtelek", "poi": "a2", "from": "2026-09-05", "to": "2026-09-05",
+      "note": "A 15:00-s aggteleki rövidtúrán, 20–25 perc · a jegy ára a sima túrajegy" },
+    { "n": "Barlangi futóverseny — módosult indulások", "trip": "aggtelek", "poi": "a1", "from": "2026-09-05", "to": "2026-09-05",
+      "note": "A Vörös-tói középtúra kivételesen 12:00 és 14:00; a jósvafői rövidtúra nem indul" },
+
     { "n": "Noszvaji Szilvanap", "ll": [47.9333, 20.4667], "km": 2.5, "from": "2026-08-29", "to": "2026-08-29",
       "note": "Szilvás ételek, hagyományőrző délután a Gazdaházban, bortúra az Emődi pincesoron" },
     { "n": "Patakparti Piac", "trip": "bukkalja", "poi": "n3", "dow": 5, "from": "2026-01-02", "to": "2027-12-31",
