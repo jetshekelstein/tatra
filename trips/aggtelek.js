@@ -27,7 +27,7 @@ modules: [
 
 {id:'P', letter:'P', title:'Péntek és a bázis', full:'Péntek este — érkezés, alvás-döntés, és ahol enni lehet', kicker:'Tiszta menetnap · érkezés ~19:00', sub:'Ostorosról munka után, a Bükkön át, program nélkül — a nap egyetlen feladata, hogy világosban álljon a tábor', transit:'Ostoros → Szilvásvárad → Nagyvisnyó → Dédestapolcsány → Putnok → Aggtelek ≈ 1 óra 45 perc tiszta menetidő',
  pois:[
- {id:'p1', ll:[48.4700,20.5000], n:'Az odaút a Bükkön át', q:'Aggtelek', b:'fo', age:'MINDEN KOR', meta:'≈ 1 óra 45 perc · megállók nélkül',
+ {id:'p1', ll:[48.4700,20.5000], n:'Az odaút a Bükkön át', q:'Aggtelek', noRating:true, b:'fo', age:'MINDEN KOR', meta:'≈ 1 óra 45 perc · megállók nélkül',
   d:'Ostorosról munka után indulunk, és pénteken ez a nap egyetlen programja: Szilvásvárad – Nagyvisnyó – Dédestapolcsány – Putnok – Aggtelek, kb. 1 óra 45 perc tiszta menetidő. Szilvásvárad szándékosan kimarad — azt kívülről fújjuk, és most nem éri meg egy órát adni érte a sötétedésből. A Bükk-oldali megállók (Lázbérc, Bélapátfalva) átkerülnek a vasárnapi hazaútra: ott van rájuk idő, itt nincs.',
   w:'Érkezés ~19:00-ra. Napnyugta szeptember elején ~19:10 — vagyis szürkületben landolunk, és ezért nincs megálló: minden félóra, amit útközben elvesztünk, a tábor felverésének idejéből megy el. Tankolás és bevásárlás még Egerben vagy Putnokon; Aggteleken este már nincs bolt.'},
  {id:'p2', ll:[48.4680,20.5080], n:'NOMÁD Baradla Kemping — 30 lépés a pénztártól', q:'Baradla Kemping Aggtelek', b:'fo', age:'MINDEN KOR', meta:'Baradla oldal 1. · sátor / faház / rönkház',
@@ -114,7 +114,7 @@ modules: [
  {n:'Szalamandra-ház, Szögliget', ll:[48.5260,20.6670], q:'Szalamandra-ház Szögliget',
   d:'Az ANP erdei iskolája és turistaszállása, pontosan ott, ahol a Szádvár tanösvény indul. Csoportos jellegű hely, előzetes egyeztetés az ANP-vel — nem az a szállás, amit péntek este 7-kor hív fel az ember. Viszont ha jövőre két éjszakát a Szádvár alatt akartok tölteni, ez a cím.'}],
  eat:[
- {n:'Piknik — mert útközben nincs bolt', q:'Szögliget',
+ {n:'Piknik — mert útközben nincs bolt', q:'Szögliget', noRating:true,
   d:'Szögligeten és a tanösvényen ne számítsatok büfére. A vasárnapi ebédet Aggteleken vagy Jósvafőn kell megvenni indulás előtt — Szinpetri viszont útba esik, és ott készpénz kell mindenre.'}]},
 
 {id:'G', letter:'G', title:'Galyaság', full:'Galyaság — Trizs, Kelemér, Szuhafő: a mesés irány', kicker:'A csendes oldal · pénzbe alig kerül', sub:'Meseerdő lombházzal és mezítlábas ösvénnyel, lápi tavak, két fatorony a semmi közepén', transit:'Aggtelek → Trizs ≈ 15 perc · onnan Ragály, Zádorfalva, Szuhafő 10–20 perc · Kelemér ≈ 35 perc Aggtelektől',
@@ -276,7 +276,7 @@ data.itineraries = [
 window.registerTrip({
   id: 'aggtelek',
   // Content version — bump on every content change; version.json mirrors it.
-  version: '2026-09-05.2',
+  version: '2026-09-05.3',
   date: '2026-09-04',
   name: 'Aggteleki-karszt',
   period: '2026. szept.',

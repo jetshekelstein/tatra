@@ -76,6 +76,8 @@ betűvel szedi a hosszabbat, hogy beférjen.
   cash:true,     // „Csak készpénz" figyelmeztető chip
   rating:4.7,    // Google-értékelés, ha kézzel írod be
   reviews:1234,  // értékelések száma (opcionális)
+  noRating:true, // NE kérjen Google-értékelést: általános tételekhez („étterem
+                 // Bátonyterenye", „piknik"), ahol a találat egy véletlen hely volna
   ll:[48.57,20.47], // hozzávetőleges koordináta — a Közelben lista és a
                     // közeledés-jelzés ebből számol távolságot (±200 m elég)
   wk:'hu:Cikk' } // fotó-fallback

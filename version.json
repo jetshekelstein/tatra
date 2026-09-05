@@ -1,11 +1,11 @@
 {
-  "version": "2026-09-05.3",
-  "sw": "v15",
+  "version": "2026-09-05.4",
+  "sw": "v16",
   "date": "2026-09-05",
-  "notes": "Két új kötet: Karancs–Medves (Kazár tufa-badlandje, Salgó és Somoskő vára, a Medves, kitérőnek Ipolytarnóc, Szentkút, Hollókő — hétvégére hangolva, 3 napos és esős változattal) és Tisza-part (Tiszalök, Tiszadada, Tiszadob, Tokaj, Sóstó — az utolsó strandhétvége). Google-értékelések bekapcsolva: minden helyszín csillagot és darabszámot kap, a Közelben panelben él a „Mit ajánl a Google?” gomb. Új képforrások a kép nélkül maradt kempingekre, kajáldákra: névre egyező Commons-fotó, és Google Street View, amint a kulcson engedélyezve lesz. Új események: Tokaj, Sóstó, Ipolytarnóc, Szentkút.",
+  "notes": "Három új kötet: Aggteleki-karszt (a szept. 4–6-i hétvége — téli menetrend, szept. 5-én a futóverseny miatt a Vörös-tói középtúra 12:00 és 14:00, a 15:00-s aggteleki túrán kórusműsor), Karancs–Medves (Kazár tufa-badlandje, Salgó és Somoskő vára, a Medves; kitérőnek Ipolytarnóc, Szentkút, Hollókő) és Tisza-part (Tiszalök, Tiszadada, Tiszadob, Tokaj, Sóstó). Google-értékelés és darabszám minden helyszínen — ehhez Google-kulcs kell: Mentve → Alkalmazás → Google-kulcs. Új képforrások a kép nélkül maradt kempingekre, kajáldákra: névre egyező Commons-fotó, és Street View, amint a kulcson engedélyezve lesz. Új események: Tokaj, Sóstó, Ipolytarnóc, Szentkút.",
   "trips": {
-    "aggtelek": "2026-09-05.2",
-    "nograd": "2026-09-05.1",
+    "aggtelek": "2026-09-05.3",
+    "nograd": "2026-09-05.2",
     "tisza": "2026-09-05.1",
     "tatra": "2026-08-29.1",
     "gombaszog": "2026-08-29.2",

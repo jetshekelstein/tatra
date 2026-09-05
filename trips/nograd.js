@@ -52,10 +52,10 @@ modules: [
   d:'Barokk kastély ősparkkal Bátonyterenye kisterenyei részén, közvetlenül Kazár előtt az úton. A gyerekeknek a park és a futkosás, nektek egy kávé és a homlokzat. Odaúton bemelegítő megálló, nem cél.',
   w:'A park szabadon sétálható; a belső kiállítás nyitvatartását indulás előtt nézzétek meg — a brief sem tudta friss forrásból megerősíteni.'}],
  sleep:[
- {n:'Kazár — falusi vendégházak', ll:[47.9840,19.8840], q:'vendégház Kazár',
+ {n:'Kazár — falusi vendégházak', ll:[47.9840,19.8840], q:'vendégház Kazár', noRating:true,
   d:'Ha az első estét a palóc oldalon akarjátok: a falu vendégházai kicsik és családiak, udvari beállót a T2-nek többnyire adnak — foglaláskor kérdezzetek rá. Boltos bevásárlás Bátonyterenyén. Hétvégére foglalni kell, a falu kicsi.'}],
  eat:[
- {n:'Kazár / Bátonyterenye — falusi konyhák', ll:[47.9870,19.8380], q:'étterem Bátonyterenye',
+ {n:'Kazár / Bátonyterenye — falusi konyhák', ll:[47.9870,19.8380], q:'étterem Bátonyterenye', noRating:true,
   d:'Palóc leves és sztrapacska, ha nyitva — a falusi konyhák korán zárnak, ezért ELŐZŐ NAP Google Maps, vagy piknik a buszban a tufa után. Bátonyterenyén több a választék.'}]},
 
 {id:'B', letter:'B', title:'Salgó és a Medves', full:'Salgó és a Medves — két vár, egy határ', kicker:'A bázis · naplemente a várfalon', sub:'Bazaltkúpok, bazaltorgonák, kőtenger · Kazár → Salgóbánya ≈ 35 perc', transit:'Salgóbánya–Eresztvény a bázis: Salgó vára 20 perc gyalog, Somoskő 10 perc autó · az egyetlen igazi kapaszkodó a Salgóbányára vezető út — alacsony fokozat, nem hosszú',
@@ -79,16 +79,16 @@ modules: [
   d:'A vidék legmagasabb pontja, kilátótoronnyal mélyen Szlovákiába. Igazi túra, nem séta — az edzett lábú csapatnak, vagy ha a várak már elfogytak. Erdős, árnyas, zivatarban nem. A kétévessel és a hároméves lábával ez most nem fér a keretbe; a könyvben azért van, mert két év múlva fér.',
   w:'Ingyenes. Indulás Karancslapujtő vagy Somoskőújfalu felől, jelzett úton. Reggel induljatok — délután itt is fordul az idő.'}],
  sleep:[
- {n:'★ Salgóbánya / Eresztvény — a bázis', ll:[48.1470,19.8480], q:'szállás Salgóbánya',
+ {n:'★ Salgóbánya / Eresztvény — a bázis', ll:[48.1470,19.8480], q:'szállás Salgóbánya', noRating:true,
   d:'A horgony: innen Salgó vára gyalog, Somoskő 10 perc, a Medves fölöttetek. Panziók és turistaszállók a vár alatt; beállót a T2-nek a panziók udvarán szoktak adni — foglaláskor kérdezzetek rá, kempinghely külön egyeztetés. Eresztvényben tó, játszótér, erdő: a gyerekek estig kint. Vad opció: az erdei parkolók csendesek, de ez a Karancs–Medves Tájvédelmi Körzet — a vadkempingezés tilos, inkább a hivatalos hely.'},
  {n:'Tó-Strand Kemping, Salgótarján — az új városi kemping', ll:[48.1240,19.8170], q:'Tó-Strand Kemping Salgótarján',
   d:'2026. május 1-jén nyílt — vagyis vadonatúj, és a hegyről lejövet a praktikus B-terv, ha a panzióknál nincs beálló. Camping út 9/B, a város északi szélén, a Beszterce-lakótelep mellett, turistautak mentén; a Tóstrand mellette, bolt és étterem közel, a Bányamúzeum 10 perc autóval. A gyerekeknek a strand a vacsora előtti program. tostrandkemping.hu — árak és a szezon vége ott.'}],
  eat:[
  {n:'Medves Hotel étterme, Salgóbánya', ll:[48.1455,19.8470], q:'Medves Hotel Salgóbánya',
   d:'A vár alatti biztos vacsora: magyar klasszikusok, gyerekadag, terasz — és a parkoló, ahonnan a várhoz indultok, a hotel fölött van. Naplemente után ez a legrövidebb út a meleg ételhez.'},
- {n:'Büfé a somoskői várparkolónál', ll:[48.1700,19.8500], q:'Somoskő büfé várparkoló',
+ {n:'Büfé a somoskői várparkolónál', ll:[48.1700,19.8500], q:'Somoskő büfé várparkoló', noRating:true,
   d:'Lángos, fagyi, kávé a vár után — készpénz. A kőtenger utáni jutalom, mielőtt felmennétek a fennsíkra.'},
- {n:'Salgótarján belváros', ll:[48.0990,19.8030], q:'étterem Salgótarján belváros',
+ {n:'Salgótarján belváros', ll:[48.0990,19.8030], q:'étterem Salgótarján belváros', noRating:true,
   d:'Pizza, burger, cukrászda a Fő téren — a „ma nem bírunk népi konyhát" este. A Bányamúzeum után tíz perc.'}]},
 
 {id:'C', letter:'C', title:'Kitérők', full:'Kitérők — ősláb-nyomok, kegyhely, Hollókő', kicker:'A harmadik nap · válassz egyet', sub:'Mind 30–45 perc a bázistól, mind a hazaúton vagy egy kitérővel', transit:'Salgóbánya → Ipolytarnóc ≈ 45 perc (Eger onnan ≈ 2 óra) · Salgóbánya → Hollókő ≈ 45 perc (Eger onnan ≈ 1 óra 30) · Szentkút Kazártól 20 perc',
@@ -106,12 +106,12 @@ modules: [
   d:'Kolostorrom (III. Béla 1191-ben telepítette ide a cisztercieket), középkori iskolaház, üveghuta-emlékek — nektek szóló megálló Hollókő felé vagy a hazaúton. A gyerekeknek: fagyi a főtéren, aztán tovább.',
   w:'Romterület szabadon; a kiállítások hétfőn zárva. Hollókőről hazafelé pont útba esik a 21-esen.'}],
  sleep:[
- {n:'Ipolytarnóc — szállás a bemutatóhelynél', ll:[48.2380,19.6360], q:'Ipolytarnóc szállás Ősmaradványok',
+ {n:'Ipolytarnóc — szállás a bemutatóhelynél', ll:[48.2380,19.6360], q:'Ipolytarnóc szállás Ősmaradványok', noRating:true,
   d:'Csak akkor, ha Ipolytarnóc a fő program és nem akartok hazáig gurulni: panzió és vendégházak a faluban, reggel elsőnek a lábnyomoknál. ⚠️ A bemutatóhely szállás-oldala a BNPI kempingjeit listázza, de hogy pont itt lehet-e sátrat verni vagy beállni a busszal, azt telefonon kell megkérdezni — a brief sem tudta megerősíteni.'}],
  eat:[
  {n:'Szentkút — a zarándokközpont kávézója', ll:[47.9680,19.7620], q:'Mátraverebély-Szentkút kávézó',
   d:'Kávé, sütemény, mosdó — a csendes megálló része. Búcsúnapon sor áll.'},
- {n:'Hollókő — ófalusi vendéglők', ll:[47.9950,19.5925], q:'vendéglő Hollókő ófalu',
+ {n:'Hollókő — ófalusi vendéglők', ll:[47.9950,19.5925], q:'vendéglő Hollókő ófalu', noRating:true,
   d:'Palóc ételek a képeslap-utcán. Hétvégén foglaljatok, vagy egyetek tizenkettő előtt — utána a busz-turisták ülnek mindenhol.'}]}],
 
 // A túralista: ugyanazok a helyek, de a lábak nyelvén — az 5 km / 200 m-es keret
@@ -218,7 +218,7 @@ data.itineraries = [
 window.registerTrip({
   id: 'nograd',
   // Content version — bump on every content change; version.json mirrors it.
-  version: '2026-09-05.1',
+  version: '2026-09-05.2',
   // Az aggteleki kötet (2026-09-04) alatt, a bükkaljai fölött.
   date: '2026-09-03',
   name: 'Karancs–Medves',

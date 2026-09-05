@@ -19,8 +19,8 @@
 <meta property="og:site_name" content="Mobil Útikönyv">
 <meta property="og:locale" content="hu_HU">
 <meta property="og:url" content="https://jetshekelstein.github.io/tatra/">
-<meta property="og:title" content="Aggtelek · Bükkalja · Gombaszög · Tátra — Mobil Útikönyv">
-<meta property="og:description" content="Négy családi útikönyv egy appban: modulok, túrák, kempingek, döntéstábla és programnaptár. Telefonra telepíthető, térerő nélkül is működik.">
+<meta property="og:title" content="Tisza · Aggtelek · Karancs–Medves · Bükkalja · Gombaszög · Tátra — Mobil Útikönyv">
+<meta property="og:description" content="Hat családi útikönyv egy appban: modulok, túrák, kempingek, döntéstábla és programnaptár. Telefonra telepíthető, térerő nélkül is működik.">
 <meta property="og:image" content="https://jetshekelstein.github.io/tatra/icons/social-card.jpg">
 <meta property="og:image:secure_url" content="https://jetshekelstein.github.io/tatra/icons/social-card.jpg">
 <meta property="og:image:type" content="image/jpeg">
@@ -28,10 +28,10 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Kék VW T2 lakóbusz felnyitott tetővel a várkúti turistaház előtt">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Aggtelek · Bükkalja · Gombaszög · Tátra — Mobil Útikönyv">
-<meta name="twitter:description" content="Négy családi útikönyv egy appban: modulok, túrák, kempingek, döntéstábla és programnaptár. Telefonra telepíthető, térerő nélkül is működik.">
+<meta name="twitter:title" content="Tisza · Aggtelek · Karancs–Medves · Bükkalja · Gombaszög · Tátra — Mobil Útikönyv">
+<meta name="twitter:description" content="Hat családi útikönyv egy appban: modulok, túrák, kempingek, döntéstábla és programnaptár. Telefonra telepíthető, térerő nélkül is működik.">
 <meta name="twitter:image" content="https://jetshekelstein.github.io/tatra/icons/social-card.jpg">
-<meta name="description" content="Négy családi útikönyv egy appban: modulok, túrák, kempingek, döntéstábla és programnaptár. Telefonra telepíthető, térerő nélkül is működik.">
+<meta name="description" content="Hat családi útikönyv egy appban: modulok, túrák, kempingek, döntéstábla és programnaptár. Telefonra telepíthető, térerő nélkül is működik.">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
 
@@ -827,7 +827,10 @@ const wikiKey = (tripId, id, wk) => tripId + ':' + id + ':' + wk;
 // Wikipedia article of their own — rock formations, gorges, lookouts, cellar
 // rows — which is most of what a hiking guidebook is made of. Keyed on the
 // coordinate so moving a pin re-resolves.
-const commonsKey = (tripId, id, ll) => tripId + ':' + id + ':geo@' + ll[0].toFixed(3) + ',' + ll[1].toFixed(3);
+// Coordinate stamp shared with the Street View records: a moved pin re-resolves
+// both sources under the same rule.
+const llAt = ll => ll[0].toFixed(3) + ',' + ll[1].toFixed(3);
+const commonsKey = (tripId, id, ll) => tripId + ':' + id + ':geo@' + llAt(ll);
 // Stored values are {u,by,lic,page} now; older installs hold a bare URL string.
 const imgUrl = v => (typeof v === 'string' ? v : (v && v.u)) || null;
 const imgCred = v => (v && typeof v === 'object' && v.by) ? v : null;
@@ -844,10 +847,9 @@ const stripTags = h => String(h || '').replace(/<[^>]*>/g, '').replace(/\s+/g, '
 // not allow storing the pictures, and so they never enter the offline trip
 // cache — offline, these places fall back to the category icon.
 const gPhotoUrl = (name, key) => 'https://places.googleapis.com/v1/' + name + '/media?maxWidthPx=800&maxHeightPx=800&key=' + encodeURIComponent(key);
-const svImgUrl = (pano, key) => 'https://maps.googleapis.com/maps/api/streetview?size=800x450&fov=80&pano=' + encodeURIComponent(pano) + '&key=' + encodeURIComponent(key);
+// 640 px is the Street View Static API's ceiling; larger sizes are rejected.
+const svImgUrl = (pano, key) => 'https://maps.googleapis.com/maps/api/streetview?size=640x360&fov=80&pano=' + encodeURIComponent(pano) + '&key=' + encodeURIComponent(key);
 const svPageUrl = pano => 'https://www.google.com/maps/@?api=1&map_action=pano&pano=' + encodeURIComponent(pano);
-// Coordinate stamp on a Street View record: a moved pin must re-resolve.
-const llAt = ll => ll[0].toFixed(3) + ',' + ll[1].toFixed(3);
 const SRC_LABEL = { commons: 'Wikimedia Commons', google: 'Google Maps', sv: 'Google Street View' };
 function idbOpen() {
   return new Promise((resolve, reject) => {
@@ -976,6 +978,12 @@ class Component extends DCLogic {
     // 'auto', the browser re-applies its own remembered offset *after* the
     // popstate handler and undoes the restore.
     try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (e) {}
+
+    // Google images are online-only (see gRec); flipping connectivity must
+    // swap them for icons and back without a reload.
+    this._onNet = () => this.setState({ netAt: Date.now() });
+    window.addEventListener('online', this._onNet);
+    window.addEventListener('offline', this._onNet);
 
     this._onPop = () => {
       if (this._skipPop) { this._skipPop = false; return; }
@@ -1382,7 +1390,15 @@ class Component extends DCLogic {
     const todo = items.filter(x => x.ll && !local[x.id] && !pinned[x.id]
       && !cache[commonsKey(T.id, x.id, x.ll)]);
     const RADIUS = 700;
-    todo.slice(0, 40).forEach(x => {
+    // Waves of eight with a breather between them: every entry gets resolved on
+    // the first open (the old cap of forty left the tail of a bigger book to the
+    // next visit), without firing sixty requests at Commons at once.
+    const wave = (from) => {
+      if (from >= todo.length) return;
+      todo.slice(from, from + 8).forEach(one);
+      setTimeout(() => wave(from + 8), 400);
+    };
+    const one = x => {
       const u = 'https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*'
         + '&generator=geosearch&ggscoord=' + x.ll[0] + '%7C' + x.ll[1]
         + '&ggsradius=' + RADIUS + '&ggsnamespace=6&ggslimit=20'
@@ -1432,7 +1448,8 @@ class Component extends DCLogic {
             return { wikiImgs: w };
           });
         }).catch(() => {});
-    });
+    };
+    wave(0);
   }
 
   // Every place in the active trip that has a Maps search term, with the
@@ -1461,7 +1478,10 @@ class Component extends DCLogic {
     const key = this.placesKey();
     const T = this.trip();
     if (!key || !T) return;
-    const todo = this.searchables().filter(x => { const r = this.state.places[T.id + ':' + x.id]; return !r || r.v !== 2; });
+    // `noRating: true` on an entry opts it out: a generic search term ("étterem
+    // Bátonyterenye") would pin some random place's stars on a paragraph that is
+    // about several places at once.
+    const todo = this.searchables().filter(x => { if (x.noRating) return false; const r = this.state.places[T.id + ':' + x.id]; return !r || r.v !== 2; });
     if (!todo.length) return;
     // Sequential with a small gap: dozens of parallel POSTs to one endpoint is
     // the kind of thing that gets a key rate-limited.
@@ -1519,8 +1539,10 @@ class Component extends DCLogic {
     const T = this.trip();
     if (!key || !T || this._svOff) return;
     const local = T.photoFiles || {}, pinned = T.wikiFiles || {};
+    // Only what the render side can use: plans never get a Street View picture,
+    // and a place with its own article will draw the Wikipedia image first.
     const todo = this.searchables().filter(x => {
-      if (!x.ll || local[x.id] || pinned[x.id]) return false;
+      if (!x.ll || x.wk || x.kindGuess === 'plan' || local[x.id] || pinned[x.id]) return false;
       const r = this.state.places[T.id + ':' + x.id];
       return !(r && r.svAt === llAt(x.ll));
     });
@@ -1532,7 +1554,8 @@ class Component extends DCLogic {
         + '&radius=60&source=outdoor&key=' + encodeURIComponent(key))
         .then(r => r.ok ? r.json() : null)
         .then(j => {
-          if (!j || j.status === 'REQUEST_DENIED') { this._svOff = true; return; }
+          if (!j) return;                                                  // 429/5xx: skip this one, keep going
+          if (j.status === 'REQUEST_DENIED') { this._svOff = true; return; }   // API not enabled: end the pass
           if (j.status !== 'OK' && j.status !== 'ZERO_RESULTS') return;   // quota, transient: try next launch
           const val = { svAt: llAt(x.ll), sv: (j.status === 'OK' && j.pano_id) || null };
           this.setState(st => {
@@ -2059,11 +2082,13 @@ class Component extends DCLogic {
     // Google, last: a place photo if the project receives them, else the Street
     // View panorama resolved for this exact coordinate. Both need the key at
     // render time — without one the record is inert and the icon shows.
-    const gKey = this.placesKey();
+    // Offline the Google URLs cannot load (they are never cached), so the icon
+    // is the honest fallback; the online/offline listeners re-render on change.
+    const gKey = navigator.onLine === false ? '' : this.placesKey();
     const gRec = id => {
       const p = gKey ? st.places[T.id + ':' + id] : null;
       if (!p) return null;
-      if (p.ph) return { u: gPhotoUrl(p.ph, gKey), by: p.by || 'Google Maps', lic: '', page: p.page || '', src: 'google' };
+      if (p.ph) return { u: gPhotoUrl(p.ph, gKey), by: p.by || 'Google', lic: '', page: p.page || '', src: 'google' };
       if (p.sv && llm[id] && p.svAt === llAt(llm[id])) return { u: svImgUrl(p.sv, gKey), by: 'Google', lic: '', page: svPageUrl(p.sv), src: 'sv' };
       return null;
     };
